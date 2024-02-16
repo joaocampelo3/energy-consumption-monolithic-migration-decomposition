@@ -1,0 +1,116 @@
+@startuml
+
+class Category {
+  - id: Long
+  - description: String
+  - name: String
+}
+class Customer {
+  - name: String
+  - id: Long
+  - email: String
+  - address: String
+}
+class Item {
+  - price: double
+  - name: String
+  - category: Category
+  - quantityInStock: StockQuantity
+  - id: Long
+  - description: String
+}
+class ItemQuantity {
+  - id: Long
+  - quantityOrdered: OrderQuantity
+  - items: Item
+}
+class Merchant {
+  - name: String
+  - id: Long
+  - email: String
+  - address: String
+}
+class MerchantOrder {
+  - orderDate: LocalDateTime
+  - customer: Customer
+  - merchant: Merchant
+  - id: Long
+  - status: MerchantOrderStatusEnum
+  - order: Order
+}
+class Order {
+  - id: Long
+  - customer: Customer
+  - orderDate: LocalDateTime
+  - status: OrderStatusEnum
+  - itemQuantities: Set<ItemQuantity>
+  - payment: Payment
+}
+class StockQuantity {
+  - quantity: int
+}
+class OrderQuantity {
+  - quantity: int
+}
+class Payment {
+  - paymentMethod: PaymentMethodEnum
+  - status: PaymentStatusEnum
+  - id: Long
+  - amount: double
+  - paymentDateTime: LocalDateTime
+}
+class ShippingOrder {
+  - shippingOrderDate: LocalDateTime
+  - order: Order
+  - merchantOrder: MerchantOrder
+  - customer: Customer
+  - id: Long
+  - shippingAddress: String
+  - status: ShippingOrderStatusEnum
+}
+enum PaymentMethodEnum << enumeration >> {
+  + A
+  + B
+  + C
+}
+enum PaymentStatusEnum << enumeration >> {
+  + A
+  + B
+  + C
+}
+enum ShippingOrderStatusEnum << enumeration >> {
+  + A
+  + B
+  + C
+}
+enum OrderStatusEnum << enumeration >> {
+  + A
+  + B
+  + C
+}
+enum MerchantOrderStatusEnum << enumeration >> {
+  + A
+  + B
+  + C
+}
+
+Item                    "1" *--> "category\n1" Category
+Item                    "1" *--> "quantityInStock\n1" StockQuantity
+ItemQuantity            "1" *--> "items\n1" Item
+ItemQuantity            "1" *--> "quantityOrdered\n1" OrderQuantity
+MerchantOrder           "1" *--> "customer\n1" Customer
+MerchantOrder           "1" *--> "merchant\n1" Merchant
+MerchantOrder           "1" *--> "status\n1" MerchantOrderStatusEnum
+MerchantOrder           "1" *--> "order\n1" Order
+Order                   "1" *--> "customer\n1" Customer
+Order                   "1" *--> "itemQuantities\n*" ItemQuantity
+Order                   "1" *--> "status\n1" OrderStatusEnum
+Order                   "1" *--> "payment\n1" Payment
+Payment                 "1" *--> "paymentMethod\n1" PaymentMethodEnum
+Payment                 "1" *--> "status\n1" PaymentStatusEnum
+ShippingOrder           "1" *--> "customer\n1" Customer
+ShippingOrder           "1" *--> "merchantOrder\n1" MerchantOrder
+ShippingOrder           "1" *--> "order\n1" Order
+ShippingOrder           "1" *--> "status\n1" ShippingOrderStatusEnum
+
+@enduml
