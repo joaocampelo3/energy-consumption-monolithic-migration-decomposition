@@ -1,7 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.enums;
 
 public enum OrderStatusEnum {
-    A,
-    B,
-    C
+    PENDING, APPROVED, REJECTED, SHIPPED, DELIVERED
 }
