@@ -22,5 +22,5 @@ public class ItemQuantity {
     private OrderQuantity quantityOrdered;
 
     @OneToOne(optional = false)
-    private Item items;
+    private Item item;
 }
