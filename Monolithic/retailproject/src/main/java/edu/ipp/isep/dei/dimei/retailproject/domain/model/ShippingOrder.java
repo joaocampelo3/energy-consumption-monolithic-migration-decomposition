@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,12 +27,12 @@ public class ShippingOrder {
     private Long id;
     @Column(name = "shipping_order_date", nullable = false)
     private LocalDateTime shippingOrderDate;
-    @Size(max = 50)
-    @Column(name = "shipping_order_address", nullable = false)
-    private String shippingAddress;
     @Column(name = "shipping_order_status")
     @Enumerated(EnumType.STRING)
     private ShippingOrderStatusEnum status;
+
+    @OneToOne(optional = false)
+    private Address shippingAddress;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "order_id", unique = true, referencedColumnName = "id")

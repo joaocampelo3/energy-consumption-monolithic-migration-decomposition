@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "orders",
@@ -36,7 +36,7 @@ public class Order {
     private Customer customer;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<ItemQuantity> itemQuantities;
+    private List<ItemQuantity> itemQuantities;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "payment_id", unique = true, referencedColumnName = "id")

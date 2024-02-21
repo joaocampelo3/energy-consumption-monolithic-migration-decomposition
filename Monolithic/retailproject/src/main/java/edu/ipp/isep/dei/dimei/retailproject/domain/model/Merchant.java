@@ -26,7 +26,7 @@ public class Merchant {
     @Size(max = 50)
     @Column(name = "merchant_email", nullable = false)
     private String email;
-    @Size(max = 250)
-    @Column(name = "merchant_address", nullable = false)
-    private String address;
+
+    @OneToOne(optional = false)
+    private Address address;
 }
