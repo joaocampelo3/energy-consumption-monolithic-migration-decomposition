@@ -35,8 +35,8 @@ public class AuthenticationService {
                 .build();
 
         User user = User.builder()
-                .firstName(registerDTO.getFirstname())
-                .lastName(registerDTO.getLastname())
+                .firstname(registerDTO.getFirstname())
+                .lastname(registerDTO.getLastname())
                 .account(account)
                 .build();
 

@@ -13,48 +13,48 @@ class Address {
   - country: String
 }
 class Category {
-  - id: Long
+  - id: int
   - name: String
   - description: String
 }
 class Item {
-  - id: Long
+  - id: int
   - name: String
   - description: String
   - price: double
   - category: Category
 }
 class Merchant {
-  - id: Long
+  - id: int
   - name: String
   - email: String
 }
 class MerchantOrder {
-  - id: Long
+  - id: int
   - orderDate: LocalDateTime
 }
 class Order {
-  - id: Long
+  - id: int
   - orderDate: LocalDateTime
   - user: User
 }
 class Payment {
-  - id: Long
+  - id: int
   - amount: double
   - paymentDateTime: LocalDateTime
 }
 class ShippingOrder {
-  - id: Long
+  - id: int
   - shippingOrderDate: LocalDateTime
 }
 class User {
-  - id: Long
-  - firstName: String
-  - lastName: String
+  - id: int
+  - firstname: String
+  - lastname: String
 }
 interface IValueObject << interface >>
 class ItemQuantity {
-  - id: Long
+  - id: int
 }
 class OrderQuantity {
   - quantity: int

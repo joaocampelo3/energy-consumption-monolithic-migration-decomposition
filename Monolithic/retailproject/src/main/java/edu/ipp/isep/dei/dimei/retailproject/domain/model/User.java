@@ -16,13 +16,13 @@ import lombok.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Size(max = 50)
-    @Column(name = "user_first_name", nullable = false)
-    private String firstName;
+    @Column(name = "user_firstname", nullable = false)
+    private String firstname;
     @Size(max = 50)
-    @Column(name = "user_last_name", nullable = false)
-    private String lastName;
+    @Column(name = "user_lastname", nullable = false)
+    private String lastname;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Account account;

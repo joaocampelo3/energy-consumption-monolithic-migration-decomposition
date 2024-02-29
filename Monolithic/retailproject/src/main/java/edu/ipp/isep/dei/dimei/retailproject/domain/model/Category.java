@@ -19,7 +19,7 @@ import lombok.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Size(max = 50)
     @Column(name = "category_name", nullable = false)
     private String name;

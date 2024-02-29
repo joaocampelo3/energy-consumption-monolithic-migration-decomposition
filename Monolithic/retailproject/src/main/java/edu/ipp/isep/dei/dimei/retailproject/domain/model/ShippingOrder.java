@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class ShippingOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Column(name = "shipping_order_date", nullable = false)
     private LocalDateTime shippingOrderDate;
     @Column(name = "shipping_order_status")

@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class MerchantOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Column(name = "merchant_order_date", nullable = false)
     private LocalDateTime orderDate;
 

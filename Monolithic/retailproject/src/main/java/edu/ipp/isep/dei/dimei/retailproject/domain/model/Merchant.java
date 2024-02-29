@@ -20,7 +20,7 @@ import lombok.*;
 public class Merchant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Size(max = 50)
     @Column(name = "merchant_name", nullable = false)
     private String name;

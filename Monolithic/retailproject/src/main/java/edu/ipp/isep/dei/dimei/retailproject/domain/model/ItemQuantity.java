@@ -16,7 +16,7 @@ import lombok.*;
 public class ItemQuantity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Embedded
     private OrderQuantity quantityOrdered;

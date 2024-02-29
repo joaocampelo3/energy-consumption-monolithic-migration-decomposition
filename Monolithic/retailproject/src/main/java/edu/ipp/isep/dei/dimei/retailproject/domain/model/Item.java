@@ -21,7 +21,7 @@ import lombok.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Size(max = 50)
     @Column(name = "item_name", nullable = false)
     private String name;
