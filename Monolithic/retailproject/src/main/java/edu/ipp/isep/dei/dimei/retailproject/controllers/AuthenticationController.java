@@ -42,7 +42,7 @@ public class AuthenticationController {
                     )
             }
     )
-    public ResponseEntity<AuthenticationResponse> logIn(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDTO loginDTO) {
         return ResponseEntity.ok(authenticationService.login(loginDTO));
     }
 
