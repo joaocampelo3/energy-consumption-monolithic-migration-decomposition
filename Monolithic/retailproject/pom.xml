@@ -18,13 +18,15 @@
     <description>It is a small Retail project to analyse the effects of migration to microservices on energy consumption.</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
-        <spring-security-test.version>6.2.1</spring-security-test.version>
+        <spring-security-test.version>6.2.2</spring-security-test.version>
         <mockito.version>5.2.0</mockito.version>
         <jjwt.version>0.11.5</jjwt.version>
         <mysql-connector-j.version>8.3.0</mysql-connector-j.version>
         <lombok.version>1.18.30</lombok.version>
         <jacoco.version>0.8.11</jacoco.version>
+        <springfox.version>2.3.0</springfox.version>
     </properties>
 
     <dependencies>
@@ -111,6 +113,26 @@
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Springfox -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+
+        <!-- Google Guava-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.0.0-jre</version>
+        </dependency>
+
     </dependencies>
 
     <build>

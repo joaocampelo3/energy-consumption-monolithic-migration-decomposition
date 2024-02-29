@@ -33,7 +33,7 @@ public class MerchantOrder {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private Customer customer;
+    private User user;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", unique = true, referencedColumnName = "id")

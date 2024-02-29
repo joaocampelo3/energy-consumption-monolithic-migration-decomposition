@@ -44,5 +44,5 @@ public class ShippingOrder {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private Customer customer;
+    private User user;
 }

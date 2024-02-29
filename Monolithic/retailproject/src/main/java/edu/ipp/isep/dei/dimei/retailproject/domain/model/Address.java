@@ -22,8 +22,8 @@ public class Address {
     private String city;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Address(String street, String zipCode, String country, String city) {
         this.street = street;

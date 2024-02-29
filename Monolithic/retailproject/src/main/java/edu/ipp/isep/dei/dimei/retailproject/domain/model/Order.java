@@ -33,7 +33,7 @@ public class Order {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private Customer customer;
+    private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ItemQuantity> itemQuantities;
