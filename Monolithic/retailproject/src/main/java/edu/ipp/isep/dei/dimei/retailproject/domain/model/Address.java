@@ -18,8 +18,8 @@ public class Address {
     private int id;
     private String street;
     private String zipCode;
-    private String country;
     private String city;
+    private String country;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

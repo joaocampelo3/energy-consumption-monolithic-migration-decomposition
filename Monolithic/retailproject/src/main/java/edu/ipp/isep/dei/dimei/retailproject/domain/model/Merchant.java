@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -23,8 +24,8 @@ public class Merchant {
     @Size(max = 50)
     @Column(name = "merchant_name", nullable = false)
     private String name;
-    @Size(max = 50)
-    @Column(name = "merchant_email", nullable = false)
+    @Column(name = "merchant_email", unique = true)
+    @Email
     private String email;
 
     @OneToOne(optional = false)
