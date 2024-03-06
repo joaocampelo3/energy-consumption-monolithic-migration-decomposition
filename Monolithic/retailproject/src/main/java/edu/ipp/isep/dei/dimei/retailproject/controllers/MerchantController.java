@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @Tag(name = "Merchant Controller")
 @RequiredArgsConstructor
-@RequestMapping("/merchant")
+@RequestMapping("/merchants")
 public class MerchantController {
 
     private final MerchantService merchantService;
