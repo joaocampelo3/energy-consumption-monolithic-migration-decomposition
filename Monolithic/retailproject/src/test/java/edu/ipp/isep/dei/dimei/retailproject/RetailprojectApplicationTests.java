@@ -13,14 +13,29 @@ class RetailprojectApplicationTests {
 
     @Autowired
     AuthenticationController authenticationController;
-    //@Test
-    void contextLoads() {
-    }
+    @Autowired
+    CategoryController categoryController;
+    @Autowired
+    ItemController itemController;
+    @Autowired
+    MerchantController merchantController;
+    @Autowired
+    MerchantOrderController merchantOrderController;
+    @Autowired
+    OrderController orderController;
+    @Autowired
+    ShippingOrderController shippingOrderController;
 
     @Test
     void sanity_check() {
         List.of(
-                authenticationController
+                authenticationController,
+                categoryController,
+                itemController,
+                merchantController,
+                merchantOrderController,
+                orderController,
+                shippingOrderController
         ).forEach(Assertions::assertNotNull);
     }
 
