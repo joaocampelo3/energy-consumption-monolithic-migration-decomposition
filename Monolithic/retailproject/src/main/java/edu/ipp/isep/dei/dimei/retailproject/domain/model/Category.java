@@ -27,7 +27,7 @@ public class Category {
     @Column(name = "category_description", nullable = false)
     private String description;
 
-    public Category(String name, String description){
+    public Category(String name, String description) {
         this.name = name;
         this.description = description;
     }

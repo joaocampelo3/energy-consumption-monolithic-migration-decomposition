@@ -23,4 +23,8 @@ public class ItemQuantity {
 
     @OneToOne(optional = false)
     private Item item;
+
+    public double getTotalPrice() {
+        return item.getPrice() * quantityOrdered.getQuantity();
+    }
 }

@@ -45,4 +45,13 @@ public class ShippingOrder {
     @ManyToOne(optional = false)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private User user;
+
+    public ShippingOrder(User user, Order order, MerchantOrder merchantOrder, Address address) {
+        this.shippingOrderDate = order.getOrderDate();
+        this.status = ShippingOrderStatusEnum.PENDING;
+        this.shippingAddress = address;
+        this.order = order;
+        this.merchantOrder = merchantOrder;
+        this.user = user;
+    }
 }

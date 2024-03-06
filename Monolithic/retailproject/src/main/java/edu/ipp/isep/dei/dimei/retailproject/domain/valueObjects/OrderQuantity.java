@@ -1,10 +1,10 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.interfaces.valueObjects.IValueObject;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -12,14 +12,11 @@ public class OrderQuantity implements IValueObject {
     @Column(name = "quantity_ordered")
     private int quantity;
 
-    public OrderQuantity(int quantity) throws Exception {
+    public OrderQuantity(int quantity) throws InvalidQuantityException {
 
         if (quantity < 0 || quantity > 999999) {
-            throw new Exception("The number of quantity inserted is not valid");
+            throw new InvalidQuantityException("The number of quantity inserted is not valid");
         }
         this.quantity = quantity;
-    }
-
-    protected OrderQuantity() {
     }
 }

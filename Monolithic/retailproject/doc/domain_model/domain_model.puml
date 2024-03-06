@@ -102,6 +102,7 @@ Account                 "1" *--> "role\n1" RoleEnum
 Address                 "1" *--> "user\n1" User
 Item                    "1" *--> "category\n1" Category
 Item                    "1" *--> "quantityInStock\n1" StockQuantity
+Item                    "1" *--> "merchant\n1" Merchant
 ItemQuantity            "1" *--> "item\n1" Item
 ItemQuantity            "1" *--> "quantityOrdered\n1" OrderQuantity
 Merchant                "1" *--> "address\n1" Address

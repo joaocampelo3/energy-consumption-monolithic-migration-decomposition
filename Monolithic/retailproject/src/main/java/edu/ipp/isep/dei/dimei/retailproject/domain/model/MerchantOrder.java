@@ -42,4 +42,12 @@ public class MerchantOrder {
     @ManyToOne(optional = false)
     @JoinColumn(name = "merchant_id", referencedColumnName = "id")
     private Merchant merchant;
+
+    public MerchantOrder(User user, Order order, Merchant merchant) {
+        this.orderDate = order.getOrderDate();
+        this.status = MerchantOrderStatusEnum.PENDING;
+        this.user = user;
+        this.order = order;
+        this.merchant = merchant;
+    }
 }
