@@ -1,8 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.LoginDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.LoginDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
