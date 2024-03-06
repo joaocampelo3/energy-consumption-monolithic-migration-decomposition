@@ -37,7 +37,7 @@ public class ItemQuantityDTO {
                 .build();
     }
 
-    public ItemQuantity dtoToItemQuantity() throws InvalidQuantityException {
+    public ItemQuantity dtoToEntity() throws InvalidQuantityException {
         return ItemQuantity.builder()
                 .id(this.id)
                 .quantityOrdered(new OrderQuantity(this.qty))
