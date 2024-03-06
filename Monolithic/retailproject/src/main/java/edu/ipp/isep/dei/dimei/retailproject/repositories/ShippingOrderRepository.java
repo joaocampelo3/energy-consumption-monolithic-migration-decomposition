@@ -1,10 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +15,8 @@ public interface ShippingOrderRepository extends CrudRepository<ShippingOrder, I
 
     List<ShippingOrder> findByUser(User user);
 
-    List<ShippingOrder> findAll();
+    Optional<ShippingOrder> findByOrder(Order order);
 
-    Page<ShippingOrder> findAll(Specification<ShippingOrder> specs, Pageable pageable);
+    List<ShippingOrder> findAll();
 
 }

@@ -1,10 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +16,8 @@ public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, I
 
     List<MerchantOrder> findByUser(User user);
 
-    List<MerchantOrder> findAll();
+    Optional<MerchantOrder> findByOrder(Order order);
 
-    Page<MerchantOrder> findAll(Specification<MerchantOrder> specs, Pageable pageable);
+    List<MerchantOrder> findAll();
 
 }
