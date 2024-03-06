@@ -28,7 +28,7 @@ public class ItemQuantityDTO {
         this.price = itemQuantity.getItem().getPrice() * itemQuantity.getQuantityOrdered().getQuantity();
     }
 
-    public Item dtoToItem(){
+    public Item dtoToItem() {
         return Item.builder()
                 .id(this.id)
                 .name(this.itemName)
