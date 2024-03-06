@@ -30,4 +30,10 @@ public class Merchant {
 
     @OneToOne(optional = false)
     private Address address;
+
+    public Merchant(String name, String email, Address address) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+    }
 }

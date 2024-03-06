@@ -99,7 +99,7 @@ enum ShippingOrderStatusEnum << enumeration >> {
 }
 
 Account                 "1" *--> "role\n1" RoleEnum
-Address                 "1" *--> "user\n1" User
+Address                 "*" *--> "user\n1" User
 Item                    "1" *--> "category\n1" Category
 Item                    "1" *--> "quantityInStock\n1" StockQuantity
 Item                    "1" *--> "merchant\n1" Merchant
