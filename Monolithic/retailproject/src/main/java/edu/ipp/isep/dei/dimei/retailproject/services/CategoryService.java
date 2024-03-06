@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.CategoryRepository;

@@ -38,7 +38,7 @@ public class OrderCreateDTO {
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(this.getOrderItems().stream()
-                        .map(itemQuantityDTO ->  {
+                        .map(itemQuantityDTO -> {
                             try {
                                 return itemQuantityDTO.dtoToEntity();
                             } catch (Exception e) {
