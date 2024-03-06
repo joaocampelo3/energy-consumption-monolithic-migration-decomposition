@@ -14,13 +14,13 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.ShippingOrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
-@RequiredArgsConstructor
 @Service
 public class ShippingOrderService {
 
@@ -28,6 +28,13 @@ public class ShippingOrderService {
     private final UserService userService;
     private final MerchantOrderService merchantOrderService;
     private final OrderService orderService;
+
+    public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, UserService userService, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService) {
+        this.shippingOrderRepository = shippingOrderRepository;
+        this.userService = userService;
+        this.merchantOrderService = merchantOrderService;
+        this.orderService = orderService;
+    }
 
     public List<ShippingOrderDTO> getAllShippingOrders() {
         List<ShippingOrderDTO> shippingOrders = new ArrayList<>();

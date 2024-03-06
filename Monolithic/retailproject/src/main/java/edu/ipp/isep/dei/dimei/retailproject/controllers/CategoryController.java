@@ -45,7 +45,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(
-            description = "Create a merchant",
+            description = "Create a category",
             responses = {
                     @ApiResponse
             }
@@ -59,15 +59,15 @@ public class CategoryController {
             @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
             @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO merchantDTO) {
-        return new ResponseEntity<>(this.categoryService.createCategory(merchantDTO), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO categoryDTO) {
+        return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
     }
 
     @PatchMapping(path = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody CategoryDTO merchantDTO) {
+    public ResponseEntity<?> updateCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
         try {
-            return new ResponseEntity<>(this.categoryService.updateCategory(id, merchantDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.categoryService.updateCategory(id, categoryDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException e) {

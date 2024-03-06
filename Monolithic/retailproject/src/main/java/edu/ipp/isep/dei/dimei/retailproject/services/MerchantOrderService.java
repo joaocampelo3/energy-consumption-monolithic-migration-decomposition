@@ -15,13 +15,13 @@ import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantOrderRepository
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
-@RequiredArgsConstructor
 @Service
 public class MerchantOrderService {
 
@@ -30,6 +30,14 @@ public class MerchantOrderService {
     private final MerchantRepository merchantRepository;
     private final OrderService orderService;
     private final ShippingOrderService shippingOrderService;
+
+    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantRepository merchantRepository, @Lazy OrderService orderService, ShippingOrderService shippingOrderService) {
+        this.merchantOrderRepository = merchantOrderRepository;
+        this.userService = userService;
+        this.merchantRepository = merchantRepository;
+        this.orderService = orderService;
+        this.shippingOrderService = shippingOrderService;
+    }
 
     public List<MerchantOrderDTO> getAllMerchantOrders() {
         List<MerchantOrderDTO> merchantOrders = new ArrayList<>();
