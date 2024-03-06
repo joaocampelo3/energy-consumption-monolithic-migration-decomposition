@@ -1,8 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.LoginDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.LoginDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public class AuthenticationController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Try to login successfully.",
+                            description = "Login successfully.",
                             content = @Content(
                                     mediaType = "application/json",
                                     examples = {
@@ -52,7 +52,7 @@ public class AuthenticationController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Try to register user successfully.",
+                            description = "Register user successfully.",
                             content = @Content(
                                     mediaType = "application/json",
                                     examples = {
