@@ -1,12 +1,9 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.services.CategoryService;
-import edu.ipp.isep.dei.dimei.retailproject.services.ItemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +19,6 @@ import java.util.List;
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,8 +29,6 @@ public class CategoryControllerTests {
     CategoryController categoryController;
     @Mock
     CategoryService categoryService;
-
-    Category category;
     CategoryDTO categoryDTO1;
     CategoryDTO categoryDTO1Update;
     CategoryDTO categoryDTO2;
@@ -44,13 +38,6 @@ public class CategoryControllerTests {
 
     @BeforeEach
     void beforeEach() {
-
-        category = Category.builder()
-                .id(0)
-                .name("Category 1")
-                .description("Category 1 Description")
-                .build();
-
         categoryDTO1 = CategoryDTO.builder()
                 .id(1)
                 .name("Category 1")
@@ -78,7 +65,7 @@ public class CategoryControllerTests {
         // Define the behavior of the mock
         when(categoryService.getAllCategories()).thenReturn(categories);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<List<CategoryDTO>> categoryResponseEntity = categoryController.getAllCategories(JwtTokenDummy);
         ResponseEntity<List<CategoryDTO>> categoryResponseEntityExpected = ResponseEntity.ok(categories);
 
@@ -95,7 +82,7 @@ public class CategoryControllerTests {
         int id = 1;
         when(categoryService.getCategory(id)).thenReturn(categoryDTO1);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<?> categoryResponseEntity = categoryController.getCategoryById(JwtTokenDummy, id);
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = ResponseEntity.ok(categoryDTO1);
 
@@ -113,7 +100,7 @@ public class CategoryControllerTests {
         notFoundException = new NotFoundException("Category not found");
         when(categoryService.getCategory(id)).thenThrow(notFoundException);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<?> categoryResponseEntity = categoryController.getCategoryById(JwtTokenDummy, id);
         ResponseEntity<String> categoryResponseEntityExpected = new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
@@ -129,9 +116,9 @@ public class CategoryControllerTests {
         // Define the behavior of the mock
         when(categoryService.createCategory(categoryDTO1)).thenReturn(categoryDTO1);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<?> categoryResponseEntity = categoryController.createCategory(categoryDTO1);
-        ResponseEntity<?> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.CREATED);
+        ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.CREATED);
 
         // Perform assertions
         assertNotNull(categoryResponseEntity);
@@ -146,9 +133,9 @@ public class CategoryControllerTests {
         int id = 1;
         when(categoryService.updateCategory(id, categoryDTO1)).thenReturn(categoryDTO1Update);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<?> categoryResponseEntity = categoryController.updateCategory(JwtTokenDummy, id, categoryDTO1);
-        ResponseEntity<?> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1Update, HttpStatus.ACCEPTED);
+        ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1Update, HttpStatus.ACCEPTED);
 
         // Perform assertions
         assertNotNull(categoryResponseEntity);
@@ -163,9 +150,9 @@ public class CategoryControllerTests {
         int id = 1;
         when(categoryService.deleteCategory(id)).thenReturn(categoryDTO1);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<?> categoryResponseEntity = categoryController.deleteCategory(JwtTokenDummy, id);
-        ResponseEntity<?> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.OK);
+        ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.OK);
 
         // Perform assertions
         assertNotNull(categoryResponseEntity);

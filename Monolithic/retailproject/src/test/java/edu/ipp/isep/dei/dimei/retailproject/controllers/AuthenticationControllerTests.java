@@ -85,7 +85,7 @@ public class AuthenticationControllerTests {
         // Define the behavior of the mock
         when(authenticationService.register(any())).thenReturn(authenticationResponse);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntity = authenticationController.register(registerDTO);
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
 
@@ -101,7 +101,7 @@ public class AuthenticationControllerTests {
         // Define the behavior of the mock
         when(authenticationService.login(any())).thenReturn(authenticationResponse);
 
-        // Call the service method that uses the UserRepository
+        // Call the service method that uses the Repository
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntity = authenticationController.login(loginDTO);
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
 
