@@ -2,6 +2,7 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -52,14 +53,11 @@ public class ItemController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getUserItemById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
-        ItemQuantityDTO itemQuantityDTO;
         try {
-            itemQuantityDTO = this.itemService.getUserItem(authorizationToken, id);
+            return new ResponseEntity<>(this.itemService.getUserItem(authorizationToken, id), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(itemQuantityDTO, HttpStatus.OK);
     }
 
     @PostMapping
@@ -98,9 +96,9 @@ public class ItemController {
     }
 
     @PutMapping(path = "/{id}/addStock")
-    public ResponseEntity<?> addItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<?> addItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.itemService.addItemStock(authorizationToken, id, itemDTO), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.addItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException | InvalidQuantityException e) {
@@ -109,9 +107,9 @@ public class ItemController {
     }
 
     @PutMapping(path = "/{id}/removeStock")
-    public ResponseEntity<?> removeItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<?> removeItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.itemService.removeItemStock(authorizationToken, id, itemDTO), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.removeItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException | InvalidQuantityException e) {

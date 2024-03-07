@@ -1,9 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
@@ -29,46 +28,33 @@ public class ItemService {
     private final MerchantService merchantService;
     private final ItemQuantityRepository itemQuantityRepository;
 
-    public List<ItemQuantityDTO> getAllItems() throws NotFoundException {
+    public List<ItemDTO> getAllItems() throws NotFoundException {
         List<Item> items = new ArrayList<>();
-        List<ItemQuantityDTO> itemQuantities = new ArrayList<>();
+        List<ItemDTO> itemQuantities = new ArrayList<>();
 
         this.itemRepository.findAll().forEach(items::add);
 
         for (Item item : items) {
-            itemQuantities.add(new ItemQuantityDTO(this.itemQuantityRepository.findByItemId(item.getId()).orElseThrow(() -> new NotFoundException("Item Quantity not found."))));
+            itemQuantities.add(new ItemDTO(this.itemRepository.findById(item.getId()).orElseThrow(() -> new NotFoundException("Item not found."))));
         }
 
         return itemQuantities;
     }
 
-    public List<ItemQuantityDTO> getUserItems(String authorizationToken) throws NotFoundException {
+    public List<ItemDTO> getUserItems(String authorizationToken) throws NotFoundException {
         Merchant merchant = getItemMerchantByUser(authorizationToken);
 
-        List<Item> items = new ArrayList<>(this.itemRepository.findAllByMerchantId(merchant.getId()));
-
-        List<ItemQuantityDTO> itemQuantities = new ArrayList<>();
-
-        for (Item item : items) {
-            itemQuantities.add(new ItemQuantityDTO(getItemQuantity(authorizationToken, item.getId())));
-        }
-
-        return itemQuantities;
+        return this.itemRepository.findAllByMerchantId(merchant.getId()).stream().map(item -> new ItemDTO(item)).toList();
     }
 
-    public ItemQuantityDTO getUserItem(String authorizationToken, int id) throws NotFoundException {
-        return new ItemQuantityDTO(getItemQuantity(authorizationToken, id));
+    public ItemDTO getUserItem(String authorizationToken, int id) throws NotFoundException {
+        return new ItemDTO(getUserItemById(authorizationToken, id));
     }
 
     private Item getUserItemById(String authorizationToken, int id) throws NotFoundException {
         Merchant merchant = getItemMerchantByUser(authorizationToken);
 
         return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException("Item not found."));
-    }
-
-    private ItemQuantity getItemQuantity(String authorizationToken, int id) throws NotFoundException {
-        Item item = getUserItemById(authorizationToken, id);
-        return itemQuantityRepository.findByItemId(item.getId()).orElseThrow(() -> new NotFoundException("Item Quantity not found."));
     }
 
     public ItemDTO createItem(String authorizationToken, ItemDTO itemDTO) throws NotFoundException, BadPayloadException, InvalidQuantityException {
@@ -104,32 +90,37 @@ public class ItemService {
         return new ItemDTO(item);
     }
 
-    public ItemDTO addItemStock(String authorizationToken, int id, ItemDTO itemDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
-        if (id != itemDTO.getId() || itemDTO.getQuantityInStock() > 0) {
-            throw new BadPayloadException("Wrong item payload.");
-        }
-
-        Item item = getUserItemById(authorizationToken, id);
-
-        StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() + itemDTO.getQuantityInStock());
-
-        item.setQuantityInStock(stockQuantity);
-
-        return new ItemDTO(this.itemRepository.save(item));
+    public ItemDTO addItemStock(String authorizationToken, int id, ItemUpdateDTO itemUpdateDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
+        return changeItemStock(authorizationToken, id, itemUpdateDTO, "addItemStock");
 
     }
 
-    public ItemDTO removeItemStock(String authorizationToken, int id, ItemDTO itemDTO) throws BadPayloadException, NotFoundException, InvalidQuantityException {
-        if (id != itemDTO.getId() || itemDTO.getQuantityInStock() > 0) {
+    public ItemDTO removeItemStock(String authorizationToken, int id, ItemUpdateDTO itemUpdateDTO) throws BadPayloadException, NotFoundException, InvalidQuantityException {
+        return changeItemStock(authorizationToken, id, itemUpdateDTO, "removeItemStock");
+    }
+
+    private ItemDTO changeItemStock(String authorizationToken, int id, ItemUpdateDTO itemUpdateDTO, String action) throws BadPayloadException, NotFoundException, InvalidQuantityException {
+        if (id != itemUpdateDTO.getId() || itemUpdateDTO.getQuantityInStock() < 0) {
             throw new BadPayloadException("Wrong item payload.");
+        } else {
+            Item item = getUserItemById(authorizationToken, id);
+
+            if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
+                StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() - itemUpdateDTO.getQuantityInStock());
+
+                item.setQuantityInStock(stockQuantity);
+
+                return new ItemDTO(this.itemRepository.save(item));
+            } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
+                StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() + itemUpdateDTO.getQuantityInStock());
+
+                item.setQuantityInStock(stockQuantity);
+
+                return new ItemDTO(this.itemRepository.save(item));
+            } else {
+                throw new BadPayloadException("Wrong item payload.");
+            }
         }
 
-        Item item = getUserItemById(authorizationToken, id);
-
-        StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() - itemDTO.getQuantityInStock());
-
-        item.setQuantityInStock(stockQuantity);
-
-        return new ItemDTO(this.itemRepository.save(item));
     }
 }
