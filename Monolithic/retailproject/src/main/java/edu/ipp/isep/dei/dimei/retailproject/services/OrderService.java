@@ -1,9 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
@@ -53,6 +51,8 @@ public class OrderService {
     public Order createOrder(String authorizationToken, OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
         User user = this.userService.getUserByToken(authorizationToken);
 
+        isSameMerchantForAllItems(authorizationToken, orderDTO.getOrderItems(), orderDTO.getMerchantId());
+
         Address address = orderDTO.getAddressDTO().dtoToEntity();
 
         Order order = this.orderRepository.save(orderDTO.dtoToEntity(user));
@@ -65,6 +65,15 @@ public class OrderService {
         }
 
         return order;
+    }
+
+    private void isSameMerchantForAllItems(String authorizationToken, List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {
+        ItemDTO itemDTO;
+        for (ItemQuantityDTO itemQuantityDTO : itemQuantityDTOS) {
+            itemDTO = this.itemService.getUserItem(authorizationToken, itemQuantityDTO.getItemId());
+            if (itemDTO.getMerchant().getId() != merchantId)
+                throw new BadPayloadException("Only can order items form same merchant");
+        }
     }
 
     public OrderDTO getUserOrder(String authorizationToken, int id) throws NotFoundException {

@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ItemQuantityDTO {
     private int id;
+    private int itemId;
     private String itemName;
     private String itemDescription;
     private int qty;
@@ -22,6 +23,7 @@ public class ItemQuantityDTO {
 
     public ItemQuantityDTO(ItemQuantity itemQuantity) {
         this.id = itemQuantity.getId();
+        this.itemId = itemQuantity.getItem().getId();
         this.itemName = itemQuantity.getItem().getName();
         this.itemDescription = itemQuantity.getItem().getDescription();
         this.qty = itemQuantity.getQuantityOrdered().getQuantity();
@@ -30,7 +32,7 @@ public class ItemQuantityDTO {
 
     public Item dtoToItem() {
         return Item.builder()
-                .id(this.id)
+                .id(this.itemId)
                 .name(this.itemName)
                 .description(this.itemDescription)
                 .price(this.price)
