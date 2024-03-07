@@ -18,9 +18,29 @@ public class StockQuantity implements IValueObject {
 
     public StockQuantity(int quantity) throws InvalidQuantityException {
 
+        isStockQuantityValid(quantity);
+
+        this.quantity = quantity;
+    }
+
+    private void isStockQuantityValid(int quantity) throws InvalidQuantityException {
         if (quantity < 0 || quantity > 999999) {
             throw new InvalidQuantityException("The number of quantity inserted is not valid");
         }
-        this.quantity = quantity;
     }
+
+    public void increaseStockQuantity(int quantity) throws InvalidQuantityException {
+        if (this.quantity < quantity) {
+            isStockQuantityValid(quantity);
+            this.quantity = quantity;
+        }
+    }
+
+    public void decreaseStockQuantity(int quantity) throws InvalidQuantityException {
+        if (this.quantity > quantity) {
+            isStockQuantityValid(quantity);
+            this.quantity = quantity;
+        }
+    }
+
 }

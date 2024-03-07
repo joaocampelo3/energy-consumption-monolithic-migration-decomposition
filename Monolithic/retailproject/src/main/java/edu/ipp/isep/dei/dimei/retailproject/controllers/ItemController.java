@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;

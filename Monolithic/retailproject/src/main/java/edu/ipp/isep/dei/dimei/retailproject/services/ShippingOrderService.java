@@ -3,17 +3,19 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.ShippingOrderRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +30,14 @@ public class ShippingOrderService {
     private final UserService userService;
     private final MerchantOrderService merchantOrderService;
     private final OrderService orderService;
+    private final ItemService itemService;
 
-    public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, UserService userService, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService) {
+    public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, UserService userService, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService, ItemService itemService) {
         this.shippingOrderRepository = shippingOrderRepository;
         this.userService = userService;
         this.merchantOrderService = merchantOrderService;
         this.orderService = orderService;
+        this.itemService = itemService;
     }
 
     public List<ShippingOrderDTO> getAllShippingOrders() {
@@ -65,12 +69,20 @@ public class ShippingOrderService {
         this.shippingOrderRepository.save(shippingOrder);
     }
 
-    public ShippingOrderUpdateDTO fullCancelShippingOrder(String authorizationToken, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO fullCancelShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong shipping order payload.");
+        }
+
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.CANCELLED);
 
         OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(authorizationToken, shippingOrder.getOrder().getId());
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.fullCancelOrderByShippingOrder(authorizationToken, shippingOrder);
+
+        for (ItemQuantity itemQuantity : shippingOrder.getOrder().getItemQuantities()) {
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
+        }
 
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
@@ -87,12 +99,20 @@ public class ShippingOrderService {
         return fullCancelOrderByOrder(authorizationToken, merchantOrder.getOrder());
     }
 
-    public ShippingOrderUpdateDTO rejectShippingOrder(String authorizationToken, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO rejectShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong shipping order payload.");
+        }
+
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.REJECTED);
 
         OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(authorizationToken, shippingOrder.getOrder().getId());
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.rejectMerchantOrderByShippingOrder(authorizationToken, shippingOrder);
+
+        for (ItemQuantity itemQuantity : shippingOrder.getOrder().getItemQuantities()) {
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
+        }
 
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
@@ -111,13 +131,21 @@ public class ShippingOrderService {
         rejectShippingOrderByOrder(authorizationToken, merchantOrder.getOrder());
     }
 
-    public ShippingOrderUpdateDTO approveShippingOrder(String authorizationToken, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO approveShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
+        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong shipping order payload.");
+        }
+
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.APPROVED);
 
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
-    public ShippingOrderUpdateDTO shippedShippingOrder(String authorizationToken, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO shippedShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
+        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong shipping order payload.");
+        }
+
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.SHIPPED);
 
         this.merchantOrderService.shipMerchantOrder(authorizationToken, shippingOrder.getMerchantOrder().getId());
@@ -126,7 +154,11 @@ public class ShippingOrderService {
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
-    public ShippingOrderUpdateDTO deliveredShippingOrder(String authorizationToken, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO deliveredShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
+        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong shipping order payload.");
+        }
+
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.DELIVERED);
 
         this.merchantOrderService.deliverMerchantOrder(authorizationToken, shippingOrder.getMerchantOrder().getId());
@@ -208,5 +240,9 @@ public class ShippingOrderService {
             }
         }
         return false;
+    }
+
+    private boolean isIdEqualToOrderId(int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+        return id == shippingOrderUpdateDTO.getId();
     }
 }

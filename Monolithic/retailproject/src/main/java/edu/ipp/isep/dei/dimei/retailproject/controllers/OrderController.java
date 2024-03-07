@@ -3,6 +3,8 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.services.OrderService;
@@ -62,14 +64,13 @@ public class OrderController {
             @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
             @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> createOrder(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderCreateDTO orderDTO) {
+    public ResponseEntity<?> createOrder(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderCreateDTO orderDTO) {
         try {
-            if (orderService.createOrder(authorizationToken, orderDTO) != null)
-                return new ResponseEntity<>("Order was created", HttpStatus.CREATED);
-            else
-                return new ResponseEntity<>("Error creating order", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(orderService.createOrder(authorizationToken, orderDTO), HttpStatus.CREATED);
         } catch (NotFoundException e) {
-            return new ResponseEntity<>("Merchant not found.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidQuantityException | BadPayloadException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -96,34 +97,34 @@ public class OrderController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.fullCancelOrder(authorizationToken, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.fullCancelOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<?> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.rejectOrder(authorizationToken, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.rejectOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<?> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.approveOrder(authorizationToken, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.approveOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

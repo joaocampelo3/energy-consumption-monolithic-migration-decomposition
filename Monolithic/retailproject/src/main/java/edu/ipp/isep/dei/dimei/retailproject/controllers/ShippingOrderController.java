@@ -2,6 +2,8 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.services.ShippingOrderService;
@@ -27,7 +29,7 @@ public class ShippingOrderController {
 
     @GetMapping("/all")
     @Operation(description = "Get all shipping orders", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<?> getAllOrders(/*@RequestHeader("Authorization") String authorizationToken*/) {
+    public ResponseEntity<?> getAllShippingOrders(/*@RequestHeader("Authorization") String authorizationToken*/) {
         return new ResponseEntity<>(this.shippingOrderService.getAllShippingOrders(), HttpStatus.OK);
     }
 
@@ -55,56 +57,56 @@ public class ShippingOrderController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> fullCancelShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<?> fullCancelShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(authorizationToken, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<?> rejectShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<?> rejectShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(authorizationToken, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<?> approveShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<?> approveShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(authorizationToken, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/ship")
-    public ResponseEntity<?> shippedShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<?> shippedShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(authorizationToken, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/delivered")
-    public ResponseEntity<?> deliveredShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<?> deliveredShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(authorizationToken, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

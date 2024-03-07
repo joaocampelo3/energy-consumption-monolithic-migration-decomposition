@@ -2,6 +2,8 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.services.MerchantOrderService;
@@ -57,35 +59,35 @@ public class MerchantOrderController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> fullCancelMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<?> fullCancelMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(authorizationToken, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<?> rejectMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<?> rejectMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(authorizationToken, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<?> approveMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<?> approveMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(authorizationToken, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (WrongFlowException e) {
+        } catch (WrongFlowException | BadPayloadException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

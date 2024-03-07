@@ -106,15 +106,11 @@ public class ItemService {
             Item item = getUserItemById(authorizationToken, id);
 
             if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
-                StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() - itemUpdateDTO.getQuantityInStock());
-
-                item.setQuantityInStock(stockQuantity);
+                item.getQuantityInStock().decreaseStockQuantity(itemUpdateDTO.getQuantityInStock());
 
                 return new ItemDTO(this.itemRepository.save(item));
             } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
-                StockQuantity stockQuantity = new StockQuantity(item.getQuantityInStock().getQuantity() + itemUpdateDTO.getQuantityInStock());
-
-                item.setQuantityInStock(stockQuantity);
+                item.getQuantityInStock().increaseStockQuantity(itemUpdateDTO.getQuantityInStock());
 
                 return new ItemDTO(this.itemRepository.save(item));
             } else {

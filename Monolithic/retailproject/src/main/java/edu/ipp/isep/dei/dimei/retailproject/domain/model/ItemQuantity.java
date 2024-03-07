@@ -24,6 +24,11 @@ public class ItemQuantity {
     @OneToOne(optional = false)
     private Item item;
 
+    public ItemQuantity(OrderQuantity quantityOrdered, Item item) {
+        this.quantityOrdered = quantityOrdered;
+        this.item = item;
+    }
+
     public double getTotalPrice() {
         return item.getPrice() * quantityOrdered.getQuantity();
     }

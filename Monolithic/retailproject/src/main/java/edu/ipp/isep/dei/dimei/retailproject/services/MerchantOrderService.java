@@ -3,18 +3,20 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantOrderRepository;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +32,15 @@ public class MerchantOrderService {
     private final MerchantRepository merchantRepository;
     private final OrderService orderService;
     private final ShippingOrderService shippingOrderService;
+    private final ItemService itemService;
 
-    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantRepository merchantRepository, @Lazy OrderService orderService, ShippingOrderService shippingOrderService) {
+    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantRepository merchantRepository, @Lazy OrderService orderService, ShippingOrderService shippingOrderService, ItemService itemService) {
         this.merchantOrderRepository = merchantOrderRepository;
         this.userService = userService;
         this.merchantRepository = merchantRepository;
         this.orderService = orderService;
         this.shippingOrderService = shippingOrderService;
+        this.itemService = itemService;
     }
 
     public List<MerchantOrderDTO> getAllMerchantOrders() {
@@ -71,15 +75,22 @@ public class MerchantOrderService {
         return this.merchantOrderRepository.save(merchantOrder);
     }
 
-    public MerchantOrderUpdateDTO fullCancelMerchantOrder(String authorizationToken, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public MerchantOrderUpdateDTO fullCancelMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong merchant order payload.");
+        }
+
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
 
-        if (!MerchantOrderStatusEnum.CANCELLED.equals(merchantOrder.getStatus())) {
-            merchantOrder = changeMerchantOrderStatus(authorizationToken, merchantOrder.getId(), MerchantOrderStatusEnum.CANCELLED);
 
-            OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
-            merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
-            this.shippingOrderService.fullCancelOrderByMerchantOrder(authorizationToken, merchantOrder);
+        merchantOrder = changeMerchantOrderStatus(authorizationToken, merchantOrder.getId(), MerchantOrderStatusEnum.CANCELLED);
+
+        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
+        merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
+        this.shippingOrderService.fullCancelOrderByMerchantOrder(authorizationToken, merchantOrder);
+
+        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
 
         return new MerchantOrderUpdateDTO(merchantOrder);
@@ -99,15 +110,21 @@ public class MerchantOrderService {
         return fullCancelOrderByOrder(authorizationToken, shippingOrder.getOrder());
     }
 
-    public MerchantOrderUpdateDTO rejectMerchantOrder(String authorizationToken, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public MerchantOrderUpdateDTO rejectMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong merchant order payload.");
+        }
+
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
 
-        if (!MerchantOrderStatusEnum.REJECTED.equals(merchantOrder.getStatus())) {
-            merchantOrder = changeMerchantOrderStatus(authorizationToken, merchantOrder.getId(), MerchantOrderStatusEnum.REJECTED);
+        merchantOrder = changeMerchantOrderStatus(authorizationToken, merchantOrder.getId(), MerchantOrderStatusEnum.REJECTED);
 
-            OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
-            merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
-            this.shippingOrderService.rejectShippingOrderByMerchantOrder(authorizationToken, merchantOrder);
+        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
+        merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
+        this.shippingOrderService.rejectShippingOrderByMerchantOrder(authorizationToken, merchantOrder);
+
+        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
 
         return new MerchantOrderUpdateDTO(merchantOrder);
@@ -127,7 +144,11 @@ public class MerchantOrderService {
         return rejectMerchantOrderByOrder(authorizationToken, shippingOrder.getOrder());
     }
 
-    public MerchantOrderUpdateDTO approveMerchantOrder(String authorizationToken, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException {
+    public MerchantOrderUpdateDTO approveMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
+        if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
+            throw new BadPayloadException("Wrong merchant order payload.");
+        }
+
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
 
         if (!MerchantOrderStatusEnum.APPROVED.equals(merchantOrder.getStatus()))
@@ -219,5 +240,9 @@ public class MerchantOrderService {
             }
         }
         return false;
+    }
+
+    private boolean isIdEqualToOrderId(int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+        return id == merchantOrderUpdateDTO.getId();
     }
 }
