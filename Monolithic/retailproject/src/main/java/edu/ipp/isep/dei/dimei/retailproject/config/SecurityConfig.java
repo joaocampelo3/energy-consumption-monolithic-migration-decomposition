@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.config;
 
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -43,7 +45,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
-                        //.requestMatchers(GET, "/item/stock/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, "/orders/all").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )

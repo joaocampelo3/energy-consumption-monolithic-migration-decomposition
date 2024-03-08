@@ -31,7 +31,6 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Get all orders service", responses = {@ApiResponse(responseCode = "200", description = "Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
