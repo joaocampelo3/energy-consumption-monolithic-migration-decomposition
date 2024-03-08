@@ -43,7 +43,8 @@ public class AuthenticationService {
         User savedUser;
 
         try {
-            savedUser = userRepository.save(user);
+            userRepository.save(user);
+            savedUser = user;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Cause: " + e.getCause() + "\nMessage: " + e.getMessage());
             throw e;

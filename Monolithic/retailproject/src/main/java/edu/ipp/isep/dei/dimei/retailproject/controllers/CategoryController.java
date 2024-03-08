@@ -59,8 +59,12 @@ public class CategoryController {
             @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
             @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CategoryDTO> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO categoryDTO) {
-        return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
+    public ResponseEntity<?> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO categoryDTO) {
+        try {
+            return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping(path = "/{id}")

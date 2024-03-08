@@ -72,7 +72,8 @@ public class MerchantOrderService {
 
         MerchantOrder merchantOrder = new MerchantOrder(user, order, merchant);
 
-        return this.merchantOrderRepository.save(merchantOrder);
+        this.merchantOrderRepository.save(merchantOrder);
+        return merchantOrder;
     }
 
     public MerchantOrderUpdateDTO fullCancelMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
@@ -87,11 +88,13 @@ public class MerchantOrderService {
 
         OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
         merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
-        this.shippingOrderService.fullCancelOrderByMerchantOrder(authorizationToken, merchantOrder);
+        this.shippingOrderService.fullCancelShippingOrderByMerchantOrder(authorizationToken, merchantOrder);
 
         for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+
+        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException("Merchant Order not found."));
 
         return new MerchantOrderUpdateDTO(merchantOrder);
     }
@@ -126,6 +129,8 @@ public class MerchantOrderService {
         for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+
+        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException("Merchant Order not found."));
 
         return new MerchantOrderUpdateDTO(merchantOrder);
     }
@@ -185,7 +190,8 @@ public class MerchantOrderService {
         if (isMerchantOrderFlowValid(authorizationToken, merchantOrder, status)) {
             merchantOrder.setStatus(status);
 
-            return this.merchantOrderRepository.save(merchantOrder);
+            this.merchantOrderRepository.save(merchantOrder);
+            return merchantOrder;
         } else {
             throw new WrongFlowException("It is not possible to change Merchant Order status");
         }

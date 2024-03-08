@@ -38,10 +38,15 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException("Category not found"));
     }
 
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws NotFoundException {
         Category category = new Category(categoryDTO.getName(), categoryDTO.getDescription());
 
-        return new CategoryDTO(this.categoryRepository.save(category));
+        this.categoryRepository.save(category);
+
+        category = this.categoryRepository.findByName(category.getName())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+
+        return new CategoryDTO(category);
     }
 
     public CategoryDTO updateCategory(int id, CategoryDTO categoryDTO) throws NotFoundException, BadPayloadException {
@@ -54,7 +59,9 @@ public class CategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
 
-        return new CategoryDTO(this.categoryRepository.save(category));
+        this.categoryRepository.save(category);
+
+        return new CategoryDTO(category);
     }
 
 

@@ -55,7 +55,9 @@ public class OrderService {
 
         Address address = orderDTO.getAddressDTO().dtoToEntity();
 
-        Order order = this.orderRepository.save(orderDTO.dtoToEntity(user));
+        Order order = orderDTO.dtoToEntity(user);
+
+        this.orderRepository.save(order);
 
         MerchantOrder merchantOrder = this.merchantOrderService.createMerchantOrder(user, order, orderDTO.getMerchantId());
         this.shippingOrderService.createShippingOrder(user, order, merchantOrder, address);
@@ -97,11 +99,13 @@ public class OrderService {
         Order order = changeOrderStatus(authorizationToken, orderUpdateDTO.getId(), OrderStatusEnum.CANCELLED);
 
         this.merchantOrderService.fullCancelOrderByOrder(authorizationToken, order);
-        this.shippingOrderService.fullCancelOrderByOrder(authorizationToken, order);
+        this.shippingOrderService.fullCancelShippingOrderByOrder(authorizationToken, order);
 
         for (ItemQuantity itemQuantity : order.getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+
+        order = this.orderRepository.findById(order.getId()).orElseThrow(() -> new NotFoundException("Order not found."));
 
         return new OrderUpdateDTO(order);
     }
@@ -123,6 +127,8 @@ public class OrderService {
         for (ItemQuantity itemQuantity : order.getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+
+        order = this.orderRepository.findById(order.getId()).orElseThrow(() -> new NotFoundException("Order not found."));
 
         return new OrderUpdateDTO(order);
     }
@@ -152,7 +158,8 @@ public class OrderService {
 
         if (isOrderFlowValid(authorizationToken, order, status)) {
             order.setStatus(status);
-            return this.orderRepository.save(order);
+            this.orderRepository.save(order);
+            return order;
         } else {
             throw new WrongFlowException("It is not possible to change Order status");
         }

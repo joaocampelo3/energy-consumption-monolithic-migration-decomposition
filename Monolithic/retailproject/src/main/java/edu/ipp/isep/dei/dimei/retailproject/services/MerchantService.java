@@ -46,7 +46,8 @@ public class MerchantService {
     public MerchantDTO createMerchant(MerchantDTO merchantDTO) {
         Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), merchantDTO.getAddress().dtoToEntity());
 
-        return new MerchantDTO(this.merchantRepository.save(merchant));
+        this.merchantRepository.save(merchant);
+        return new MerchantDTO(merchant);
     }
 
     public MerchantDTO updateMerchant(int id, MerchantDTO merchantDTO) throws NotFoundException, BadPayloadException {
@@ -59,7 +60,8 @@ public class MerchantService {
         merchant.setName(merchantDTO.getName());
         merchant.setAddress(merchantDTO.getAddress().dtoToEntity());
 
-        return new MerchantDTO(this.merchantRepository.save(merchant));
+        this.merchantRepository.save(merchant);
+        return new MerchantDTO(merchant);
     }
 
 

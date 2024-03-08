@@ -72,8 +72,8 @@ public class ItemService {
                 .category(itemDTO.getCategory().dtoToEntity())
                 .merchant(itemDTO.getMerchant().dtoToEntity())
                 .build();
-
-        return new ItemDTO(this.itemRepository.save(item));
+        this.itemRepository.save(item);
+        return new ItemDTO(item);
     }
 
     private Merchant getItemMerchantByUser(String authorizationToken) throws NotFoundException {
@@ -107,12 +107,12 @@ public class ItemService {
 
             if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().decreaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-
-                return new ItemDTO(this.itemRepository.save(item));
+                this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().increaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-
-                return new ItemDTO(this.itemRepository.save(item));
+                this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else {
                 throw new BadPayloadException("Wrong item payload.");
             }

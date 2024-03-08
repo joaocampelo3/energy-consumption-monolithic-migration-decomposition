@@ -76,7 +76,7 @@ public class ShippingOrderService {
 
         ShippingOrder shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.CANCELLED);
 
-        OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(authorizationToken, shippingOrder.getOrder().getId());
+        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, shippingOrder.getOrder().getId());
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.fullCancelOrderByShippingOrder(authorizationToken, shippingOrder);
 
@@ -84,10 +84,12 @@ public class ShippingOrderService {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
 
+        shippingOrder = this.shippingOrderRepository.findById(shippingOrder.getId()).orElseThrow(() -> new NotFoundException("Shipping Order not found."));
+
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
-    public ShippingOrderUpdateDTO fullCancelOrderByOrder(String authorizationToken, Order order) throws NotFoundException, WrongFlowException {
+    public ShippingOrderUpdateDTO fullCancelShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException, WrongFlowException {
         ShippingOrder shippingOrder = getUserShippingOrderByOrder(authorizationToken, order);
 
         shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrder.getId(), ShippingOrderStatusEnum.CANCELLED);
@@ -95,8 +97,8 @@ public class ShippingOrderService {
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
-    public ShippingOrderUpdateDTO fullCancelOrderByMerchantOrder(String authorizationToken, MerchantOrder merchantOrder) throws NotFoundException, WrongFlowException {
-        return fullCancelOrderByOrder(authorizationToken, merchantOrder.getOrder());
+    public ShippingOrderUpdateDTO fullCancelShippingOrderByMerchantOrder(String authorizationToken, MerchantOrder merchantOrder) throws NotFoundException, WrongFlowException {
+        return fullCancelShippingOrderByOrder(authorizationToken, merchantOrder.getOrder());
     }
 
     public ShippingOrderUpdateDTO rejectShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
@@ -114,6 +116,8 @@ public class ShippingOrderService {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
 
+        shippingOrder = this.shippingOrderRepository.findById(shippingOrder.getId()).orElseThrow(() -> new NotFoundException("Shipping Order not found."));
+
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
@@ -127,8 +131,8 @@ public class ShippingOrderService {
         return new ShippingOrderUpdateDTO(shippingOrder);
     }
 
-    public void rejectShippingOrderByMerchantOrder(String authorizationToken, MerchantOrder merchantOrder) throws NotFoundException, WrongFlowException {
-        rejectShippingOrderByOrder(authorizationToken, merchantOrder.getOrder());
+    public ShippingOrderUpdateDTO rejectShippingOrderByMerchantOrder(String authorizationToken, MerchantOrder merchantOrder) throws NotFoundException, WrongFlowException {
+        return rejectShippingOrderByOrder(authorizationToken, merchantOrder.getOrder());
     }
 
     public ShippingOrderUpdateDTO approveShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
@@ -177,7 +181,8 @@ public class ShippingOrderService {
     private ShippingOrder getUserShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.shippingOrderRepository.findByOrder(order).filter(o -> o.getUser() == user)
+        return this.shippingOrderRepository.findByOrder(order)
+                .filter(shippingOrder -> shippingOrder.getUser() == user)
                 .orElseThrow(() -> new NotFoundException("Shipping Order not found"));
     }
 
@@ -187,7 +192,8 @@ public class ShippingOrderService {
         if (isShippingOrderFlowValid(authorizationToken, shippingOrder, status)) {
             shippingOrder.setStatus(status);
 
-            return this.shippingOrderRepository.save(shippingOrder);
+            this.shippingOrderRepository.save(shippingOrder);
+            return shippingOrder;
         } else {
             throw new WrongFlowException("It is not possible to change Shipping Order status");
         }
