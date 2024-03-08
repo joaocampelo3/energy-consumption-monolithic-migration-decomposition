@@ -9,7 +9,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class OrderCreateDTO {
     private int id;

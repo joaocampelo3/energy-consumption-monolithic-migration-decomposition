@@ -6,13 +6,11 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class PaymentDTO {
     private int id;
