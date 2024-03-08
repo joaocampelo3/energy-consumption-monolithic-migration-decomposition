@@ -29,9 +29,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ShippingOrderControllerTests {
-
-    //TODO
-
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     ShippingOrderController shippingOrderController;
@@ -95,10 +92,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<List<ShippingOrderDTO>> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTOS);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).getAllShippingOrders();
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).getAllShippingOrders();
     }
 
     @Test
@@ -111,10 +107,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<List<ShippingOrderDTO>> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTOS);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrders(JwtTokenDummy);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrders(JwtTokenDummy);
     }
 
     @Test
@@ -128,10 +123,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<ShippingOrderDTO> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTO1);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, id);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, id);
     }
 
     @Test
@@ -147,10 +141,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(shippingOrderService, atMostOnce()).fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atMostOnce()).fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
     }
 
     @Test
@@ -166,10 +159,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
     }
 
 
@@ -186,10 +178,9 @@ public class ShippingOrderControllerTests {
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
     }
 
     @Test
@@ -198,17 +189,16 @@ public class ShippingOrderControllerTests {
         int id = 1;
         shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
 
-        when(shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
+        when(shippingOrderService.shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.shippedShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
     }
 
     @Test
@@ -217,17 +207,16 @@ public class ShippingOrderControllerTests {
         int id = 1;
         shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.DELIVERED);
 
-        when(shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
+        when(shippingOrderService.deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.deliveredShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
-
-        verify(shippingOrderService, atLeastOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
     }
 
 }

@@ -90,10 +90,9 @@ public class AuthenticationControllerTests {
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
 
         // Perform assertions
+        verify(authenticationService, atLeastOnce()).register(registerDTO);
         assertNotNull(authenticationResponseResponseEntity);
         assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
-
-        verify(authenticationService, atLeastOnce()).register(registerDTO);
     }
 
     @Test
@@ -106,10 +105,9 @@ public class AuthenticationControllerTests {
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
 
         // Perform assertions
+        verify(authenticationService, atLeastOnce()).login((loginDTO));
         assertNotNull(authenticationResponseResponseEntity);
         assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
-
-        verify(authenticationService, atLeastOnce()).login((loginDTO));
     }
 
 }

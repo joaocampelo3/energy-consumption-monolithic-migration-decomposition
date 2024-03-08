@@ -28,9 +28,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MerchantOrderControllerTests {
-
-    //TODO
-
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     MerchantOrderController merchantOrderController;
@@ -66,10 +63,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTOS);
 
         // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).getAllMerchantOrders();
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atLeastOnce()).getAllMerchantOrders();
     }
 
     @Test
@@ -82,10 +78,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTOS);
 
         // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(JwtTokenDummy);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(JwtTokenDummy);
     }
 
     @Test
@@ -99,10 +94,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<MerchantOrderDTO> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTO1);
 
         // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, id);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, id);
     }
 
     @Test
@@ -118,10 +112,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(merchantOrderService, atMostOnce()).fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atMostOnce()).fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
     }
 
     @Test
@@ -137,10 +130,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
     }
 
 
@@ -157,10 +149,9 @@ public class MerchantOrderControllerTests {
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
-
-        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
     }
 
 }

@@ -137,10 +137,9 @@ public class ItemControllerTests {
         ResponseEntity<List<ItemDTO>> itemResponseEntityExpected = ResponseEntity.ok(items);
 
         // Perform assertions
+        verify(itemService, atLeastOnce()).getAllItems();
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atLeastOnce()).getAllItems();
     }
 
     @Test
@@ -153,10 +152,9 @@ public class ItemControllerTests {
         ResponseEntity<List<ItemDTO>> itemResponseEntityExpected = ResponseEntity.ok(items);
 
         // Perform assertions
+        verify(itemService, atLeastOnce()).getUserItems(JwtTokenDummy);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atLeastOnce()).getUserItems(JwtTokenDummy);
     }
 
     @Test
@@ -170,10 +168,9 @@ public class ItemControllerTests {
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
+        verify(itemService, atLeastOnce()).getUserItem(JwtTokenDummy, id);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atLeastOnce()).getUserItem(JwtTokenDummy, id);
     }
 
     @Test
@@ -186,10 +183,9 @@ public class ItemControllerTests {
         ResponseEntity<ItemDTO> itemResponseEntityExpected = new ResponseEntity<>(itemDTO1, HttpStatus.CREATED);
 
         // Perform assertions
+        verify(itemService, atMostOnce()).createItem(JwtTokenDummy, itemDTO1);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atMostOnce()).createItem(JwtTokenDummy, itemDTO1);
     }
 
     @Test
@@ -203,10 +199,9 @@ public class ItemControllerTests {
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
+        verify(itemService, atMostOnce()).deleteItem(JwtTokenDummy, id);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atMostOnce()).deleteItem(JwtTokenDummy, id);
     }
 
     @Test
@@ -220,10 +215,9 @@ public class ItemControllerTests {
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
+        verify(itemService, atMostOnce()).addItemStock(JwtTokenDummy, id, itemDTO1Update);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atMostOnce()).addItemStock(JwtTokenDummy, id, itemDTO1Update);
     }
 
     @Test
@@ -237,10 +231,9 @@ public class ItemControllerTests {
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO2);
 
         // Perform assertions
+        verify(itemService, atMostOnce()).removeItemStock(JwtTokenDummy, id, itemDTO2Update);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-
-        verify(itemService, atMostOnce()).removeItemStock(JwtTokenDummy, id, itemDTO2Update);
     }
 
 }

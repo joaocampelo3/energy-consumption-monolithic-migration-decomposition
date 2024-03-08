@@ -38,9 +38,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderControllerTests {
-
-    //TODO
-
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     OrderController orderController;
@@ -119,8 +116,8 @@ public class OrderControllerTests {
 
         account = Account.builder()
                 .id(0)
-                .email("johndoe1234@gmail.com")
-                .password("merchant_email@gmail.com")
+                .email("merchant_email@gmail.com")
+                .password("merchant_password")
                 .role(RoleEnum.MERCHANT)
                 .build();
 
@@ -180,10 +177,9 @@ public class OrderControllerTests {
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
+        verify(orderService, atLeastOnce()).getAllOrders();
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atLeastOnce()).getAllOrders();
     }
 
     @Test
@@ -196,10 +192,9 @@ public class OrderControllerTests {
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
+        verify(orderService, atLeastOnce()).getUserOrders(JwtTokenDummy);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atLeastOnce()).getUserOrders(JwtTokenDummy);
     }
 
     @Test
@@ -213,10 +208,9 @@ public class OrderControllerTests {
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
+        verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, id);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, id);
     }
 
     @Test
@@ -229,10 +223,9 @@ public class OrderControllerTests {
         ResponseEntity<Order> orderResponseEntityExpected = new ResponseEntity<>(order, HttpStatus.CREATED);
 
         // Perform assertions
+        verify(orderService, atMostOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atMostOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
     }
 
     @Test
@@ -247,10 +240,9 @@ public class OrderControllerTests {
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
+        verify(orderService, atMostOnce()).deleteOrder(userId, id);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atMostOnce()).deleteOrder(userId, id);
     }
 
     @Test
@@ -266,10 +258,9 @@ public class OrderControllerTests {
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(orderService, atMostOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atMostOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
     }
 
     @Test
@@ -285,10 +276,9 @@ public class OrderControllerTests {
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
     }
 
 
@@ -305,9 +295,8 @@ public class OrderControllerTests {
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
-
-        verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
     }
 }

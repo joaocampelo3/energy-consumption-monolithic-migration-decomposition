@@ -70,10 +70,9 @@ public class CategoryControllerTests {
         ResponseEntity<List<CategoryDTO>> categoryResponseEntityExpected = ResponseEntity.ok(categories);
 
         // Perform assertions
+        verify(categoryService, atLeastOnce()).getAllCategories();
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atLeastOnce()).getAllCategories();
     }
 
     @Test
@@ -87,10 +86,9 @@ public class CategoryControllerTests {
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = ResponseEntity.ok(categoryDTO1);
 
         // Perform assertions
+        verify(categoryService, atLeastOnce()).getCategory(id);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atLeastOnce()).getCategory(id);
     }
 
     @Test
@@ -105,14 +103,13 @@ public class CategoryControllerTests {
         ResponseEntity<String> categoryResponseEntityExpected = new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
         // Perform assertions
+        verify(categoryService, atLeastOnce()).getCategory(id);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atLeastOnce()).getCategory(id);
     }
 
     @Test
-    void test_CreateCategory() {
+    void test_CreateCategory() throws NotFoundException {
         // Define the behavior of the mock
         when(categoryService.createCategory(categoryDTO1)).thenReturn(categoryDTO1);
 
@@ -121,10 +118,9 @@ public class CategoryControllerTests {
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.CREATED);
 
         // Perform assertions
+        verify(categoryService, atMostOnce()).createCategory(categoryDTO1);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atMostOnce()).createCategory(categoryDTO1);
     }
 
     @Test
@@ -138,10 +134,9 @@ public class CategoryControllerTests {
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1Update, HttpStatus.ACCEPTED);
 
         // Perform assertions
+        verify(categoryService, atMostOnce()).updateCategory(id, categoryDTO1);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atMostOnce()).updateCategory(id, categoryDTO1);
     }
 
     @Test
@@ -155,9 +150,8 @@ public class CategoryControllerTests {
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.OK);
 
         // Perform assertions
+        verify(categoryService, atMostOnce()).deleteCategory(id);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
-
-        verify(categoryService, atMostOnce()).deleteCategory(id);
     }
 }
