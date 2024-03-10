@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
                 @Index(columnList = "payment_date"),
                 @Index(columnList = "payment_method"),
                 @Index(columnList = "payment_status")
-        })
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"payment_amount", "payment_date", "payment_method"})
+        }
+)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

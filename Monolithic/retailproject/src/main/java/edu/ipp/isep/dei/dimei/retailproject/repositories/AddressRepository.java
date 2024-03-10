@@ -9,4 +9,8 @@ import java.util.Optional;
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Integer> {
     Optional<Address> findById(int id);
+
+    Optional<Address> findAddressByStreetAndZipCodeAndCityAndCountry(String street, String zipCode, String city, String country);
+
+    boolean existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(String street, String zipCode, String city, String country, int userId);
 }
