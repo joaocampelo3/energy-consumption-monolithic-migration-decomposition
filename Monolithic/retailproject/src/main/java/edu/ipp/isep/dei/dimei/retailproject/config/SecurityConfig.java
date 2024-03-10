@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -45,7 +45,41 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
+                        // Categories Controller
+                        .requestMatchers(GET, "/categories/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, "/categories").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, "/categories/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, "/categories/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        // Item Controller
+                        .requestMatchers(GET, "/items/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, "/items").hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, "/items/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(POST, "items").hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        .requestMatchers(DELETE, "items/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, "items/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        // Merchants Controller
+                        .requestMatchers(GET, "/merchants/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, "/merchants").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, "/merchants/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, "/merchants/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        // Merchant Order Controller
+                        .requestMatchers(GET, "/merchantorders/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, "/merchantorders").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, "/merchantorders/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(PATCH, "merchantorders/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        // Order Controller
                         .requestMatchers(GET, "/orders/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, "/orders").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(GET, "/orders/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(POST, "/orders").hasAnyAuthority(RoleEnum.USER.name())
+                        .requestMatchers(DELETE, "/orders/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, "/orders/{id}/cancel").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(PATCH, "/orders/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        // Shipping Order Controller
+                        .requestMatchers(GET, "/shippingorders/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, "/shippingorders").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(GET, "/shippingorders/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(PATCH, "shippingorders/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )
