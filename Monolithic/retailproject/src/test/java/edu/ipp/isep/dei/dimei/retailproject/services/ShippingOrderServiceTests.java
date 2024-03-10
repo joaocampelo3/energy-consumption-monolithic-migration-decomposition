@@ -281,7 +281,7 @@ public class ShippingOrderServiceTests {
     }
 
     @Test
-    void test_GetUserShippingOrders() {
+    void test_GetUserShippingOrders() throws NotFoundException {
         // Define the behavior of the mock
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
         when(shippingOrderRepository.findByUser(user)).thenReturn(shippingOrders);

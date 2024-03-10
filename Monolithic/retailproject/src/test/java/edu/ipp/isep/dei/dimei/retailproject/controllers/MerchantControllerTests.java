@@ -17,14 +17,12 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MerchantControllerTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     MerchantController merchantController;
     @Mock
@@ -85,7 +83,7 @@ public class MerchantControllerTests {
         when(merchantService.getAllMerchants()).thenReturn(merchantDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.getAllMerchants(JwtTokenDummy);
+        ResponseEntity<?> merchantResponseEntity = merchantController.getAllMerchants();
         ResponseEntity<List<MerchantDTO>> merchantResponseEntityExpected = ResponseEntity.ok(merchantDTOS);
 
         // Perform assertions
@@ -101,7 +99,7 @@ public class MerchantControllerTests {
         when(merchantService.getMerchant(id)).thenReturn(merchantDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.getMerchantById(JwtTokenDummy, id);
+        ResponseEntity<?> merchantResponseEntity = merchantController.getMerchantById(id);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = ResponseEntity.ok(merchantDTO1);
 
         // Perform assertions
@@ -111,7 +109,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    void test_CreateMerchant() {
+    void test_CreateMerchant() throws NotFoundException {
         // Define the behavior of the mock
         when(merchantService.createMerchant(merchantDTO1)).thenReturn(merchantDTO1);
 
@@ -132,7 +130,7 @@ public class MerchantControllerTests {
         when(merchantService.updateMerchant(id, merchantUpdateDTO)).thenReturn(merchantUpdateDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.updateMerchant(JwtTokenDummy, id, merchantUpdateDTO);
+        ResponseEntity<?> merchantResponseEntity = merchantController.updateMerchant(id, merchantUpdateDTO);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = new ResponseEntity<>(merchantUpdateDTO, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -148,7 +146,7 @@ public class MerchantControllerTests {
         when(merchantService.deleteMerchant(id)).thenReturn(merchantDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.deleteMerchant(JwtTokenDummy, id);
+        ResponseEntity<?> merchantResponseEntity = merchantController.deleteMerchant(id);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = new ResponseEntity<>(merchantDTO1, HttpStatus.OK);
 
         // Perform assertions

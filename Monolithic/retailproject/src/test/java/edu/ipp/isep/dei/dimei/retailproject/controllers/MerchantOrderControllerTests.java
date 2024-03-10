@@ -69,7 +69,7 @@ public class MerchantOrderControllerTests {
     }
 
     @Test
-    void test_GetUserMerchantOrders() {
+    void test_GetUserMerchantOrders() throws NotFoundException {
         // Define the behavior of the mock
         when(merchantOrderService.getUserMerchantOrders(JwtTokenDummy)).thenReturn(merchantOrderDTOS);
 

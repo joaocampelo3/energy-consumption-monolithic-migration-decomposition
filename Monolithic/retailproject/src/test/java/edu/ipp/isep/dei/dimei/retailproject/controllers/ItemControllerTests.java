@@ -133,7 +133,7 @@ public class ItemControllerTests {
         when(itemService.getAllItems()).thenReturn(items);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.getAllItems(JwtTokenDummy);
+        ResponseEntity<?> itemResponseEntity = itemController.getAllItems();
         ResponseEntity<List<ItemDTO>> itemResponseEntityExpected = ResponseEntity.ok(items);
 
         // Perform assertions
@@ -161,14 +161,14 @@ public class ItemControllerTests {
     void test_GetItemById() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(itemService.getUserItem(JwtTokenDummy, id)).thenReturn(itemDTO1);
+        when(itemService.getUserItemDTO(JwtTokenDummy, id)).thenReturn(itemDTO1);
 
         // Call the service method that uses the Repository
         ResponseEntity<?> itemResponseEntity = itemController.getUserItemById(JwtTokenDummy, id);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
-        verify(itemService, atLeastOnce()).getUserItem(JwtTokenDummy, id);
+        verify(itemService, atLeastOnce()).getUserItemDTO(JwtTokenDummy, id);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
     }

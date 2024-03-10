@@ -1,18 +1,9 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
