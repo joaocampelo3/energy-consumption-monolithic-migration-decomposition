@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +13,7 @@ public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, I
 
     Optional<MerchantOrder> findById(int id);
 
-    List<MerchantOrder> findByUser(User user);
+    List<MerchantOrder> findByMerchantEmail(String email);
 
     Optional<MerchantOrder> findByOrder(Order order);
 

@@ -49,7 +49,7 @@ public class ShippingOrderService {
         return shippingOrders;
     }
 
-    public List<ShippingOrderDTO> getUserShippingOrders(String authorizationToken) {
+    public List<ShippingOrderDTO> getUserShippingOrders(String authorizationToken) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         List<ShippingOrderDTO> shippingOrders = new ArrayList<>();
@@ -63,8 +63,8 @@ public class ShippingOrderService {
         return new ShippingOrderDTO(shippingOrder);
     }
 
-    public void createShippingOrder(User user, Order order, MerchantOrder merchantOrder, Address address) {
-        ShippingOrder shippingOrder = new ShippingOrder(user, order, merchantOrder, address);
+    public void createShippingOrder(User user, Order order, MerchantOrder merchantOrder, Address shippingAddress) {
+        ShippingOrder shippingOrder = new ShippingOrder(user, order, merchantOrder, shippingAddress);
 
         this.shippingOrderRepository.save(shippingOrder);
     }

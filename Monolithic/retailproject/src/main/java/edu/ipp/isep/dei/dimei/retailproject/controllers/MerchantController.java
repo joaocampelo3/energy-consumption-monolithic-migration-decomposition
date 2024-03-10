@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +26,13 @@ public class MerchantController {
     private final MerchantService merchantService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Get all merchants", responses = {@ApiResponse(responseCode = "200", description = "Merchants found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<List<MerchantDTO>> getAllMerchants(@RequestHeader("Authorization") String authorizationToken) {
+    public ResponseEntity<List<MerchantDTO>> getAllMerchants() {
         return new ResponseEntity<>(this.merchantService.getAllMerchants(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getMerchantById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    public ResponseEntity<?> getMerchantById(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.merchantService.getMerchant(id), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -58,14 +55,16 @@ public class MerchantController {
                                             }*/)})/*,
             @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
             @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createMerchant(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody MerchantDTO merchantDTO) {
-        return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateMerchant(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantDTO merchantDTO) {
+    public ResponseEntity<?> updateMerchant(@PathVariable int id, @RequestBody MerchantDTO merchantDTO) {
         try {
             return new ResponseEntity<>(this.merchantService.updateMerchant(id, merchantDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
@@ -76,8 +75,7 @@ public class MerchantController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteMerchant(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    public ResponseEntity<?> deleteMerchant(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.merchantService.deleteMerchant(id), HttpStatus.OK);
         } catch (NotFoundException e) {

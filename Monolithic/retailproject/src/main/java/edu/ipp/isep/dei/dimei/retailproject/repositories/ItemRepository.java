@@ -11,7 +11,5 @@ import java.util.Optional;
 public interface ItemRepository extends CrudRepository<Item, Integer> {
     Optional<Item> findById(int id);
 
-    List<Item> findAllByCategoryId(int item_category);
-
     List<Item> findAllByMerchantId(int item_merchant);
 }

@@ -9,7 +9,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
-import edu.ipp.isep.dei.dimei.retailproject.repositories.ItemQuantityRepository;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final MerchantService merchantService;
-    private final ItemQuantityRepository itemQuantityRepository;
 
     public List<ItemDTO> getAllItems() throws NotFoundException {
         List<Item> items = new ArrayList<>();
@@ -47,8 +45,12 @@ public class ItemService {
         return this.itemRepository.findAllByMerchantId(merchant.getId()).stream().map(item -> new ItemDTO(item)).toList();
     }
 
-    public ItemDTO getUserItem(String authorizationToken, int id) throws NotFoundException {
+    public ItemDTO getUserItemDTO(String authorizationToken, int id) throws NotFoundException {
         return new ItemDTO(getUserItemById(authorizationToken, id));
+    }
+
+    public Item getItemById(int id) throws NotFoundException {
+        return this.itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item not found."));
     }
 
     private Item getUserItemById(String authorizationToken, int id) throws NotFoundException {

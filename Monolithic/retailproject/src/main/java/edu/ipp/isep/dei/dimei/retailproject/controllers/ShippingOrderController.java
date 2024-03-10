@@ -17,8 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @Tag(name = "Shipping Order Controller")
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class ShippingOrderController {
 
     @GetMapping("/all")
     @Operation(description = "Get all shipping orders", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<?> getAllShippingOrders(/*@RequestHeader("Authorization") String authorizationToken*/) {
+    public ResponseEntity<?> getAllShippingOrders() {
         return new ResponseEntity<>(this.shippingOrderService.getAllShippingOrders(), HttpStatus.OK);
     }
 
@@ -40,8 +38,12 @@ public class ShippingOrderController {
                                                             value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
                                                     )
                                             }*/)})})
-    public ResponseEntity<List<ShippingOrderDTO>> getUserShippingOrders(@RequestHeader("Authorization") String authorizationToken) {
-        return new ResponseEntity<>(this.shippingOrderService.getUserShippingOrders(authorizationToken), HttpStatus.OK);
+    public ResponseEntity<?> getUserShippingOrders(@RequestHeader("Authorization") String authorizationToken) {
+        try {
+            return new ResponseEntity<>(this.shippingOrderService.getUserShippingOrders(authorizationToken), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(path = "/{id}")

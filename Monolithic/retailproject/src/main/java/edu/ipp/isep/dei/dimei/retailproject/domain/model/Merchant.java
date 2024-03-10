@@ -28,7 +28,7 @@ public class Merchant {
     @Email
     private String email;
 
-    @OneToOne(optional = false)
+    @OneToOne
     private Address address;
 
     public Merchant(String name, String email, Address address) {

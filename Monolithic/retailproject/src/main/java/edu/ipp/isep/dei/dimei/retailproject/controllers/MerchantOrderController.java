@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +28,8 @@ public class MerchantOrderController {
     private final MerchantOrderService merchantOrderService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Get all merchant orders", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<List<MerchantOrderDTO>> getAllMerchantOrders(/*@RequestHeader("Authorization") String authorizationToken*/) {
+    public ResponseEntity<List<MerchantOrderDTO>> getAllMerchantOrders() {
         return new ResponseEntity<>(this.merchantOrderService.getAllMerchantOrders(), HttpStatus.OK);
     }
 
@@ -42,8 +40,12 @@ public class MerchantOrderController {
                                                             value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
                                                     )
                                             }*/)})})
-    public ResponseEntity<List<MerchantOrderDTO>> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
-        return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(authorizationToken), HttpStatus.OK);
+    public ResponseEntity<?> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
+        try {
+            return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(authorizationToken), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(path = "/{id}")

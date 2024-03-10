@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,8 +42,12 @@ public class OrderController {
                                                             value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
                                                     )
                                             }*/)})})
-    public ResponseEntity<List<OrderDTO>> getUserOrders(@RequestHeader("Authorization") String authorizationToken) {
-        return new ResponseEntity<>(orderService.getUserOrders(authorizationToken), HttpStatus.OK);
+    public ResponseEntity<?> getUserOrders(@RequestHeader("Authorization") String authorizationToken) {
+        try {
+            return new ResponseEntity<>(orderService.getUserOrders(authorizationToken), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
@@ -86,7 +89,6 @@ public class OrderController {
     }
 
     @DeleteMapping(path = "/user/{userId}/order/{orderId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteOrder(/*@RequestHeader("Authorization") String authorizationToken, */@PathVariable int userId, @PathVariable int orderId) {
         try {
             return new ResponseEntity<>(this.orderService.deleteOrder(userId, orderId), HttpStatus.OK);
@@ -96,9 +98,9 @@ public class OrderController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.fullCancelOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.fullCancelOrder(authorizationToken, id, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -107,9 +109,9 @@ public class OrderController {
     }
 
     @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<?> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.rejectOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.rejectOrder(authorizationToken, id, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -118,9 +120,9 @@ public class OrderController {
     }
 
     @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<?> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.orderService.approveOrder(authorizationToken, orderId, orderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.orderService.approveOrder(authorizationToken, id, orderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {

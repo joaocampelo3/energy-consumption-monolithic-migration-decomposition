@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +26,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Get all categories", responses = {@ApiResponse(responseCode = "200", description = "Categories found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(@RequestHeader("Authorization") String authorizationToken) {
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         return new ResponseEntity<>(this.categoryService.getAllCategories(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getCategoryById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    public ResponseEntity<?> getCategoryById(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.categoryService.getCategory(id), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -58,7 +55,6 @@ public class CategoryController {
                                             }*/)})/*,
             @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
             @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO categoryDTO) {
         try {
             return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
@@ -68,8 +64,7 @@ public class CategoryController {
     }
 
     @PatchMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<?> updateCategory(@PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
         try {
             return new ResponseEntity<>(this.categoryService.updateCategory(id, categoryDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
@@ -80,8 +75,7 @@ public class CategoryController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.categoryService.deleteCategory(id), HttpStatus.OK);
         } catch (NotFoundException e) {

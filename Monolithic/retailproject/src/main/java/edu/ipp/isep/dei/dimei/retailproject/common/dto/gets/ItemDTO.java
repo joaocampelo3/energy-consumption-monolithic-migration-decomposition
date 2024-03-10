@@ -2,6 +2,7 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,13 +39,13 @@ public class ItemDTO {
         this.merchant = merchantOrderDTO;
     }
 
-    public Item dtoToEntity() {
+    public Item dtoToEntity() throws InvalidQuantityException {
         return Item.builder()
                 .id(this.id)
                 .name(this.itemName)
                 .description(this.itemDescription)
                 .price(this.price)
-                .quantityInStock(new StockQuantity())
+                .quantityInStock(new StockQuantity(this.quantityInStock))
                 .category(this.category.dtoToEntity())
                 .merchant(this.merchant.dtoToEntity())
                 .build();

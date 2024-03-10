@@ -31,6 +31,9 @@ public class OrderService {
     private final MerchantOrderService merchantOrderService;
     private final ShippingOrderService shippingOrderService;
     private final ItemService itemService;
+    private final PaymentService paymentService;
+    private final AddressService addressService;
+    private final ItemQuantityService itemQuantityService;
 
     public List<OrderDTO> getAllOrders() {
         List<OrderDTO> orders = new ArrayList<>();
@@ -39,7 +42,7 @@ public class OrderService {
         return orders;
     }
 
-    public List<OrderDTO> getUserOrders(String authorizationToken) {
+    public List<OrderDTO> getUserOrders(String authorizationToken) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         List<OrderDTO> orders = new ArrayList<>();
@@ -53,18 +56,24 @@ public class OrderService {
 
         isSameMerchantForAllItems(authorizationToken, orderDTO.getOrderItems(), orderDTO.getMerchantId());
 
-        Address address = orderDTO.getAddressDTO().dtoToEntity();
+        Address shippingAddress = this.addressService.createAddress(orderDTO.getAddressDTO(), user);
 
-        Order order = orderDTO.dtoToEntity(user);
+        Payment payment = this.paymentService.createPayment(orderDTO.getPaymentDTO());
+
+        List<ItemQuantity> itemQuantities = new ArrayList<>();
+
+        for (ItemQuantityDTO itemQuantity : orderDTO.getOrderItems()) {
+            itemQuantities.add(this.itemQuantityService.createItemQuantity(itemQuantity));
+            this.itemService.removeItemStock(authorizationToken, itemQuantity.getItemId(), new ItemUpdateDTO(itemQuantity.getItemId(), itemQuantity.getPrice(), itemQuantity.getQty()));
+        }
+
+        Order order = orderDTO.dtoToEntity(user, payment, itemQuantities);
 
         this.orderRepository.save(order);
 
         MerchantOrder merchantOrder = this.merchantOrderService.createMerchantOrder(user, order, orderDTO.getMerchantId());
-        this.shippingOrderService.createShippingOrder(user, order, merchantOrder, address);
 
-        for (ItemQuantity itemQuantity : order.getItemQuantities()) {
-            this.itemService.removeItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
-        }
+        this.shippingOrderService.createShippingOrder(user, order, merchantOrder, shippingAddress);
 
         return order;
     }
@@ -72,7 +81,7 @@ public class OrderService {
     private void isSameMerchantForAllItems(String authorizationToken, List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {
         ItemDTO itemDTO;
         for (ItemQuantityDTO itemQuantityDTO : itemQuantityDTOS) {
-            itemDTO = this.itemService.getUserItem(authorizationToken, itemQuantityDTO.getItemId());
+            itemDTO = this.itemService.getUserItemDTO(authorizationToken, itemQuantityDTO.getItemId());
             if (itemDTO.getMerchant().getId() != merchantId)
                 throw new BadPayloadException("Only can order items form same merchant");
         }

@@ -52,12 +52,13 @@ public class MerchantOrderService {
         return merchantOrders;
     }
 
-    public List<MerchantOrderDTO> getUserMerchantOrders(String authorizationToken) {
+    public List<MerchantOrderDTO> getUserMerchantOrders(String authorizationToken) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         List<MerchantOrderDTO> merchantOrders = new ArrayList<>();
 
-        this.merchantOrderRepository.findByUser(user).forEach(merchantOrder -> merchantOrders.add(new MerchantOrderDTO(merchantOrder)));
+        this.merchantOrderRepository.findByMerchantEmail(user.getAccount().getEmail())
+                .forEach(merchantOrder -> merchantOrders.add(new MerchantOrderDTO(merchantOrder)));
         return merchantOrders;
     }
 
@@ -173,14 +174,16 @@ public class MerchantOrderService {
     private MerchantOrder getUserMerchantOrderById(String authorizationToken, int id) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.merchantOrderRepository.findById(id).filter(o -> o.getUser() == user)
+        return this.merchantOrderRepository.findById(id)
+                .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
                 .orElseThrow(() -> new NotFoundException("Merchant Order not found"));
     }
 
     private MerchantOrder getUserMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.merchantOrderRepository.findByOrder(order).filter(o -> o.getUser() == user)
+        return this.merchantOrderRepository.findByOrder(order)
+                .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
                 .orElseThrow(() -> new NotFoundException("Merchant Order not found"));
     }
 

@@ -19,12 +19,16 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "accounts")
+@Table(name = "accounts",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email"}),
+                @UniqueConstraint(columnNames = {"email", "role"})
+        })
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(unique = true)
+    @Column
     @Email
     private String email;
     private String password;

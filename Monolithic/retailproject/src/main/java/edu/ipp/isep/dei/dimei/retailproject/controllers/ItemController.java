@@ -27,7 +27,7 @@ public class ItemController {
 
     @GetMapping("/all")
     @Operation(description = "Get all items service", responses = {@ApiResponse(responseCode = "200", description = "Items found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<?> getAllItems(@RequestHeader("Authorization") String authorizationToken) {
+    public ResponseEntity<?> getAllItems() {
         try {
             return new ResponseEntity<>(itemService.getAllItems(), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -53,7 +53,7 @@ public class ItemController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getUserItemById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
         try {
-            return new ResponseEntity<>(this.itemService.getUserItem(authorizationToken, id), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.getUserItemDTO(authorizationToken, id), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -94,7 +94,7 @@ public class ItemController {
         }
     }
 
-    @PutMapping(path = "/{id}/addStock")
+    @PatchMapping(path = "/{id}/addStock")
     public ResponseEntity<?> addItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
             return new ResponseEntity<>(this.itemService.addItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
@@ -105,7 +105,7 @@ public class ItemController {
         }
     }
 
-    @PutMapping(path = "/{id}/removeStock")
+    @PatchMapping(path = "/{id}/removeStock")
     public ResponseEntity<?> removeItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
             return new ResponseEntity<>(this.itemService.removeItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
