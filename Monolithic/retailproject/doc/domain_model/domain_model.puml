@@ -1,0 +1,128 @@
+@startuml
+
+class Account {
+  - id: int
+  - email: String
+  - password: String
+}
+class Address {
+  - id: int
+  - street: String
+  - zipCode: String
+  - city: String
+  - country: String
+}
+class Category {
+  - id: int
+  - name: String
+  - description: String
+}
+class Item {
+  - id: int
+  - name: String
+  - sku: String
+  - description: String
+  - price: double
+  - category: Category
+}
+class Merchant {
+  - id: int
+  - name: String
+  - email: String
+}
+class MerchantOrder {
+  - id: int
+  - orderDate: LocalDateTime
+}
+class Order {
+  - id: int
+  - orderDate: LocalDateTime
+  - user: User
+}
+class Payment {
+  - id: int
+  - amount: double
+  - paymentDateTime: LocalDateTime
+}
+class ShippingOrder {
+  - id: int
+  - shippingOrderDate: LocalDateTime
+}
+class User {
+  - id: int
+  - firstname: String
+  - lastname: String
+}
+interface IValueObject << interface >>
+class ItemQuantity {
+  - id: int
+}
+class OrderQuantity {
+  - quantity: int
+}
+class StockQuantity {
+  - quantity: int
+}
+enum MerchantOrderStatusEnum << enumeration >> {
+  + APPROVED:
+  + DELIVERED:
+  + PENDING:
+  + REJECTED:
+  + SHIPPED:
+}
+enum OrderStatusEnum << enumeration >> {
+  + PENDING:
+  + APPROVED:
+  + REJECTED:
+  + DELIVERED:
+  + SHIPPED:
+}
+enum PaymentMethodEnum << enumeration >> {
+  + PAYPAL:
+  + CARD:
+}
+enum PaymentStatusEnum << enumeration >> {
+  + ACCEPTED:
+  + PENDING:
+  + REJECTED:
+}
+enum RoleEnum << enumeration >> {
+  + ADMIN:
+  + USER:
+  + MERCHANT:
+}
+enum ShippingOrderStatusEnum << enumeration >> {
+  + REJECTED:
+  + APPROVED:
+  + DELIVERED:
+  + SHIPPED:
+  + PENDING:
+}
+
+Account                 "1" *--> "role\n1" RoleEnum
+Address                 "*" *--> "user\n1" User
+Item                    "1" *--> "category\n1" Category
+Item                    "1" *--> "quantityInStock\n1" StockQuantity
+Item                    "1" *--> "merchant\n1" Merchant
+ItemQuantity            "1" *--> "item\n1" Item
+ItemQuantity            "1" *--> "quantityOrdered\n1" OrderQuantity
+Merchant                "1" *--> "address\n1" Address
+MerchantOrder           "1" *--> "merchant\n1" Merchant
+MerchantOrder           "1" *--> "status\n1" MerchantOrderStatusEnum
+MerchantOrder           "1" *--> "order\n1" Order
+MerchantOrder           "1" *--> "user\n1" User
+Order                   "1" *--> "itemQuantities\n*" ItemQuantity
+Order                   "1" *--> "status\n1" OrderStatusEnum
+Order                   "1" *--> "payment\n1" Payment
+Order                   "1" *--> "user\n1" User
+Payment                 "1" *--> "paymentMethod\n1" PaymentMethodEnum
+Payment                 "1" *--> "status\n1" PaymentStatusEnum
+ShippingOrder           "1" *--> "shippingAddress\n1" Address
+ShippingOrder           "1" *--> "merchantOrder\n1" MerchantOrder
+ShippingOrder           "1" *--> "order\n1" Order
+ShippingOrder           "1" *--> "status\n1" ShippingOrderStatusEnum
+ShippingOrder           "1" *--> "user\n1" User
+User                    "1" *--> "account\n1" Account
+OrderQuantity            --^  IValueObject
+StockQuantity            --^  IValueObject
+@enduml

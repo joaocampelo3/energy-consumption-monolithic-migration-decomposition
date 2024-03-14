@@ -1,0 +1,55 @@
+package edu.ipp.isep.dei.dimei.retailproject.domain.model;
+
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "orders",
+        indexes = {
+                @Index(columnList = "order_status"),
+                @Index(columnList = "customer_id")
+        })
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(name = "order_internal_id", nullable = false)
+    private UUID uuid;
+    @Column(name = "order_date", nullable = false)
+    private LocalDateTime orderDate;
+
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private User user;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ItemQuantity> itemQuantities;
+
+    @OneToOne(optional = false)
+    @JoinColumn(name = "payment_id", unique = true, referencedColumnName = "id")
+    private Payment payment;
+
+    public Order(LocalDateTime orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {
+        this.orderDate = orderDate;
+        this.status = status;
+        this.user = user;
+        this.itemQuantities = itemQuantities;
+        this.payment = payment;
+    }
+}
