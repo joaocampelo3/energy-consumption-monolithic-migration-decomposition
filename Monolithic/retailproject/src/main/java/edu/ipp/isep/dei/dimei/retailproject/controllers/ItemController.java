@@ -36,12 +36,7 @@ public class ItemController {
     }
 
     @GetMapping
-    @Operation(description = "Get items by user", responses = {@ApiResponse(responseCode = "200", description = "Items found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})})
+    @Operation(description = "Get items by user", responses = {@ApiResponse(responseCode = "200", description = "Items found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<?> getUserItems(@RequestHeader("Authorization") String authorizationToken) {
         try {
             return new ResponseEntity<>(itemService.getUserItems(authorizationToken), HttpStatus.OK);
@@ -66,14 +61,7 @@ public class ItemController {
                     @ApiResponse
             }
     )
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Item was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})/*,
-            @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Item was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createItem(@RequestHeader("Authorization") String authorizationToken, @RequestBody ItemDTO itemDTO) {
         try {

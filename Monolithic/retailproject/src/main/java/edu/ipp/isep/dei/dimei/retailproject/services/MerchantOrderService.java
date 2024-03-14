@@ -73,13 +73,9 @@ public class MerchantOrderService {
 
         MerchantOrder merchantOrder = new MerchantOrder(user, order, merchant);
 
-        this.merchantOrderRepository.save(merchantOrder);
-        return getMerchantOrderByOrder(order);
-    }
+        merchantOrder = this.merchantOrderRepository.save(merchantOrder);
 
-    private MerchantOrder getMerchantOrderByOrder(Order order) throws NotFoundException {
-        return this.merchantOrderRepository.findByOrder(order)
-                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        return merchantOrder;
     }
 
     public MerchantOrderUpdateDTO fullCancelMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
@@ -194,7 +190,7 @@ public class MerchantOrderService {
         if (isMerchantOrderFlowValid(authorizationToken, merchantOrder, status)) {
             merchantOrder.setStatus(status);
 
-            this.merchantOrderRepository.save(merchantOrder);
+            merchantOrder = this.merchantOrderRepository.save(merchantOrder);
             return merchantOrder;
         } else {
             throw new WrongFlowException("It is not possible to change Merchant Order status");

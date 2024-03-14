@@ -73,9 +73,7 @@ public class OrderService {
 
         Order order = orderDTO.dtoToEntity(user, payment, itemQuantities);
 
-        this.orderRepository.save(order);
-
-        order = this.orderRepository.findByUuid(order.getUuid()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        order = this.orderRepository.save(order);
 
         MerchantOrder merchantOrder = this.merchantOrderService.createMerchantOrder(user, order, orderDTO.getMerchantId());
 
@@ -120,8 +118,6 @@ public class OrderService {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
 
-        order = this.orderRepository.findById(order.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
-
         return new OrderUpdateDTO(order);
     }
 
@@ -142,8 +138,6 @@ public class OrderService {
         for (ItemQuantity itemQuantity : order.getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
-
-        order = this.orderRepository.findById(order.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         return new OrderUpdateDTO(order);
     }
@@ -173,7 +167,7 @@ public class OrderService {
 
         if (isOrderFlowValid(authorizationToken, order, status)) {
             order.setStatus(status);
-            this.orderRepository.save(order);
+            order = this.orderRepository.save(order);
             return order;
         } else {
             throw new WrongFlowException("It is not possible to change Order status");

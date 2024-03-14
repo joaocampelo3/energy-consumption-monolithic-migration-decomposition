@@ -35,11 +35,7 @@ public class AuthenticationService {
                 .account(account)
                 .build();
 
-        User savedUser;
-
-
-        userRepository.save(user);
-        savedUser = user;
+        User savedUser = this.userRepository.save(user);
 
         var jwtToken = jwtService.generateToken(savedUser.getAccount());
 

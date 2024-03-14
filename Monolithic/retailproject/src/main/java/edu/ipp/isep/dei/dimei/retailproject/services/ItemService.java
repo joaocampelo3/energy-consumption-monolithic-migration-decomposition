@@ -5,7 +5,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -84,9 +84,10 @@ public class ItemService {
                 .category(itemDTO.getCategory().dtoToEntity())
                 .merchant(itemDTO.getMerchant().dtoToEntity())
                 .build();
-        this.itemRepository.save(item);
 
-        return new ItemDTO(getItemBySku(item.getSku()));
+        item = this.itemRepository.save(item);
+
+        return new ItemDTO(item);
     }
 
     public Item getItemBySku(String sku) throws NotFoundException {
@@ -124,12 +125,12 @@ public class ItemService {
 
             if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().decreaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-                this.itemRepository.save(item);
-                return new ItemDTO(getItemBySku(item.getSku()));
+                item = this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().increaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-                this.itemRepository.save(item);
-                return new ItemDTO(getItemBySku(item.getSku()));
+                item = this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else {
                 throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
             }

@@ -190,7 +190,7 @@ public class ShippingOrderService {
         if (isShippingOrderFlowValid(authorizationToken, shippingOrder, status)) {
             shippingOrder.setStatus(status);
 
-            this.shippingOrderRepository.save(shippingOrder);
+            shippingOrder = this.shippingOrderRepository.save(shippingOrder);
             return shippingOrder;
         } else {
             throw new WrongFlowException("It is not possible to change Shipping Order status");

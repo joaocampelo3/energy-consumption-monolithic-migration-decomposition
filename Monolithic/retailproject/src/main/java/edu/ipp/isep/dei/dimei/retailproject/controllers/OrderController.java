@@ -36,12 +36,7 @@ public class OrderController {
     }
 
     @GetMapping
-    @Operation(description = "Get orders by user", responses = {@ApiResponse(responseCode = "200", description = "Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})})
+    @Operation(description = "Get orders by user", responses = {@ApiResponse(responseCode = "200", description = "Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<?> getUserOrders(@RequestHeader("Authorization") String authorizationToken) {
         try {
             return new ResponseEntity<>(orderService.getUserOrders(authorizationToken), HttpStatus.OK);
@@ -57,14 +52,7 @@ public class OrderController {
                     @ApiResponse
             }
     )
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Order was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})/*,
-            @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Order was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createOrder(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderCreateDTO orderDTO) {
         try {
@@ -89,7 +77,7 @@ public class OrderController {
     }
 
     @DeleteMapping(path = "/user/{userId}/order/{orderId}")
-    public ResponseEntity<?> deleteOrder(/*@RequestHeader("Authorization") String authorizationToken, */@PathVariable int userId, @PathVariable int orderId) {
+    public ResponseEntity<?> deleteOrder(@PathVariable int userId, @PathVariable int orderId) {
         try {
             return new ResponseEntity<>(this.orderService.deleteOrder(userId, orderId), HttpStatus.OK);
         } catch (NotFoundException e) {

@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders",
@@ -25,8 +24,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "order_internal_id", nullable = false)
-    private UUID uuid;
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 

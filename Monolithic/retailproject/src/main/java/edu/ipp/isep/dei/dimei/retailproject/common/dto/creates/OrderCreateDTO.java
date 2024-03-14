@@ -14,7 +14,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
@@ -34,7 +33,6 @@ public class OrderCreateDTO {
     public Order dtoToEntity(User user, Payment payment, List<ItemQuantity> itemQuantities) {
         return Order.builder()
                 .id(this.id)
-                .uuid(UUID.randomUUID())
                 .orderDate(this.orderDate)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)

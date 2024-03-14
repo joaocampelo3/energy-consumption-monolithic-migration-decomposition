@@ -23,13 +23,8 @@ public class ItemQuantityService {
         Item item = this.itemService.getItemById(itemQuantityDTO.getItemId());
 
         itemQuantity.setItem(item);
-        this.itemQuantityRepository.save(itemQuantity);
+        itemQuantity = this.itemQuantityRepository.save(itemQuantity);
 
-        return getItemQuantityById(itemQuantity.getId());
-    }
-
-    public ItemQuantity getItemQuantityById(int itemQuantityId) throws NotFoundException {
-        return this.itemQuantityRepository.findById(itemQuantityId)
-                .orElseThrow(() -> new NotFoundException("Item Quantity not found."));
+        return itemQuantity;
     }
 }

@@ -2,7 +2,7 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.OrderQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
