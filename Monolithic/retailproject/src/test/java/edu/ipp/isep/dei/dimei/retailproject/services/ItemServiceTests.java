@@ -4,7 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -38,6 +38,8 @@ class ItemServiceTests {
     UserService userService;
     ItemDTO itemDTO1;
     Item item1;
+    Item newItem1;
+    Item item1Updated;
     Category category;
     Address merchantAddress;
     Merchant merchant;
@@ -86,6 +88,28 @@ class ItemServiceTests {
                 .build();
 
         item1 = Item.builder()
+                .id(1)
+                .name("Item 1")
+                .sku("ABC-12345-S-BL")
+                .description("Item 1 Desc")
+                .price(10)
+                .quantityInStock(new StockQuantity(10))
+                .category(category)
+                .merchant(merchant)
+                .build();
+
+        newItem1 = Item.builder()
+                .id(0)
+                .name("Item 1")
+                .sku("ABC-12345-S-BL")
+                .description("Item 1 Desc")
+                .price(10)
+                .quantityInStock(new StockQuantity(10))
+                .category(category)
+                .merchant(merchant)
+                .build();
+
+        item1Updated = Item.builder()
                 .id(1)
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
@@ -197,8 +221,7 @@ class ItemServiceTests {
                 .thenReturn(user);
         when(merchantService.getMerchantByUser(user))
                 .thenReturn(merchant);
-        when(itemRepository.findBySku(itemDTO1.getSku()))
-                .thenReturn(Optional.ofNullable(item1));
+        when(itemRepository.save(newItem1)).thenReturn(item1);
 
         // Call the service method that uses the Repository
         ItemDTO result = itemService.createItem(JwtTokenDummy, itemDTO1);
@@ -207,7 +230,7 @@ class ItemServiceTests {
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(user);
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
-        verify(itemRepository, atLeastOnce()).findBySku(itemDTO1.getSku());
+        verify(itemRepository, atLeastOnce()).save(newItem1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -237,6 +260,7 @@ class ItemServiceTests {
     @Test
     void test_AddItemStock() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
+        item1Updated.getQuantityInStock().setQuantity(item1Updated.getQuantityInStock().getQuantity() + 1);
         itemDTO1Updated.setQuantityInStock(itemDTO1.getQuantityInStock() + 1);
         itemUpdateDTO1.setQuantityInStock(itemDTO1.getQuantityInStock() + 1);
         when(userService.getUserByToken(JwtTokenDummy))
@@ -245,8 +269,7 @@ class ItemServiceTests {
                 .thenReturn(merchant);
         when(itemRepository.findById(item1.getId()).filter(item -> item.getMerchant().equals(merchant)))
                 .thenReturn(Optional.ofNullable(item1));
-        when(itemRepository.findBySku(itemDTO1.getSku()))
-                .thenReturn(Optional.ofNullable(item1));
+        when(itemRepository.save(item1Updated)).thenReturn(item1Updated);
 
         // Call the service method that uses the Repository
         ItemDTO result = itemService.addItemStock(JwtTokenDummy, item1.getId(), itemUpdateDTO1);
@@ -256,7 +279,7 @@ class ItemServiceTests {
         verify(merchantService, atLeastOnce()).getMerchantByUser(user);
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
-        verify(itemRepository, atLeastOnce()).findBySku(itemDTO1.getSku());
+        verify(itemRepository, atLeastOnce()).save(item1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -264,6 +287,7 @@ class ItemServiceTests {
     @Test
     void test_RemoveItemStock() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
+        item1Updated.getQuantityInStock().setQuantity(item1Updated.getQuantityInStock().getQuantity() - 1);
         itemDTO1Updated.setQuantityInStock(itemDTO1.getQuantityInStock() - 1);
         itemUpdateDTO1.setQuantityInStock(itemDTO1.getQuantityInStock() - 1);
         when(userService.getUserByToken(JwtTokenDummy))
@@ -272,8 +296,7 @@ class ItemServiceTests {
                 .thenReturn(merchant);
         when(itemRepository.findById(item1.getId()).filter(item -> item.getMerchant().equals(merchant)))
                 .thenReturn(Optional.ofNullable(item1));
-        when(itemRepository.findBySku(itemDTO1.getSku()))
-                .thenReturn(Optional.ofNullable(item1));
+        when(itemRepository.save(item1Updated)).thenReturn(item1Updated);
 
         // Call the service method that uses the Repository
         ItemDTO result = itemService.removeItemStock(JwtTokenDummy, item1.getId(), itemUpdateDTO1);
@@ -283,7 +306,7 @@ class ItemServiceTests {
         verify(merchantService, atLeastOnce()).getMerchantByUser(user);
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
-        verify(itemRepository, atLeastOnce()).findBySku(itemDTO1.getSku());
+        verify(itemRepository, atLeastOnce()).save(item1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
