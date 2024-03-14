@@ -16,14 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+class CategoryServiceTests {
     @InjectMocks
     CategoryService categoryService;
     @Mock
@@ -34,7 +32,6 @@ public class CategoryServiceTests {
     Category category1;
     Category category2;
     List<Category> categories = new ArrayList<>();
-    CategoryDTO categoryDTOExpected;
     CategoryDTO categoryUpdateDTO;
 
     @BeforeEach
@@ -61,8 +58,6 @@ public class CategoryServiceTests {
         categories.add(category2);
 
         categoryUpdateDTO = categoryDTO1;
-
-        categoryDTOExpected = categoryUpdateDTO;
     }
 
     @Test

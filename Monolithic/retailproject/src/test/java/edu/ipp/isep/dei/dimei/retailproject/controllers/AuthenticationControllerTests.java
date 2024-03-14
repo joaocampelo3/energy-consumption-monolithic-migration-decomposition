@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationControllerTests {
+class AuthenticationControllerTests {
 
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks

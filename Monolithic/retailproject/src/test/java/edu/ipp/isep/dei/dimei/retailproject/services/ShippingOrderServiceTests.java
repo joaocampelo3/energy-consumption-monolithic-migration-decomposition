@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ShippingOrderServiceTests {
+class ShippingOrderServiceTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     ShippingOrderService shippingOrderService;
@@ -49,7 +49,6 @@ public class ShippingOrderServiceTests {
     ShippingOrderDTO shippingOrderDTO1;
     ShippingOrderDTO shippingOrderDTO2;
     List<ShippingOrderDTO> shippingOrderDTOS = new ArrayList<>();
-    ShippingOrderUpdateDTO shippingOrderDTOExpected;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO;
     AddressDTO addressDTO;
     Address address;
@@ -128,6 +127,7 @@ public class ShippingOrderServiceTests {
         item = Item.builder()
                 .id(1)
                 .name("Item 1")
+                .sku("ABC-12345-S-BL")
                 .description("Item 1 Desc")
                 .price(1)
                 .quantityInStock(new StockQuantity(10))
@@ -261,8 +261,6 @@ public class ShippingOrderServiceTests {
                 .merchantOrderId(shippingOrderDTO1.getMerchantOrderId())
                 .email(user.getAccount().getEmail())
                 .build();
-
-        shippingOrderDTOExpected = shippingOrderUpdateDTO;
     }
 
     @Test
@@ -329,7 +327,7 @@ public class ShippingOrderServiceTests {
         order1.setStatus(OrderStatusEnum.CANCELLED);
         when(orderService.fullCancelOrderByOrderId(JwtTokenDummy, shippingOrder1.getOrder().getId())).thenReturn(new OrderUpdateDTO(order1));
         merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
-        when(merchantOrderService.fullCancelOrderByShippingOrder(JwtTokenDummy, shippingOrder1)).thenReturn(new MerchantOrderUpdateDTO(merchantOrder1));
+        when(merchantOrderService.fullCancelMerchantOrderByShippingOrder(JwtTokenDummy, shippingOrder1)).thenReturn(new MerchantOrderUpdateDTO(merchantOrder1));
         when(itemService.addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()))).thenReturn(new ItemDTO(item));
 
         // Call the service method that uses the Repository
@@ -342,7 +340,7 @@ public class ShippingOrderServiceTests {
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
         verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
         verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(JwtTokenDummy, shippingOrder1.getOrder().getId());
-        verify(merchantOrderService, atLeastOnce()).fullCancelOrderByShippingOrder(JwtTokenDummy, shippingOrder1);
+        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByShippingOrder(JwtTokenDummy, shippingOrder1);
         verify(itemService, atLeastOnce()).addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()));
         assertNotNull(result);
         assertEquals(expected, result);

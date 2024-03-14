@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderControllerTests {
+class OrderControllerTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     OrderController orderController;
@@ -88,6 +88,7 @@ public class OrderControllerTests {
         item1 = Item.builder()
                 .id(0)
                 .name("Item 1")
+                .sku("ABC-12345-S-BL")
                 .description("Item 1 Description")
                 .price(15.0)
                 .quantityInStock(new StockQuantity(10))
@@ -98,6 +99,7 @@ public class OrderControllerTests {
         item2 = Item.builder()
                 .id(0)
                 .name("Item 2")
+                .sku("ABC-12345-M-BL")
                 .description("Item 2 Description")
                 .price(20.0)
                 .quantityInStock(new StockQuantity(5))
@@ -155,9 +157,9 @@ public class OrderControllerTests {
                 .email(order.getUser().getAccount().getEmail())
                 .orderItems(order.getItemQuantities().stream().map(ItemQuantityDTO::new).toList())
                 .totalPrice(order.getItemQuantities().stream().mapToDouble(ItemQuantity::getTotalPrice).sum())
-                .paymentDTO(new PaymentDTO(payment))
+                .payment(new PaymentDTO(payment))
                 .merchantId(order.getItemQuantities().get(0).getItem().getMerchant().getId())
-                .addressDTO(new AddressDTO(address))
+                .address(new AddressDTO(address))
                 .build();
 
         orderDTOS.add(orderDTO);

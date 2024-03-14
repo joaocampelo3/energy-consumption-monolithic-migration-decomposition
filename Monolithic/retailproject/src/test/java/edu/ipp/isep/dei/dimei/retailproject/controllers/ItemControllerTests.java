@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemControllerTests {
+class ItemControllerTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     ItemController itemController;
@@ -94,6 +94,7 @@ public class ItemControllerTests {
         itemDTO1 = ItemDTO.builder()
                 .id(1)
                 .itemName("Item 1")
+                .sku("ABC-12345-S-BL")
                 .itemDescription("Item 1 Description")
                 .price(15.0)
                 .quantityInStock(10)
@@ -110,6 +111,7 @@ public class ItemControllerTests {
         itemDTO2 = ItemDTO.builder()
                 .id(2)
                 .itemName("Item 2")
+                .sku("ABC-12345-M-BL")
                 .itemDescription("Item 2 Description")
                 .price(20.0)
                 .quantityInStock(5)

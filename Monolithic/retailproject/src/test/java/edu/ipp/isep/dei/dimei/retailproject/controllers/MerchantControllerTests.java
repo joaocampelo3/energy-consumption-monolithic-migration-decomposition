@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MerchantControllerTests {
+class MerchantControllerTests {
     @InjectMocks
     MerchantController merchantController;
     @Mock
