@@ -32,7 +32,11 @@ public class AddressService {
 
     public Address getAddressByUser(Address address, int userId) throws NotFoundException {
         return this.addressRepository.findAddressByStreetAndZipCodeAndCityAndCountry(address.getStreet(), address.getZipCode(), address.getCity(), address.getCountry())
-                .filter(address1 -> address1.getUser().getId() == userId && address1.getId() == address.getId())
+                .filter(address1 -> address1.getUser().getId() == userId &&
+                        address1.getStreet().compareTo(address.getStreet()) == 0 &&
+                        address1.getZipCode().compareTo(address.getZipCode()) == 0 &&
+                        address1.getCity().compareTo(address.getCity()) == 0 &&
+                        address1.getCountry().compareTo(address.getCountry()) == 0)
                 .orElseThrow(() -> new NotFoundException("Address not found."));
     }
 }

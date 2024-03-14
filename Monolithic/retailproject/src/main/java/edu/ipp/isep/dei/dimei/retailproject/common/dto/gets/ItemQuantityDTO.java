@@ -15,6 +15,7 @@ public class ItemQuantityDTO {
     private int id;
     private int itemId;
     private String itemName;
+    private String itemSku;
     private String itemDescription;
     private int qty;
     private double price;
@@ -23,6 +24,7 @@ public class ItemQuantityDTO {
         this.id = itemQuantity.getId();
         this.itemId = itemQuantity.getItem().getId();
         this.itemName = itemQuantity.getItem().getName();
+        this.itemSku = itemQuantity.getItem().getSku();
         this.itemDescription = itemQuantity.getItem().getDescription();
         this.qty = itemQuantity.getQuantityOrdered().getQuantity();
         this.price = itemQuantity.getItem().getPrice() * itemQuantity.getQuantityOrdered().getQuantity();
@@ -32,6 +34,7 @@ public class ItemQuantityDTO {
         return Item.builder()
                 .id(this.itemId)
                 .name(this.itemName)
+                .sku(this.itemSku)
                 .description(this.itemDescription)
                 .price(this.price)
                 .build();

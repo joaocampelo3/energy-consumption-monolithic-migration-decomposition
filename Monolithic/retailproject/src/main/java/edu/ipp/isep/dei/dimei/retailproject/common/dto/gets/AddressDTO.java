@@ -25,6 +25,7 @@ public class AddressDTO {
 
     public Address dtoToEntity() {
         return Address.builder()
+                .id(this.id)
                 .street(this.street)
                 .zipCode(this.zipCode)
                 .city(this.city)

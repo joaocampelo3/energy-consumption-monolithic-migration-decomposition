@@ -80,8 +80,6 @@ public class MerchantController {
             return new ResponseEntity<>(this.merchantService.deleteMerchant(id), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadPayloadException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -10,13 +10,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
 @Data
 public class OrderDTO {
     private int id;
+    private UUID uuid;
     private LocalDateTime orderDate;
     private OrderStatusEnum orderStatus;
     private int customerId;
@@ -27,6 +28,7 @@ public class OrderDTO {
 
     public OrderDTO(Order order) {
         this.id = order.getId();
+        this.uuid = order.getUuid();
         this.orderDate = order.getOrderDate();
         this.orderStatus = order.getStatus();
         this.customerId = order.getUser().getId();
@@ -35,7 +37,7 @@ public class OrderDTO {
         if (order.getItemQuantities() == null) {
             this.orderItems = new ArrayList<>();
         } else {
-            this.orderItems = order.getItemQuantities().stream().map(ItemQuantityDTO::new).collect(Collectors.toList());
+            this.orderItems = order.getItemQuantities().stream().map(itemQuantity -> new ItemQuantityDTO(itemQuantity)).toList();
         }
 
         this.paymentDTO = new PaymentDTO(order.getPayment());

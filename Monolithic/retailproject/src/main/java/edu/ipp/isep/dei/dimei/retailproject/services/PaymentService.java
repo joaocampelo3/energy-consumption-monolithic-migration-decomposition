@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentService {
     private final PaymentRepository paymentRepository;
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Payment not found.";
 
     public Payment createPayment(PaymentDTO paymentDTO) throws NotFoundException {
         Payment payment = paymentDTO.dtoToEntity();
@@ -30,6 +31,6 @@ public class PaymentService {
 
     public Payment getPayment(Payment payment) throws NotFoundException {
         return this.paymentRepository.findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(payment.getAmount(), payment.getPaymentDateTime(), payment.getPaymentMethod())
-                .orElseThrow(() -> new NotFoundException("Payment not found."));
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 }

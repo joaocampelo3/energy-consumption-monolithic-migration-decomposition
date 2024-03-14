@@ -9,6 +9,4 @@ import java.util.Optional;
 @Repository
 public interface ItemQuantityRepository extends CrudRepository<ItemQuantity, Integer> {
     Optional<ItemQuantity> findById(int id);
-
-    Optional<ItemQuantity> findByItemId(int item_id);
 }

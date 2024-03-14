@@ -27,6 +27,13 @@ public class PaymentDTO {
         this.status = payment.getStatus();
     }
 
+    public PaymentDTO(double amount, LocalDateTime paymentDateTime, PaymentMethodEnum paymentMethod, PaymentStatusEnum status) {
+        this.amount = amount;
+        this.paymentDateTime = paymentDateTime;
+        this.paymentMethod = paymentMethod;
+        this.status = status;
+    }
+
     public Payment dtoToEntity() {
         return Payment.builder()
                 .id(this.id)

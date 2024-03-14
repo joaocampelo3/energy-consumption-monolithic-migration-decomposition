@@ -1,5 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.security.common;
 
 public class SecurityGlobalVariables {
-    public static String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer ";
+
+    private SecurityGlobalVariables() {
+    }
 }

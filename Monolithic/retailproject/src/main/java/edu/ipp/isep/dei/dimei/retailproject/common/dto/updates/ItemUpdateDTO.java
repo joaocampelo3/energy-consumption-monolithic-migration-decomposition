@@ -10,11 +10,13 @@ import lombok.Data;
 @Data
 public class ItemUpdateDTO {
     private int id;
+    private String sku;
     private double price;
     private int quantityInStock;
 
     public ItemUpdateDTO(Item item) {
         this.id = item.getId();
+        this.sku = item.getSku();
         this.price = item.getPrice();
         this.quantityInStock = item.getQuantityInStock().getQuantity();
     }

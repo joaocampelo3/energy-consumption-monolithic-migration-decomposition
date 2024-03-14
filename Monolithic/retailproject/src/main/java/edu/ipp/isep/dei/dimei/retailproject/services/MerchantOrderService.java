@@ -15,7 +15,6 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantOrderRepository;
-import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,15 +28,17 @@ public class MerchantOrderService {
 
     private final MerchantOrderRepository merchantOrderRepository;
     private final UserService userService;
-    private final MerchantRepository merchantRepository;
+    private final MerchantService merchantService;
     private final OrderService orderService;
     private final ShippingOrderService shippingOrderService;
     private final ItemService itemService;
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant order payload.";
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant Order not found.";
 
-    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantRepository merchantRepository, @Lazy OrderService orderService, ShippingOrderService shippingOrderService, ItemService itemService) {
+    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantService merchantService, @Lazy OrderService orderService, ShippingOrderService shippingOrderService, ItemService itemService) {
         this.merchantOrderRepository = merchantOrderRepository;
         this.userService = userService;
-        this.merchantRepository = merchantRepository;
+        this.merchantService = merchantService;
         this.orderService = orderService;
         this.shippingOrderService = shippingOrderService;
         this.itemService = itemService;
@@ -68,18 +69,22 @@ public class MerchantOrderService {
     }
 
     public MerchantOrder createMerchantOrder(User user, Order order, int merchantId) throws NotFoundException {
-        Merchant merchant = this.merchantRepository.findById(merchantId)
-                .orElseThrow(() -> new NotFoundException("Merchant not found."));
+        Merchant merchant = this.merchantService.getMerchant(merchantId).dtoToEntity();
 
         MerchantOrder merchantOrder = new MerchantOrder(user, order, merchant);
 
         this.merchantOrderRepository.save(merchantOrder);
-        return merchantOrder;
+        return getMerchantOrderByOrder(order);
+    }
+
+    private MerchantOrder getMerchantOrderByOrder(Order order) throws NotFoundException {
+        return this.merchantOrderRepository.findByOrder(order)
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     public MerchantOrderUpdateDTO fullCancelMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
         if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
-            throw new BadPayloadException("Wrong merchant order payload.");
+            throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
@@ -91,16 +96,14 @@ public class MerchantOrderService {
         merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.shippingOrderService.fullCancelShippingOrderByMerchantOrder(authorizationToken, merchantOrder);
 
-        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
-            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
-        }
+        addItemStock(authorizationToken, merchantOrder);
 
-        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException("Merchant Order not found."));
+        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         return new MerchantOrderUpdateDTO(merchantOrder);
     }
 
-    public MerchantOrderUpdateDTO fullCancelOrderByOrder(String authorizationToken, Order order) throws NotFoundException, WrongFlowException {
+    public MerchantOrderUpdateDTO fullCancelMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException, WrongFlowException {
         MerchantOrder merchantOrder = getUserMerchantOrderByOrder(authorizationToken, order);
 
         if (!MerchantOrderStatusEnum.CANCELLED.equals(merchantOrder.getStatus())) {
@@ -110,28 +113,26 @@ public class MerchantOrderService {
         return new MerchantOrderUpdateDTO(merchantOrder);
     }
 
-    public MerchantOrderUpdateDTO fullCancelOrderByShippingOrder(String authorizationToken, ShippingOrder shippingOrder) throws NotFoundException, WrongFlowException {
-        return fullCancelOrderByOrder(authorizationToken, shippingOrder.getOrder());
+    public MerchantOrderUpdateDTO fullCancelMerchantOrderByShippingOrder(String authorizationToken, ShippingOrder shippingOrder) throws NotFoundException, WrongFlowException {
+        return fullCancelMerchantOrderByOrder(authorizationToken, shippingOrder.getOrder());
     }
 
     public MerchantOrderUpdateDTO rejectMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
         if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
-            throw new BadPayloadException("Wrong merchant order payload.");
+            throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
 
         merchantOrder = changeMerchantOrderStatus(authorizationToken, merchantOrder.getId(), MerchantOrderStatusEnum.REJECTED);
 
-        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
+        OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(authorizationToken, merchantOrder.getOrder().getId());
         merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.shippingOrderService.rejectShippingOrderByMerchantOrder(authorizationToken, merchantOrder);
 
-        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
-            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
-        }
+        addItemStock(authorizationToken, merchantOrder);
 
-        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException("Merchant Order not found."));
+        merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         return new MerchantOrderUpdateDTO(merchantOrder);
     }
@@ -152,7 +153,7 @@ public class MerchantOrderService {
 
     public MerchantOrderUpdateDTO approveMerchantOrder(String authorizationToken, int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
         if (!isIdEqualToOrderId(id, merchantOrderUpdateDTO)) {
-            throw new BadPayloadException("Wrong merchant order payload.");
+            throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
         MerchantOrder merchantOrder = getUserMerchantOrderById(authorizationToken, merchantOrderUpdateDTO.getId());
@@ -253,5 +254,11 @@ public class MerchantOrderService {
 
     private boolean isIdEqualToOrderId(int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         return id == merchantOrderUpdateDTO.getId();
+    }
+
+    private void addItemStock(String authorizationToken, MerchantOrder merchantOrder) throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
+        }
     }
 }

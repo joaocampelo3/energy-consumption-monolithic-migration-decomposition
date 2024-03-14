@@ -19,12 +19,14 @@ import java.util.List;
 @Service
 public class MerchantService {
 
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant not found.";
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant payload.";
     private final MerchantRepository merchantRepository;
     private final UserService userService;
     private final AddressService addressService;
 
     public Merchant getMerchantByUser(User user) throws NotFoundException {
-        return merchantRepository.findByEmail(user.getAccount().getEmail()).orElseThrow(() -> new NotFoundException("Merchant not found."));
+        return merchantRepository.findByEmail(user.getAccount().getEmail()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     public List<MerchantDTO> getAllMerchants() {
@@ -43,7 +45,7 @@ public class MerchantService {
 
     private Merchant getMerchantById(int id) throws NotFoundException {
         return this.merchantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Merchant not found"));
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     public MerchantDTO createMerchant(MerchantDTO merchantDTO) throws NotFoundException {
@@ -55,6 +57,10 @@ public class MerchantService {
         Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), address);
 
         this.merchantRepository.save(merchant);
+
+        merchant = this.merchantRepository.findByEmail(merchant.getEmail())
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+
         return new MerchantDTO(merchant);
     }
 
@@ -63,7 +69,7 @@ public class MerchantService {
         User user = this.userService.findByEmail(merchant.getEmail());
 
         if (merchant.getId() != merchantDTO.getId() || !merchant.getEmail().equals(merchantDTO.getEmail())) {
-            throw new BadPayloadException("Wrong merchant payload.");
+            throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
         Address address = this.addressService.createAddress(merchantDTO.getAddress(), user);
@@ -75,7 +81,7 @@ public class MerchantService {
         return new MerchantDTO(merchant);
     }
 
-    public MerchantDTO deleteMerchant(int id) throws NotFoundException, BadPayloadException {
+    public MerchantDTO deleteMerchant(int id) throws NotFoundException {
         Merchant merchant = getMerchantById(id);
 
         this.merchantRepository.delete(merchant);

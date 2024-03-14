@@ -13,6 +13,7 @@ import lombok.Data;
 public class ItemDTO {
     private int id;
     private String itemName;
+    private String sku;
     private String itemDescription;
     private double price;
     private int quantityInStock;
@@ -22,6 +23,7 @@ public class ItemDTO {
     public ItemDTO(Item item) {
         this.id = item.getId();
         this.itemName = item.getName();
+        this.sku = item.getSku();
         this.itemDescription = item.getDescription();
         this.price = item.getPrice();
         this.quantityInStock = item.getQuantityInStock().getQuantity();
@@ -32,6 +34,7 @@ public class ItemDTO {
     public ItemDTO(Item item, CategoryDTO categoryDTO, MerchantDTO merchantOrderDTO) {
         this.id = item.getId();
         this.itemName = item.getName();
+        this.sku = item.getSku();
         this.itemDescription = item.getDescription();
         this.price = item.getPrice();
         this.quantityInStock = item.getQuantityInStock().getQuantity();
@@ -43,6 +46,7 @@ public class ItemDTO {
         return Item.builder()
                 .id(this.id)
                 .name(this.itemName)
+                .sku(this.sku)
                 .description(this.itemDescription)
                 .price(this.price)
                 .quantityInStock(new StockQuantity(this.quantityInStock))

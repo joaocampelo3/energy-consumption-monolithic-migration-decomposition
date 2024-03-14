@@ -14,9 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -24,8 +21,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-
-    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public AuthenticationResponse register(RegisterDTO registerDTO) {
         Account account = Account.builder()
@@ -42,13 +37,9 @@ public class AuthenticationService {
 
         User savedUser;
 
-        try {
-            userRepository.save(user);
-            savedUser = user;
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Cause: " + e.getCause() + "\nMessage: " + e.getMessage());
-            throw e;
-        }
+
+        userRepository.save(user);
+        savedUser = user;
 
         var jwtToken = jwtService.generateToken(savedUser.getAccount());
 

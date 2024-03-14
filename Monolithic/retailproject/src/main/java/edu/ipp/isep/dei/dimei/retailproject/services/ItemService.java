@@ -22,6 +22,8 @@ import java.util.List;
 @Service
 public class ItemService {
 
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Item not found.";
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong item payload.";
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final MerchantService merchantService;
@@ -33,7 +35,7 @@ public class ItemService {
         this.itemRepository.findAll().forEach(items::add);
 
         for (Item item : items) {
-            itemQuantities.add(new ItemDTO(this.itemRepository.findById(item.getId()).orElseThrow(() -> new NotFoundException("Item not found."))));
+            itemQuantities.add(new ItemDTO(getItemById(item.getId())));
         }
 
         return itemQuantities;
@@ -42,7 +44,14 @@ public class ItemService {
     public List<ItemDTO> getUserItems(String authorizationToken) throws NotFoundException {
         Merchant merchant = getItemMerchantByUser(authorizationToken);
 
-        return this.itemRepository.findAllByMerchantId(merchant.getId()).stream().map(item -> new ItemDTO(item)).toList();
+        List<Item> items = this.itemRepository.findAllByMerchantId(merchant.getId());
+        List<ItemDTO> itemDTOS = new ArrayList<>();
+
+        for (Item item : items) {
+            itemDTOS.add(new ItemDTO(item));
+        }
+
+        return itemDTOS;
     }
 
     public ItemDTO getUserItemDTO(String authorizationToken, int id) throws NotFoundException {
@@ -50,13 +59,13 @@ public class ItemService {
     }
 
     public Item getItemById(int id) throws NotFoundException {
-        return this.itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item not found."));
+        return this.itemRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     private Item getUserItemById(String authorizationToken, int id) throws NotFoundException {
         Merchant merchant = getItemMerchantByUser(authorizationToken);
 
-        return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException("Item not found."));
+        return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     public ItemDTO createItem(String authorizationToken, ItemDTO itemDTO) throws NotFoundException, BadPayloadException, InvalidQuantityException {
@@ -68,6 +77,7 @@ public class ItemService {
 
         Item item = Item.builder()
                 .name(itemDTO.getItemName())
+                .sku(itemDTO.getSku())
                 .description(itemDTO.getItemDescription())
                 .price(itemDTO.getPrice())
                 .quantityInStock(new StockQuantity(itemDTO.getQuantityInStock()))
@@ -75,7 +85,12 @@ public class ItemService {
                 .merchant(itemDTO.getMerchant().dtoToEntity())
                 .build();
         this.itemRepository.save(item);
-        return new ItemDTO(item);
+
+        return new ItemDTO(getItemBySku(item.getSku()));
+    }
+
+    public Item getItemBySku(String sku) throws NotFoundException {
+        return this.itemRepository.findBySku(sku).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     private Merchant getItemMerchantByUser(String authorizationToken) throws NotFoundException {
@@ -103,20 +118,20 @@ public class ItemService {
 
     private ItemDTO changeItemStock(String authorizationToken, int id, ItemUpdateDTO itemUpdateDTO, String action) throws BadPayloadException, NotFoundException, InvalidQuantityException {
         if (id != itemUpdateDTO.getId() || itemUpdateDTO.getQuantityInStock() < 0) {
-            throw new BadPayloadException("Wrong item payload.");
+            throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         } else {
             Item item = getUserItemById(authorizationToken, id);
 
             if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().decreaseStockQuantity(itemUpdateDTO.getQuantityInStock());
                 this.itemRepository.save(item);
-                return new ItemDTO(item);
+                return new ItemDTO(getItemBySku(item.getSku()));
             } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().increaseStockQuantity(itemUpdateDTO.getQuantityInStock());
                 this.itemRepository.save(item);
-                return new ItemDTO(item);
+                return new ItemDTO(getItemBySku(item.getSku()));
             } else {
-                throw new BadPayloadException("Wrong item payload.");
+                throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
             }
         }
 

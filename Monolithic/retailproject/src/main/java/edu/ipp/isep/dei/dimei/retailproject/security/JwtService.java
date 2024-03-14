@@ -14,13 +14,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class JwtService {
-
-    private final Logger logger = Logger.getLogger(getClass().getName());
     @Value("${jwt.secret}")
     private String SECRET_KEY;
     @Value("${jwt.token.expirationTimeSecs}")
@@ -30,7 +26,6 @@ public class JwtService {
         try {
             return generateToken(new HashMap<>(), userDetails);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Cause: " + e.getCause() + "\nMessage: " + e.getMessage());
             throw e;
         }
     }
