@@ -20,6 +20,7 @@ class Category {
 class Item {
   - id: int
   - name: String
+  - sku: String
   - description: String
   - price: double
   - category: Category
