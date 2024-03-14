@@ -1,6 +1,5 @@
-package edu.ipp.isep.dei.dimei.retailproject.commom.dto.creates;
+package edu.ipp.isep.dei.dimei.retailproject.common.dto.creates;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class OrderCreateDTOTest {
+class OrderCreateDTOTest {
 
     int id = 1;
     LocalDateTime orderDate;
@@ -44,6 +43,7 @@ public class OrderCreateDTOTest {
                 .id(1)
                 .itemId(1)
                 .itemName("Item 1")
+                .itemSku("ABC-12345-S-BL")
                 .itemDescription("Item 1 Description")
                 .qty(10)
                 .price(5)
@@ -52,6 +52,7 @@ public class OrderCreateDTOTest {
                 .id(2)
                 .itemId(2)
                 .itemName("Item 2")
+                .itemSku("ABC-12345-M-BL")
                 .itemDescription("Item 2 Description")
                 .qty(5)
                 .price(5)
@@ -77,7 +78,7 @@ public class OrderCreateDTOTest {
     }
 
     @Test
-    public void test_createOrderCreateDTO() {
+    void test_createOrderCreateDTO() {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
 
         assertNotNull(orderCreateDTO);
@@ -88,13 +89,13 @@ public class OrderCreateDTOTest {
         assertEquals(email, orderCreateDTO.getEmail());
         assertEquals(itemQuantityDTOList, orderCreateDTO.getOrderItems());
         assertEquals(totalPrice, orderCreateDTO.getTotalPrice());
-        assertEquals(paymentDTO, orderCreateDTO.getPaymentDTO());
+        assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
-        assertEquals(addressDTO, orderCreateDTO.getAddressDTO());
+        assertEquals(addressDTO, orderCreateDTO.getAddress());
     }
 
     @Test
-    public void test_createOrderCreateDTOBuilder() {
+    void test_createOrderCreateDTOBuilder() {
         OrderCreateDTO orderCreateDTO = OrderCreateDTO.builder()
                 .id(id)
                 .orderDate(orderDate)
@@ -103,9 +104,9 @@ public class OrderCreateDTOTest {
                 .email(email)
                 .orderItems(itemQuantityDTOList)
                 .totalPrice(totalPrice)
-                .paymentDTO(paymentDTO)
+                .payment(paymentDTO)
                 .merchantId(merchantId)
-                .addressDTO(addressDTO)
+                .address(addressDTO)
                 .build();
 
         assertNotNull(orderCreateDTO);
@@ -116,13 +117,13 @@ public class OrderCreateDTOTest {
         assertEquals(email, orderCreateDTO.getEmail());
         assertEquals(itemQuantityDTOList, orderCreateDTO.getOrderItems());
         assertEquals(totalPrice, orderCreateDTO.getTotalPrice());
-        assertEquals(paymentDTO, orderCreateDTO.getPaymentDTO());
+        assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
-        assertEquals(addressDTO, orderCreateDTO.getAddressDTO());
+        assertEquals(addressDTO, orderCreateDTO.getAddress());
     }
 
     @Test
-    public void test_createOrderCreateDTOToString() {
+    void test_createOrderCreateDTOToString() {
         OrderCreateDTO orderCreateDTO = OrderCreateDTO.builder()
                 .id(id)
                 .orderDate(orderDate)
@@ -131,9 +132,9 @@ public class OrderCreateDTOTest {
                 .email(email)
                 .orderItems(itemQuantityDTOList)
                 .totalPrice(totalPrice)
-                .paymentDTO(paymentDTO)
+                .payment(paymentDTO)
                 .merchantId(merchantId)
-                .addressDTO(addressDTO)
+                .address(addressDTO)
                 .build();
 
         assertNotNull(orderCreateDTO);
@@ -141,7 +142,7 @@ public class OrderCreateDTOTest {
     }
 
     @Test
-    public void test_createOrderCreateDTONoArgsConstructor() {
+    void test_createOrderCreateDTONoArgsConstructor() {
         OrderCreateDTO orderCreateDTO = OrderCreateDTO.builder().build();
         assertNotNull(orderCreateDTO);
     }
