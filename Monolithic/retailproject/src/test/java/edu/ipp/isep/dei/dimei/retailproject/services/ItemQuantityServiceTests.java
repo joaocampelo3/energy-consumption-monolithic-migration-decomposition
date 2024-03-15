@@ -4,6 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.ItemQuantityRepository;
@@ -88,7 +89,7 @@ class ItemQuantityServiceTests {
     }
 
     @Test
-    void test_CreateItemQuantity() throws NotFoundException, InvalidQuantityException {
+    void test_CreateItemQuantity() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         when(itemService.getItemById(itemQuantityDTO1.getId())).thenReturn(item1);
         doReturn(itemQuantity1Updated).when(itemQuantityRepository).save(any(ItemQuantity.class));

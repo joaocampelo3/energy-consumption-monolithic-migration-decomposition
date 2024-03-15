@@ -4,9 +4,11 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class AddressDTO {
     private int id;

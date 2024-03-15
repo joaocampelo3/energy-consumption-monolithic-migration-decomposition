@@ -84,7 +84,6 @@ class OrderServiceTests {
     OrderCreateDTO orderCreateDTO;
     Payment payment;
     PaymentDTO paymentDTO;
-    LocalDateTime currentTime = LocalDateTime.now();
     Order order1Updated;
     MerchantOrderDTO merchantOrderDTO1;
     ShippingOrder shippingOrder1;
@@ -190,7 +189,7 @@ class OrderServiceTests {
 
         newOrder1 = Order.builder()
                 .id(0)
-                .orderDate(currentTime)
+                .orderDate(currentDateTime)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList1)
@@ -205,7 +204,7 @@ class OrderServiceTests {
 
         order1 = Order.builder()
                 .id(1)
-                .orderDate(currentTime)
+                .orderDate(currentDateTime)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList1)
@@ -271,7 +270,7 @@ class OrderServiceTests {
         payment = Payment.builder()
                 .id(1)
                 .amount(1)
-                .paymentDateTime(currentTime)
+                .paymentDateTime(currentDateTime)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();
@@ -279,7 +278,7 @@ class OrderServiceTests {
         paymentDTO = new PaymentDTO(payment);
 
         orderCreateDTO = OrderCreateDTO.builder()
-                .orderDate(currentTime)
+                .orderDate(currentDateTime)
                 .customerId(user.getId())
                 .email(user.getAccount().getEmail())
                 .orderItems(order1.getItemQuantities().stream().map(itemQuantity -> new ItemQuantityDTO(itemQuantity)).toList())
@@ -291,7 +290,7 @@ class OrderServiceTests {
 
         order1Updated = Order.builder()
                 .id(1)
-                .orderDate(currentTime)
+                .orderDate(currentDateTime)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList1)
@@ -348,12 +347,11 @@ class OrderServiceTests {
         itemUpdateDTO1.setQuantityInStock(itemUpdateDTO1.getQuantityInStock() - 1);
         itemUpdated.getQuantityInStock().setQuantity((itemUpdated.getQuantityInStock().getQuantity() - 1));
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
-        when(itemService.getUserItemDTO(JwtTokenDummy, itemQuantityDTO1.getId())).thenReturn(itemDTO1);
+        when(itemService.getItemDTO(itemQuantityDTO1.getId())).thenReturn(itemDTO1);
         when(addressService.createAddress(orderCreateDTO.getAddress(), user)).thenReturn(shippingAddress);
         when(paymentService.createPayment(orderCreateDTO.getPayment())).thenReturn(payment);
         when(itemQuantityService.createItemQuantity(itemQuantityDTO1)).thenReturn(itemQuantity1);
-        when(itemService.removeItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()))).thenReturn(itemDTO1Updated);
-        when(itemService.getItemBySku(itemQuantityDTO1.getItemSku())).thenReturn(item);
+        when(itemService.removeItemStock(JwtTokenDummy, itemQuantityDTO1.getItemId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()))).thenReturn(itemDTO1Updated);
         when(orderRepository.save(newOrder1)).thenReturn(order1);
         when(merchantOrderService.createMerchantOrder(user, order1, orderCreateDTO.getMerchantId())).thenReturn(merchantOrder1);
 
@@ -363,12 +361,11 @@ class OrderServiceTests {
 
         // Perform assertions
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
-        verify(itemService, atLeastOnce()).getUserItemDTO(JwtTokenDummy, itemQuantityDTO1.getId());
+        verify(itemService, atLeastOnce()).getItemDTO(itemQuantityDTO1.getId());
         verify(addressService, atLeastOnce()).createAddress(orderCreateDTO.getAddress(), user);
         verify(paymentService, atLeastOnce()).createPayment(orderCreateDTO.getPayment());
         verify(itemQuantityService, atLeastOnce()).createItemQuantity(itemQuantityDTO1);
         verify(itemService, atLeastOnce()).removeItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()));
-        verify(itemService, atLeastOnce()).getItemBySku(itemQuantityDTO1.getItemSku());
         verify(orderRepository, atLeastOnce()).save(newOrder1);
         verify(merchantOrderService, atLeastOnce()).createMerchantOrder(user, order1, orderCreateDTO.getMerchantId());
         assertNotNull(result);

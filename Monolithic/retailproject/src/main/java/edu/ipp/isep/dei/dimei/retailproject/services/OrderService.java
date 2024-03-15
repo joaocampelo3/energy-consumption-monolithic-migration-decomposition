@@ -56,19 +56,21 @@ public class OrderService {
     public Order createOrder(String authorizationToken, OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        isSameMerchantForAllItems(authorizationToken, orderDTO.getOrderItems(), orderDTO.getMerchantId());
+        isSameMerchantForAllItems(orderDTO.getOrderItems(), orderDTO.getMerchantId());
 
         Address shippingAddress = this.addressService.createAddress(orderDTO.getAddress(), user);
 
         Payment payment = this.paymentService.createPayment(orderDTO.getPayment());
 
         List<ItemQuantity> itemQuantities = new ArrayList<>();
-        int itemQuantity;
+        ItemQuantity itemQuantity;
+        int itemStock;
 
         for (ItemQuantityDTO itemQuantityDTO : orderDTO.getOrderItems()) {
-            itemQuantities.add(this.itemQuantityService.createItemQuantity(itemQuantityDTO));
-            itemQuantity = this.itemService.getItemBySku(itemQuantityDTO.getItemSku()).getQuantityInStock().getQuantity();
-            this.itemService.removeItemStock(authorizationToken, itemQuantityDTO.getItemId(), new ItemUpdateDTO(itemQuantityDTO.getItemId(), itemQuantityDTO.getItemSku(), itemQuantityDTO.getPrice(), itemQuantity - itemQuantityDTO.getQty()));
+            itemQuantity = this.itemQuantityService.createItemQuantity(itemQuantityDTO);
+            itemStock = itemQuantity.getItem().getQuantityInStock().getQuantity();
+            itemQuantities.add(itemQuantity);
+            this.itemService.removeItemStock(authorizationToken, itemQuantityDTO.getItemId(), new ItemUpdateDTO(itemQuantityDTO.getItemId(), itemQuantityDTO.getItemSku(), itemQuantityDTO.getPrice(), itemStock - itemQuantityDTO.getQty()));
         }
 
         Order order = orderDTO.dtoToEntity(user, payment, itemQuantities);
@@ -82,10 +84,10 @@ public class OrderService {
         return order;
     }
 
-    private void isSameMerchantForAllItems(String authorizationToken, List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {
+    private void isSameMerchantForAllItems(List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {
         ItemDTO itemDTO;
         for (ItemQuantityDTO itemQuantityDTO : itemQuantityDTOS) {
-            itemDTO = this.itemService.getUserItemDTO(authorizationToken, itemQuantityDTO.getItemId());
+            itemDTO = this.itemService.getItemDTO(itemQuantityDTO.getItemId());
             if (itemDTO.getMerchant().getId() != merchantId)
                 throw new BadPayloadException("Only can order items form same merchant");
         }

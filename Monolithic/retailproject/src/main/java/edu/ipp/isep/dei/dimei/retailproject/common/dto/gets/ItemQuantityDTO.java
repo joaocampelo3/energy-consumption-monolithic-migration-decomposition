@@ -7,9 +7,11 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class ItemQuantityDTO {
     private int id;

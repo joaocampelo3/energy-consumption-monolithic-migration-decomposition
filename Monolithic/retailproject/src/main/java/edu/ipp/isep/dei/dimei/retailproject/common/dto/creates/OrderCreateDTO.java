@@ -11,12 +11,14 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class OrderCreateDTO {
     private int id;

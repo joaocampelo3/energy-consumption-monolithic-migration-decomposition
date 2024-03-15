@@ -38,7 +38,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<ItemQuantity> itemQuantities;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name = "payment_id", unique = true, referencedColumnName = "id")
     private Payment payment;
 
