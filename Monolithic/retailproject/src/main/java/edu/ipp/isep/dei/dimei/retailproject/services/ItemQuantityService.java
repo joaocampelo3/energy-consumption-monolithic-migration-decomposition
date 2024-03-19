@@ -31,7 +31,7 @@ public class ItemQuantityService {
     }
 
     private boolean hasStock(ItemQuantity itemQuantity, Item item) throws BadPayloadException {
-        if (itemQuantity.getQuantityOrdered().getQuantity() > item.getQuantityInStock().getQuantity()){
+        if (itemQuantity.getQuantityOrdered().getQuantity() > item.getQuantityInStock().getQuantity()) {
             throw new BadPayloadException("Wrong Item Quantity payload.");
         }
         return true;

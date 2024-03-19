@@ -10,13 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, Integer> {
-
     Optional<MerchantOrder> findById(int id);
-
     List<MerchantOrder> findByMerchantEmail(String email);
-
     Optional<MerchantOrder> findByOrder(Order order);
-
     List<MerchantOrder> findAll();
-
+    void deleteByOrderId(int orderId);
 }

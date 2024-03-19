@@ -171,9 +171,18 @@ public class MerchantOrderService {
     private MerchantOrder getUserMerchantOrderById(String authorizationToken, int id) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.merchantOrderRepository.findById(id)
-                .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
-                .orElseThrow(() -> new NotFoundException("Merchant Order not found"));
+        switch (user.getAccount().getRole()) {
+            case MERCHANT -> {
+                return this.merchantOrderRepository.findById(id)
+                        .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case ADMIN -> {
+                return this.merchantOrderRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        }
     }
 
     private MerchantOrder getUserMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
@@ -181,7 +190,7 @@ public class MerchantOrderService {
 
         return this.merchantOrderRepository.findByOrder(order)
                 .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
-                .orElseThrow(() -> new NotFoundException("Merchant Order not found"));
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     private MerchantOrder changeMerchantOrderStatus(String authorizationToken, int id, MerchantOrderStatusEnum status) throws NotFoundException, WrongFlowException {
@@ -256,5 +265,9 @@ public class MerchantOrderService {
         for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+    }
+
+    protected void deleteMerchantOrderByOrderId(int orderId) {
+        this.merchantOrderRepository.deleteByOrderId(orderId);
     }
 }

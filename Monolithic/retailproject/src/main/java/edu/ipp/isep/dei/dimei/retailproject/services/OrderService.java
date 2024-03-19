@@ -101,13 +101,15 @@ public class OrderService {
     public OrderDTO deleteOrder(int userId, int orderId) throws NotFoundException {
         Order order = this.orderRepository.findById(orderId).filter(o -> o.getUser().getId() == userId).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
+        this.shippingOrderService.deleteShippingOrderByOrderId(order.getId());
+        this.merchantOrderService.deleteMerchantOrderByOrderId(order.getId());
         this.orderRepository.delete(order);
 
         return new OrderDTO(order);
     }
 
     public OrderUpdateDTO fullCancelOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (!isIdEqualToOrderId(id, orderUpdateDTO)) {
+        if (!isIdEqualToOrderId(id, orderUpdateDTO) && OrderStatusEnum.CANCELLED.compareTo(orderUpdateDTO.getOrderStatus()) == 0) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -128,7 +130,7 @@ public class OrderService {
     }
 
     public OrderUpdateDTO rejectOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (!isIdEqualToOrderId(id, orderUpdateDTO)) {
+        if (!isIdEqualToOrderId(id, orderUpdateDTO) && OrderStatusEnum.REJECTED.compareTo(orderUpdateDTO.getOrderStatus()) == 0) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -149,7 +151,7 @@ public class OrderService {
     }
 
     public OrderUpdateDTO approveOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
-        if (!isIdEqualToOrderId(id, orderUpdateDTO)) {
+        if (!isIdEqualToOrderId(id, orderUpdateDTO) && OrderStatusEnum.APPROVED.compareTo(orderUpdateDTO.getOrderStatus()) == 0) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -161,7 +163,16 @@ public class OrderService {
     private Order getUserOrderById(String authorizationToken, int id) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.orderRepository.findById(id).filter(o -> o.getUser() == user).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        switch (user.getAccount().getRole()) {
+            case USER -> {
+                return this.orderRepository.findById(id).filter(o -> o.getUser() == user).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case ADMIN, MERCHANT -> {
+                return this.orderRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        }
+
     }
 
     private Order changeOrderStatus(String authorizationToken, int id, OrderStatusEnum status) throws NotFoundException, WrongFlowException {

@@ -26,13 +26,13 @@ import java.util.List;
 @Service
 public class ShippingOrderService {
 
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong shipping order payload.";
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Shipping Order not found.";
     private final ShippingOrderRepository shippingOrderRepository;
     private final UserService userService;
     private final MerchantOrderService merchantOrderService;
     private final OrderService orderService;
     private final ItemService itemService;
-    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong shipping order payload.";
-    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Shipping Order not found.";
 
     public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, UserService userService, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService, ItemService itemService) {
         this.shippingOrderRepository = shippingOrderRepository;
@@ -172,8 +172,23 @@ public class ShippingOrderService {
     private ShippingOrder getUserShippingOrderById(String authorizationToken, int id) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.shippingOrderRepository.findById(id).filter(o -> o.getUser() == user)
-                .orElseThrow(() -> new NotFoundException("Shipping Order not found"));
+        switch (user.getAccount().getRole()) {
+            case USER -> {
+                return this.shippingOrderRepository.findById(id)
+                        .filter(o -> o.getUser() == user)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case ADMIN -> {
+                return this.shippingOrderRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case MERCHANT -> {
+                return this.shippingOrderRepository.findById(id)
+                        .filter(o -> o.getMerchantOrder().getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        }
     }
 
     private ShippingOrder getUserShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
@@ -181,7 +196,7 @@ public class ShippingOrderService {
 
         return this.shippingOrderRepository.findByOrder(order)
                 .filter(shippingOrder -> shippingOrder.getUser() == user)
-                .orElseThrow(() -> new NotFoundException("Shipping Order not found"));
+                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     private ShippingOrder changeShippingOrderStatus(String authorizationToken, int id, ShippingOrderStatusEnum status) throws NotFoundException, WrongFlowException {
@@ -254,5 +269,9 @@ public class ShippingOrderService {
         for (ItemQuantity itemQuantity : shippingOrder.getOrder().getItemQuantities()) {
             this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
         }
+    }
+
+    protected void deleteShippingOrderByOrderId(int orderId) {
+        this.shippingOrderRepository.deleteByOrderId(orderId);
     }
 }
