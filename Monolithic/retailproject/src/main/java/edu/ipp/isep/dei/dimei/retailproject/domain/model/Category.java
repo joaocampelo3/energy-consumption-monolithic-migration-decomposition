@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
-@Table(name = "categories",
-        indexes = {
-                @Index(columnList = "category_name")
-        })
+@Table(name = "categories")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

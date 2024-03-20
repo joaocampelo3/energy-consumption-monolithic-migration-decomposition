@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "merchant_orders",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"order_id"})
+        },
         indexes = {
-                @Index(columnList = "merchent_order_status"),
-                @Index(columnList = "customer_id"),
-                @Index(columnList = "order_id")
+                @Index(columnList = "merchant_order_status"),
+                @Index(columnList = "merchant_id")
         })
 @Builder
 @NoArgsConstructor
@@ -27,7 +29,7 @@ public class MerchantOrder {
     @Column(name = "merchant_order_date", nullable = false)
     private LocalDateTime orderDate;
 
-    @Column(name = "merchent_order_status")
+    @Column(name = "merchant_order_status")
     @Enumerated(EnumType.STRING)
     private MerchantOrderStatusEnum status;
 
@@ -36,7 +38,7 @@ public class MerchantOrder {
     private User user;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "order_id", unique = true, referencedColumnName = "id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     @ManyToOne(optional = false)

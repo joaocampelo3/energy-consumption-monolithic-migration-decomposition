@@ -9,6 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"payment_id"})
+        },
         indexes = {
                 @Index(columnList = "order_status"),
                 @Index(columnList = "customer_id")
@@ -39,7 +42,7 @@ public class Order {
     private List<ItemQuantity> itemQuantities;
 
     @OneToOne(optional = false, fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-    @JoinColumn(name = "payment_id", unique = true, referencedColumnName = "id")
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
     public Order(LocalDateTime orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {

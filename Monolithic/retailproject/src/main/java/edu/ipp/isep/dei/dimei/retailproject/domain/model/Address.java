@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "addresses",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"street", "zipCode", "city", "country", "user_id"})
+        },
+        indexes = {
+            @Index(columnList = "street, zipCode, city, country")
         }
 )
 public class Address {

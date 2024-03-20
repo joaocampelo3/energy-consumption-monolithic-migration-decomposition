@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "shipping_orders",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"order_id"}),
+                @UniqueConstraint(columnNames = {"merchant_order_id"})
+        },
         indexes = {
                 @Index(columnList = "shipping_order_status"),
-                @Index(columnList = "order_id"),
-                @Index(columnList = "merchant_order_id"),
                 @Index(columnList = "customer_id")
         })
 @Builder
@@ -36,11 +38,11 @@ public class ShippingOrder {
     private Address shippingAddress;
 
     @OneToOne(optional = false)
-    @JoinColumn(name = "order_id", unique = true, referencedColumnName = "id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "merchant_order_id", unique = true, referencedColumnName = "id")
+    @JoinColumn(name = "merchant_order_id", referencedColumnName = "id")
     private MerchantOrder merchantOrder;
 
     @ManyToOne(optional = false)

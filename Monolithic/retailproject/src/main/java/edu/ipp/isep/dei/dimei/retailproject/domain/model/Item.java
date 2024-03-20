@@ -8,12 +8,12 @@ import lombok.*;
 
 @Entity
 @Table(name = "items",
-        indexes = {
-                @Index(columnList = "item_name"),
-                @Index(columnList = "item_category")
-        },
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "item_sku")
+        },
+        indexes = {
+                @Index(columnList = "item_category"),
+                @Index(columnList = "item_merchant")
         }
 )
 @Builder
