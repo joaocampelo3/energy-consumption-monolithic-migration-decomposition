@@ -21,7 +21,7 @@ public class ItemQuantity {
     @Embedded
     private OrderQuantity quantityOrdered;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Item item;
 
     public ItemQuantity(OrderQuantity quantityOrdered, Item item) {

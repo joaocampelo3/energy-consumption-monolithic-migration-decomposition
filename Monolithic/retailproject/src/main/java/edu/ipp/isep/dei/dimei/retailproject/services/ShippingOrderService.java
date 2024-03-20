@@ -194,9 +194,18 @@ public class ShippingOrderService {
     private ShippingOrder getUserShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.shippingOrderRepository.findByOrder(order)
-                .filter(shippingOrder -> shippingOrder.getUser() == user)
-                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        switch (user.getAccount().getRole()) {
+            case USER -> {
+                return this.shippingOrderRepository.findByOrder(order)
+                        .filter(shippingOrder -> shippingOrder.getUser() == user)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case ADMIN -> {
+                return this.shippingOrderRepository.findByOrder(order)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        }
     }
 
     private ShippingOrder changeShippingOrderStatus(String authorizationToken, int id, ShippingOrderStatusEnum status) throws NotFoundException, WrongFlowException {

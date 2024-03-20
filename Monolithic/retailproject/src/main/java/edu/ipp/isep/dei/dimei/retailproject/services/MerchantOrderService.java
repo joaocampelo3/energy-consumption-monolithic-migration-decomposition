@@ -181,6 +181,11 @@ public class MerchantOrderService {
                 return this.merchantOrderRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
             }
+            case USER -> {
+                return this.merchantOrderRepository.findById(id)
+                        .filter(o -> o.getUser().equals(user))
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
             default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
         }
     }
@@ -188,9 +193,23 @@ public class MerchantOrderService {
     private MerchantOrder getUserMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        return this.merchantOrderRepository.findByOrder(order)
-                .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
-                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        switch (user.getAccount().getRole()) {
+            case MERCHANT -> {
+                return this.merchantOrderRepository.findByOrder(order)
+                        .filter(o -> o.getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case ADMIN -> {
+                return this.merchantOrderRepository.findByOrder(order)
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            case USER -> {
+                return this.merchantOrderRepository.findByOrder(order)
+                        .filter(o -> o.getUser().equals(user))
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
+            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        }
     }
 
     private MerchantOrder changeMerchantOrderStatus(String authorizationToken, int id, MerchantOrderStatusEnum status) throws NotFoundException, WrongFlowException {
