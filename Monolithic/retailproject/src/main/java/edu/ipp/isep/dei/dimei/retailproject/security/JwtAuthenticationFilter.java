@@ -31,13 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String userEmail;
 
-        if (request.getServletPath().contains("/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+        if (request.getServletPath().contains("/auth") && !request.getServletPath().contains("/auth/register/admin") && !request.getServletPath().contains("/auth/register/merchant")) {
             filterChain.doFilter(request, response);
             return;
         }

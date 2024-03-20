@@ -22,11 +22,23 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
+    public AuthenticationResponse registerAdmin(RegisterDTO registerDTO) {
+        return registerUser(registerDTO, RoleEnum.ADMIN);
+    }
+
+    public AuthenticationResponse registerMerchant(RegisterDTO registerDTO) {
+        return registerUser(registerDTO, RoleEnum.MERCHANT);
+    }
+
     public AuthenticationResponse register(RegisterDTO registerDTO) {
+        return registerUser(registerDTO, RoleEnum.USER);
+    }
+
+    private AuthenticationResponse registerUser(RegisterDTO registerDTO, RoleEnum role) {
         Account account = Account.builder()
                 .email(registerDTO.getEmail())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
-                .role(RoleEnum.USER)
+                .role(role)
                 .build();
 
         User user = User.builder()

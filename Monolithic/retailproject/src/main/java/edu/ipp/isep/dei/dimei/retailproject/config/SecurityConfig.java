@@ -45,6 +45,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
+                        // Authentication Controller
+                        .requestMatchers(POST, "/auth/register/admin").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, "/auth/register/merchant").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Categories Controller
                         .requestMatchers(GET, "/categories/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, "/categories").hasAnyAuthority(RoleEnum.ADMIN.name())
