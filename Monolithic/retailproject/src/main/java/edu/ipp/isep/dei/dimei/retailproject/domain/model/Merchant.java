@@ -28,7 +28,8 @@ public class Merchant {
     @Email
     private String email;
 
-    @OneToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     public Merchant(String name, String email, Address address) {

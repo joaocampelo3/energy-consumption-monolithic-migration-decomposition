@@ -275,8 +275,12 @@ public class ShippingOrderService {
     }
 
     private void addItemStock(String authorizationToken, ShippingOrder shippingOrder) throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        ItemUpdateDTO itemUpdateDTO;
+
         for (ItemQuantity itemQuantity : shippingOrder.getOrder().getItemQuantities()) {
-            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
+            itemUpdateDTO = new ItemUpdateDTO(itemQuantity.getItem());
+            itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + itemQuantity.getQuantityOrdered().getQuantity());
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), itemUpdateDTO);
         }
     }
 

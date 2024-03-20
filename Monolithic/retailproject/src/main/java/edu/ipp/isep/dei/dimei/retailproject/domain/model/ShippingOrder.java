@@ -31,7 +31,8 @@ public class ShippingOrder {
     @Enumerated(EnumType.STRING)
     private ShippingOrderStatusEnum status;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
     private Address shippingAddress;
 
     @OneToOne(optional = false)

@@ -26,6 +26,8 @@ import java.util.List;
 @Service
 public class OrderService {
 
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Order not found.";
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong order payload.";
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final MerchantOrderService merchantOrderService;
@@ -34,8 +36,6 @@ public class OrderService {
     private final PaymentService paymentService;
     private final AddressService addressService;
     private final ItemQuantityService itemQuantityService;
-    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Order not found.";
-    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong order payload.";
 
     public List<OrderDTO> getAllOrders() {
         List<OrderDTO> orders = new ArrayList<>();
@@ -118,9 +118,7 @@ public class OrderService {
         this.merchantOrderService.fullCancelMerchantOrderByOrder(authorizationToken, order);
         this.shippingOrderService.fullCancelShippingOrderByOrder(authorizationToken, order);
 
-        for (ItemQuantity itemQuantity : order.getItemQuantities()) {
-            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
-        }
+        addItemStock(authorizationToken, order);
 
         return new OrderUpdateDTO(order);
     }
@@ -139,9 +137,7 @@ public class OrderService {
         this.merchantOrderService.rejectMerchantOrderByOrder(authorizationToken, order);
         this.shippingOrderService.rejectShippingOrderByOrder(authorizationToken, order);
 
-        for (ItemQuantity itemQuantity : order.getItemQuantities()) {
-            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), new ItemUpdateDTO(itemQuantity.getItem()));
-        }
+        addItemStock(authorizationToken, order);
 
         return new OrderUpdateDTO(order);
     }
@@ -248,5 +244,14 @@ public class OrderService {
 
     private boolean isIdEqualToOrderId(int id, OrderUpdateDTO orderUpdateDTO) {
         return id == orderUpdateDTO.getId();
+    }
+
+    private void addItemStock(String authorizationToken, Order order) throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        ItemUpdateDTO itemUpdateDTO;
+        for (ItemQuantity itemQuantity : order.getItemQuantities()) {
+            itemUpdateDTO = new ItemUpdateDTO(itemQuantity.getItem());
+            itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + itemQuantity.getQuantityOrdered().getQuantity());
+            this.itemService.addItemStock(authorizationToken, itemQuantity.getItem().getId(), itemUpdateDTO);
+        }
     }
 }
