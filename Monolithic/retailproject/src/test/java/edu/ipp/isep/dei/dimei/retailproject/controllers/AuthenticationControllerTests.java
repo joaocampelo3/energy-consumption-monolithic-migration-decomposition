@@ -96,6 +96,36 @@ class AuthenticationControllerTests {
     }
 
     @Test
+    void test_RegsiterAdminUser() {
+        // Define the behavior of the mock
+        when(authenticationService.registerAdmin(any())).thenReturn(authenticationResponse);
+
+        // Call the service method that uses the Repository
+        ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntity = authenticationController.registerAdmin(registerDTO);
+        ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
+
+        // Perform assertions
+        verify(authenticationService, atLeastOnce()).registerAdmin(registerDTO);
+        assertNotNull(authenticationResponseResponseEntity);
+        assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
+    }
+
+    @Test
+    void test_RegsiterMerchantUser() {
+        // Define the behavior of the mock
+        when(authenticationService.registerMerchant(any())).thenReturn(authenticationResponse);
+
+        // Call the service method that uses the Repository
+        ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntity = authenticationController.registerMerchant(registerDTO);
+        ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
+
+        // Perform assertions
+        verify(authenticationService, atLeastOnce()).registerMerchant(registerDTO);
+        assertNotNull(authenticationResponseResponseEntity);
+        assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
+    }
+
+    @Test
     void test_LoginUser() {
         // Define the behavior of the mock
         when(authenticationService.login(any())).thenReturn(authenticationResponse);
