@@ -47,15 +47,8 @@ public class CategoryController {
                     @ApiResponse
             }
     )
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Category was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})/*,
-            @ApiResponse(responseCode = "409", description = "There is no stock available for one or more of the products selected", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Some of the selected products do not exist", content = @Content)*/})
-    public ResponseEntity<?> createCategory(/*@RequestHeader("Authorization") String authorizationToken,*/ @RequestBody CategoryDTO categoryDTO) {
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Category was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+    public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) {
         try {
             return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
         } catch (NotFoundException e) {

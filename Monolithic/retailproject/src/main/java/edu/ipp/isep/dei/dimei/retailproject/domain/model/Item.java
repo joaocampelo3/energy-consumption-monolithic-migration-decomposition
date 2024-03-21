@@ -1,6 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -8,12 +8,12 @@ import lombok.*;
 
 @Entity
 @Table(name = "items",
-        indexes = {
-                @Index(columnList = "item_name"),
-                @Index(columnList = "item_category")
-        },
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "item_sku")
+        },
+        indexes = {
+                @Index(columnList = "item_category"),
+                @Index(columnList = "item_merchant")
         }
 )
 @Builder

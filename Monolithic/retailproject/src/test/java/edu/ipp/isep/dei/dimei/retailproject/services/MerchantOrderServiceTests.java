@@ -7,8 +7,8 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -61,6 +61,7 @@ class MerchantOrderServiceTests {
     Order order2;
     OrderDTO orderDTO1;
     OrderUpdateDTO orderUpdateDTO1;
+    MerchantOrder newMerchantOrder1;
     MerchantOrder merchantOrder1;
     MerchantOrder merchantOrder2;
     MerchantOrder merchantOrder1Updated;
@@ -158,6 +159,7 @@ class MerchantOrderServiceTests {
 
         order1 = Order.builder()
                 .id(1)
+                .orderDate(currentDateTime)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList)
@@ -175,6 +177,7 @@ class MerchantOrderServiceTests {
 
         order2 = Order.builder()
                 .id(2)
+                .orderDate(currentDateTime)
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList)
@@ -189,6 +192,15 @@ class MerchantOrderServiceTests {
 
         orderDTO1 = new OrderDTO(order1);
         orderUpdateDTO1 = new OrderUpdateDTO(order1);
+
+        newMerchantOrder1 = MerchantOrder.builder()
+                .id(0)
+                .orderDate(currentDateTime)
+                .status(MerchantOrderStatusEnum.PENDING)
+                .user(merchantUser)
+                .order(order1)
+                .merchant(merchant)
+                .build();
 
         merchantOrder1 = MerchantOrder.builder()
                 .id(1)
@@ -328,7 +340,7 @@ class MerchantOrderServiceTests {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
         when(merchantService.getMerchant(id)).thenReturn(new MerchantDTO(merchant));
-        when(merchantOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(merchantOrder1));
+        when(merchantOrderRepository.save(newMerchantOrder1)).thenReturn(merchantOrder1);
 
         // Call the service method that uses the Repository
         MerchantOrder result = merchantOrderService.createMerchantOrder(merchantUser, order1, id);
@@ -336,7 +348,7 @@ class MerchantOrderServiceTests {
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchant(id);
-        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        verify(merchantOrderRepository, atLeastOnce()).save(newMerchantOrder1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -345,7 +357,18 @@ class MerchantOrderServiceTests {
     void test_FullCancelMerchantOrder() throws InvalidQuantityException, NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        ItemUpdateDTO itemUpdateDTO;
+        Item itemAux = Item.builder()
+                .id(1)
+                .name("Item 1")
+                .sku("ABC-12345-S-BL")
+                .description("Item 1 Desc")
+                .price(1)
+                .quantityInStock(new StockQuantity(10))
+                .category(new Category(1, "Category 1", "Category"))
+                .merchant(merchant)
+                .build();
         merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.CANCELLED);
         merchantOrder1Updated.getOrder().setStatus(OrderStatusEnum.CANCELLED);
         orderUpdateDTO1.setOrderStatus(OrderStatusEnum.CANCELLED);
@@ -356,7 +379,10 @@ class MerchantOrderServiceTests {
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(orderService.fullCancelOrderByOrderId(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(orderUpdateDTO1);
         when(shippingOrderService.fullCancelShippingOrderByMerchantOrder(JwtTokenDummy, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
-        when(itemService.addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()))).thenReturn(new ItemDTO(item));
+        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItem());
+        itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -380,8 +406,9 @@ class MerchantOrderServiceTests {
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByMerchantOrder(JwtTokenDummy, merchantOrder1Updated);
-        verify(itemService, atLeastOnce()).addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()));
+        verify(itemService, atLeastOnce()).addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO);
         verify(merchantOrderRepository, atLeastOnce()).findById(merchantOrder1.getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -392,12 +419,14 @@ class MerchantOrderServiceTests {
         int id = merchantOrder1.getId();
         order1.setStatus(OrderStatusEnum.CANCELLED);
         merchantOrderUpdateDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
+        merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.CANCELLED);
 
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
         when(merchantOrderRepository.findByOrder(order1).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
         MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(JwtTokenDummy, order1);
@@ -409,6 +438,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -420,12 +450,14 @@ class MerchantOrderServiceTests {
         shippingOrder1.setStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1.getOrder().setStatus(OrderStatusEnum.CANCELLED);
         merchantOrderUpdateDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
+        merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.CANCELLED);
 
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
         when(merchantOrderRepository.findByOrder(shippingOrder1.getOrder()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
         MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByShippingOrder(JwtTokenDummy, shippingOrder1);
@@ -437,6 +469,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -445,19 +478,33 @@ class MerchantOrderServiceTests {
     void test_RejectMerchantOrder() throws NotFoundException, WrongFlowException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        ItemUpdateDTO itemUpdateDTO;
+        Item itemAux = Item.builder()
+                        .id(1)
+                        .name("Item 1")
+                        .sku("ABC-12345-S-BL")
+                        .description("Item 1 Desc")
+                        .price(1)
+                        .quantityInStock(new StockQuantity(10))
+                        .category(new Category(1, "Category 1", "Category"))
+                        .merchant(merchant)
+                        .build();
         merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.REJECTED);
         orderUpdateDTO1.setOrderStatus(OrderStatusEnum.REJECTED);
         shippingOrderUpdateDTO1.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         merchantOrderUpdateDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.REJECTED);
-
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
-        when(orderService.rejectOrderByOrderId(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(orderUpdateDTO1);
         merchantOrder1Updated.getOrder().setStatus(OrderStatusEnum.REJECTED);
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
+        when(orderService.rejectOrderByOrderId(JwtTokenDummy, merchantOrder1Updated.getOrder().getId())).thenReturn(orderUpdateDTO1);
         when(shippingOrderService.rejectShippingOrderByMerchantOrder(JwtTokenDummy, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
-        when(itemService.addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()))).thenReturn(new ItemDTO(item));
+        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItem());
+        itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -479,10 +526,12 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         verify(orderService, atLeastOnce()).rejectOrderByOrderId(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).rejectShippingOrderByMerchantOrder(JwtTokenDummy, merchantOrder1Updated);
-        verify(itemService, atLeastOnce()).addItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantity1.getItem()));
+        verify(itemService, atLeastOnce()).addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO);
         verify(merchantOrderRepository, atLeastOnce()).findById(merchantOrder1.getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -502,6 +551,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -524,6 +574,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -542,6 +593,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -564,6 +616,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -578,6 +631,7 @@ class MerchantOrderServiceTests {
         when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
             private int count = 0;
 
@@ -599,6 +653,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -608,6 +663,7 @@ class MerchantOrderServiceTests {
         // Define the behavior of the mock
         int id = 1;
         merchantOrder1.setStatus(MerchantOrderStatusEnum.APPROVED);
+        merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.SHIPPED);
         order1.setStatus(OrderStatusEnum.APPROVED);
         shippingOrder1.setStatus(ShippingOrderStatusEnum.SHIPPED);
 
@@ -615,6 +671,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.findById(id)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
         MerchantOrder result = merchantOrderService.shipMerchantOrder(JwtTokenDummy, id);
@@ -625,6 +682,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -634,6 +692,7 @@ class MerchantOrderServiceTests {
         // Define the behavior of the mock
         int id = 1;
         merchantOrder1.setStatus(MerchantOrderStatusEnum.SHIPPED);
+        merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.DELIVERED);
         order1.setStatus(OrderStatusEnum.SHIPPED);
         shippingOrder1.setStatus(ShippingOrderStatusEnum.DELIVERED);
 
@@ -641,6 +700,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.findById(id)).thenReturn(Optional.ofNullable(merchantOrder1));
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
+        when(merchantOrderRepository.save(merchantOrder1)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
         MerchantOrder result = merchantOrderService.deliverMerchantOrder(JwtTokenDummy, id);
@@ -651,6 +711,7 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId());
+        verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1);
         assertNotNull(result);
         assertEquals(expected, result);
     }

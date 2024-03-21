@@ -2,10 +2,11 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -54,6 +55,10 @@ public class ItemService {
         return itemDTOS;
     }
 
+    public ItemDTO getItemDTO(int id) throws NotFoundException {
+        return new ItemDTO(getItemById(id));
+    }
+
     public ItemDTO getUserItemDTO(String authorizationToken, int id) throws NotFoundException {
         return new ItemDTO(getUserItemById(authorizationToken, id));
     }
@@ -84,9 +89,10 @@ public class ItemService {
                 .category(itemDTO.getCategory().dtoToEntity())
                 .merchant(itemDTO.getMerchant().dtoToEntity())
                 .build();
-        this.itemRepository.save(item);
 
-        return new ItemDTO(getItemBySku(item.getSku()));
+        item = this.itemRepository.save(item);
+
+        return new ItemDTO(item);
     }
 
     public Item getItemBySku(String sku) throws NotFoundException {
@@ -117,19 +123,27 @@ public class ItemService {
     }
 
     private ItemDTO changeItemStock(String authorizationToken, int id, ItemUpdateDTO itemUpdateDTO, String action) throws BadPayloadException, NotFoundException, InvalidQuantityException {
+
         if (id != itemUpdateDTO.getId() || itemUpdateDTO.getQuantityInStock() < 0) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         } else {
-            Item item = getUserItemById(authorizationToken, id);
+            User user = this.userService.getUserByToken(authorizationToken);
+
+            Item item;
+            if (user.getAccount().getRole() == RoleEnum.MERCHANT) {
+                item = getUserItemById(authorizationToken, id);
+            } else {
+                item = getItemById(id);
+            }
 
             if (action.compareTo("removeItemStock") == 0 && item.getQuantityInStock().getQuantity() >= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().decreaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-                this.itemRepository.save(item);
-                return new ItemDTO(getItemBySku(item.getSku()));
+                item = this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else if (action.compareTo("addItemStock") == 0 && item.getQuantityInStock().getQuantity() <= itemUpdateDTO.getQuantityInStock()) {
                 item.getQuantityInStock().increaseStockQuantity(itemUpdateDTO.getQuantityInStock());
-                this.itemRepository.save(item);
-                return new ItemDTO(getItemBySku(item.getSku()));
+                item = this.itemRepository.save(item);
+                return new ItemDTO(item);
             } else {
                 throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
             }

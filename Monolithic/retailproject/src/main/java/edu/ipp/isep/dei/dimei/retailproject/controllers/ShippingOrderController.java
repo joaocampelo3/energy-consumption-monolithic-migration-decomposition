@@ -32,12 +32,7 @@ public class ShippingOrderController {
     }
 
     @GetMapping
-    @Operation(description = "Get shipping orders by user", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})})
+    @Operation(description = "Get shipping orders by user", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<?> getUserShippingOrders(@RequestHeader("Authorization") String authorizationToken) {
         try {
             return new ResponseEntity<>(this.shippingOrderService.getUserShippingOrders(authorizationToken), HttpStatus.OK);

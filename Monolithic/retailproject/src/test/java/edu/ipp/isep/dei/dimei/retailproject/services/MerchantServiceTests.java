@@ -36,7 +36,9 @@ class MerchantServiceTests {
     @Mock
     AddressService addressService;
     MerchantDTO merchantDTO1;
+    Merchant newMerchant1;
     Merchant merchant1;
+    Merchant merchant1Updated;
     Account account1;
     User user1;
     Address address1;
@@ -96,7 +98,21 @@ class MerchantServiceTests {
                 .country("USA")
                 .build();
 
+        newMerchant1 = Merchant.builder()
+                .id(0)
+                .name("Merchant 1")
+                .email("merchant_email@gmail.com")
+                .address(address1)
+                .build();
+
         merchant1 = Merchant.builder()
+                .id(1)
+                .name("Merchant 1")
+                .email("merchant_email@gmail.com")
+                .address(address1)
+                .build();
+
+        merchant1Updated = Merchant.builder()
                 .id(1)
                 .name("Merchant 1")
                 .email("merchant_email@gmail.com")
@@ -176,8 +192,8 @@ class MerchantServiceTests {
                 .thenReturn(user1);
         when(addressService.createAddress(merchantDTO1.getAddress(), user1))
                 .thenReturn(address1);
-        when(merchantRepository.findByEmail(merchant1.getEmail()))
-                .thenReturn(Optional.ofNullable(merchant1));
+        when(merchantRepository.save(newMerchant1))
+                .thenReturn(merchant1);
 
         // Call the service method that uses the Repository
         MerchantDTO result = merchantService.createMerchant(merchantDTO1);
@@ -186,7 +202,7 @@ class MerchantServiceTests {
         // Perform assertions
         verify(userService, atLeastOnce()).findByEmail(merchantDTO1.getEmail());
         verify(addressService, atLeastOnce()).createAddress(merchantDTO1.getAddress(), user1);
-        verify(merchantRepository, atLeastOnce()).findByEmail(merchant1.getEmail());
+        verify(merchantRepository, atLeastOnce()).save(newMerchant1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -197,12 +213,16 @@ class MerchantServiceTests {
         merchantDTO1Updated.setName(merchantDTO1.getName() + " Changed");
         addressDTOUpdated.setStreet(merchantDTO1.getAddress().getStreet() + " Changed");
         merchantDTO1Updated.setAddress(addressDTOUpdated);
+        merchant1Updated.setName(merchant1Updated.getName() + " Changed");
+        merchant1Updated.getAddress().setStreet(merchant1Updated.getAddress().getStreet() + " Changed");
 
         when(merchantRepository.findById(merchant1.getId())).thenReturn(Optional.ofNullable(merchant1));
         when(userService.findByEmail(merchantDTO1.getEmail()))
                 .thenReturn(user1);
         when(addressService.createAddress(merchantDTO1Updated.getAddress(), user1))
                 .thenReturn(addressDTOUpdated.dtoToEntity());
+        when(merchantRepository.save(merchant1Updated))
+                .thenReturn(merchant1Updated);
 
         // Call the service method that uses the Repository
         MerchantDTO result = merchantService.updateMerchant(merchant1.getId(), merchantDTO1Updated);
@@ -212,6 +232,7 @@ class MerchantServiceTests {
         verify(merchantRepository, atLeastOnce()).findById(merchant1.getId());
         verify(userService, atLeastOnce()).findByEmail(merchantDTO1.getEmail());
         verify(addressService, atLeastOnce()).createAddress(merchantDTO1.getAddress(), user1);
+        verify(merchantRepository, atLeastOnce()).save(merchant1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
     }

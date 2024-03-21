@@ -64,8 +64,7 @@ class AddressServiceTests {
         // Define the behavior of the mock
         when(addressRepository.existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId()))
                 .thenReturn(false);
-        when(addressRepository.findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry()))
-                .thenReturn(Optional.ofNullable(address1));
+        when(addressRepository.save(address1)).thenReturn(address1);
 
         // Call the service method that uses the Repository
         Address result = addressService.createAddress(addressDTO1, user);
@@ -73,7 +72,7 @@ class AddressServiceTests {
 
         // Perform assertions
         verify(addressRepository, atLeastOnce()).existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId());
-        verify(addressRepository, atLeastOnce()).findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry());
+        verify(addressRepository, atLeastOnce()).save(address1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -92,22 +91,6 @@ class AddressServiceTests {
 
         // Perform assertions
         verify(addressRepository, atLeastOnce()).existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId());
-        verify(addressRepository, atLeastOnce()).findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry());
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetAddressByUser() throws NotFoundException {
-        // Define the behavior of the mock
-        when(addressRepository.findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry()))
-                .thenReturn(Optional.ofNullable(address1));
-
-        // Call the service method that uses the Repository
-        Address result = addressService.getAddressByUser(address1, user.getId());
-        Address expected = address1;
-
-        // Perform assertions
         verify(addressRepository, atLeastOnce()).findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry());
         assertNotNull(result);
         assertEquals(expected, result);

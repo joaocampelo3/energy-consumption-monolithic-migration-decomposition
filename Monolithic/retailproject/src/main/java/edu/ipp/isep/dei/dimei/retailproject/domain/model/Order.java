@@ -6,10 +6,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"payment_id"})
+        },
         indexes = {
                 @Index(columnList = "order_status"),
                 @Index(columnList = "customer_id")
@@ -25,8 +27,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "order_internal_id", nullable = false)
-    private UUID uuid;
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 
@@ -41,8 +41,8 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<ItemQuantity> itemQuantities;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "payment_id", unique = true, referencedColumnName = "id")
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
     public Order(LocalDateTime orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {

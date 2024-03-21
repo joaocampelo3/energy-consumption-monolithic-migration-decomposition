@@ -1,6 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.OrderQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class ItemQuantity {
     @Embedded
     private OrderQuantity quantityOrdered;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Item item;
 
     public ItemQuantity(OrderQuantity quantityOrdered, Item item) {

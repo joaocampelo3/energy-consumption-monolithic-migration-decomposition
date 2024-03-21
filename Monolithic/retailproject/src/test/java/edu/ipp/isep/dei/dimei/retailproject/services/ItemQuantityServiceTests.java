@@ -2,20 +2,18 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueObjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.ItemQuantityRepository;
-import edu.ipp.isep.dei.dimei.retailproject.repositories.ItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,14 +27,14 @@ class ItemQuantityServiceTests {
     ItemQuantityRepository itemQuantityRepository;
     @Mock
     ItemService itemService;
-    @Mock
-    ItemRepository itemRepository;
     ItemQuantityDTO itemQuantityDTO1;
     ItemQuantity itemQuantity1;
+    ItemQuantity itemQuantity1Updated;
     Category category;
     Address merchantAddress;
     Merchant merchant;
     Item item1;
+    OrderQuantity orderQuantity;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -72,9 +70,17 @@ class ItemQuantityServiceTests {
                 .merchant(merchant)
                 .build();
 
+        orderQuantity = new OrderQuantity(1);
+
         itemQuantity1 = ItemQuantity.builder()
                 .id(1)
-                .quantityOrdered(new OrderQuantity(1))
+                .quantityOrdered(orderQuantity)
+                .item(item1)
+                .build();
+
+        itemQuantity1Updated = ItemQuantity.builder()
+                .id(1)
+                .quantityOrdered(orderQuantity)
                 .item(item1)
                 .build();
 
@@ -83,36 +89,18 @@ class ItemQuantityServiceTests {
     }
 
     @Test
-    void test_CreateItemQuantity() throws NotFoundException, InvalidQuantityException {
+    void test_CreateItemQuantity() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(itemService.getItemById(itemQuantityDTO1.getId()))
-                .thenReturn(item1);
-        when(itemQuantityRepository.findById(itemQuantityDTO1.getId()))
-                .thenReturn(Optional.ofNullable(itemQuantity1));
+        when(itemService.getItemById(itemQuantityDTO1.getId())).thenReturn(item1);
+        doReturn(itemQuantity1Updated).when(itemQuantityRepository).save(any(ItemQuantity.class));
 
         // Call the service method that uses the Repository
         ItemQuantity result = itemQuantityService.createItemQuantity(itemQuantityDTO1);
-        ItemQuantity expected = itemQuantity1;
+        ItemQuantity expected = itemQuantity1Updated;
 
         // Perform assertions
         verify(itemService, atLeastOnce()).getItemById(itemQuantityDTO1.getId());
-        verify(itemQuantityRepository, atLeastOnce()).findById(itemQuantityDTO1.getId());
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetItemQuantityById() throws NotFoundException {
-        // Define the behavior of the mock
-        when(itemQuantityRepository.findById(itemQuantityDTO1.getId()))
-                .thenReturn(Optional.ofNullable(itemQuantity1));
-
-        // Call the service method that uses the Repository
-        ItemQuantity result = itemQuantityService.getItemQuantityById(itemQuantityDTO1.getItemId());
-        ItemQuantity expected = itemQuantity1;
-
-        // Perform assertions
-        verify(itemQuantityRepository, atLeastOnce()).findById(itemQuantityDTO1.getId());
+        verify(itemQuantityRepository, atLeastOnce()).save(any(ItemQuantity.class));
         assertNotNull(result);
         assertEquals(expected, result);
     }

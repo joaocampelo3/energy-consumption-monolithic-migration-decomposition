@@ -34,12 +34,7 @@ public class MerchantOrderController {
     }
 
     @GetMapping
-    @Operation(description = "Get merchant orders by user", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE/*,
-                                            examples = {
-                                                    @ExampleObject(
-                                                            value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}"
-                                                    )
-                                            }*/)})})
+    @Operation(description = "Get merchant orders by user", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<?> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
         try {
             return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(authorizationToken), HttpStatus.OK);

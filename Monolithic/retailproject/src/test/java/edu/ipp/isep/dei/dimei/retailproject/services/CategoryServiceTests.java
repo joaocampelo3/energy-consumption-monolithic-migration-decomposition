@@ -29,6 +29,7 @@ class CategoryServiceTests {
     CategoryDTO categoryDTO1;
     CategoryDTO categoryDTO2;
     List<CategoryDTO> categoryDTOS = new ArrayList<>();
+    Category newCategory1;
     Category category1;
     Category category2;
     List<Category> categories = new ArrayList<>();
@@ -36,26 +37,32 @@ class CategoryServiceTests {
 
     @BeforeEach
     void beforeEach() {
-        categoryDTO1 = CategoryDTO.builder()
+        newCategory1 = Category.builder()
+                .id(0)
+                .name("Category 1")
+                .description("Category 1 Description")
+                .build();
+
+        category1 = Category.builder()
                 .id(1)
                 .name("Category 1")
                 .description("Category 1 Description")
                 .build();
 
-        categoryDTO2 = CategoryDTO.builder()
+        category2 = Category.builder()
                 .id(2)
                 .name("Category 2")
                 .description("Category 2 Description")
                 .build();
 
-        categoryDTOS.add(categoryDTO1);
-        categoryDTOS.add(categoryDTO2);
-
-        category1 = categoryDTO1.dtoToEntity();
-        category2 = categoryDTO2.dtoToEntity();
+        categoryDTO1 = new CategoryDTO(category1);
+        categoryDTO2 = new CategoryDTO(category2);
 
         categories.add(category1);
         categories.add(category2);
+
+        categoryDTOS.add(categoryDTO1);
+        categoryDTOS.add(categoryDTO2);
 
         categoryUpdateDTO = categoryDTO1;
     }
@@ -94,14 +101,14 @@ class CategoryServiceTests {
     @Test
     void test_CreateCategory() throws NotFoundException {
         // Define the behavior of the mock
-        when(categoryRepository.findByName(categoryDTO1.getName())).thenReturn(Optional.ofNullable(category1));
+        when(categoryRepository.save(newCategory1)).thenReturn(category1);
 
         // Call the service method that uses the Repository
         CategoryDTO result = categoryService.createCategory(categoryDTO1);
         CategoryDTO expected = new CategoryDTO(category1);
 
         // Perform assertions
-        verify(categoryRepository, atLeastOnce()).findByName(categoryDTO1.getName());
+        verify(categoryRepository, atLeastOnce()).save(newCategory1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -113,6 +120,7 @@ class CategoryServiceTests {
         categoryUpdateDTO.setName(categoryDTO1.getName() + " Changed");
         categoryUpdateDTO.setDescription(categoryDTO1.getDescription() + " Changed");
         when(categoryRepository.findById(id)).thenReturn(Optional.ofNullable(category1));
+        when(categoryRepository.save(category1)).thenReturn(category1);
 
         // Call the service method that uses the Repository
         CategoryDTO result = categoryService.updateCategory(id, categoryUpdateDTO);
@@ -120,6 +128,7 @@ class CategoryServiceTests {
 
         // Perform assertions
         verify(categoryRepository, atLeastOnce()).findById(id);
+        verify(categoryRepository, atLeastOnce()).save(category1);
         assertNotNull(result);
         assertEquals(expected, result);
     }

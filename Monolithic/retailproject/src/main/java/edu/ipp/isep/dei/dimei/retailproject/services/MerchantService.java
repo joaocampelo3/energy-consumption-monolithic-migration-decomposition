@@ -56,10 +56,7 @@ public class MerchantService {
 
         Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), address);
 
-        this.merchantRepository.save(merchant);
-
-        merchant = this.merchantRepository.findByEmail(merchant.getEmail())
-                .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        merchant = this.merchantRepository.save(merchant);
 
         return new MerchantDTO(merchant);
     }
@@ -77,7 +74,7 @@ public class MerchantService {
         merchant.setName(merchantDTO.getName());
         merchant.setAddress(address);
 
-        this.merchantRepository.save(merchant);
+        merchant = this.merchantRepository.save(merchant);
         return new MerchantDTO(merchant);
     }
 

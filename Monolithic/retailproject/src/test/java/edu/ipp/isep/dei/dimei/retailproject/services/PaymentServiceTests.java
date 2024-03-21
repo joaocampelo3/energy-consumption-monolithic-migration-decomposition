@@ -4,7 +4,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,10 +26,26 @@ class PaymentServiceTests {
     PaymentRepository paymentRepository;
     PaymentDTO paymentDTO1;
     Payment payment1;
+    Payment newPayment1;
+    Payment payment1Updated;
 
     @BeforeEach
     void beforeEach() {
+        newPayment1 = Payment.builder()
+                .id(0)
+                .amount(10)
+                .paymentDateTime(LocalDateTime.now())
+                .paymentMethod(PaymentMethodEnum.CARD)
+                .status(PaymentStatusEnum.ACCEPTED)
+                .build();
         payment1 = Payment.builder()
+                .id(1)
+                .amount(10)
+                .paymentDateTime(LocalDateTime.now())
+                .paymentMethod(PaymentMethodEnum.CARD)
+                .status(PaymentStatusEnum.ACCEPTED)
+                .build();
+        payment1Updated = Payment.builder()
                 .id(1)
                 .amount(10)
                 .paymentDateTime(LocalDateTime.now())
@@ -43,12 +57,12 @@ class PaymentServiceTests {
     }
 
     @Test
-    void test_CreatePayment() throws NotFoundException {
+    void test_CreatePayment() {
         // Define the behavior of the mock
+        paymentDTO1.setId(0);
         when(paymentRepository.existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
                 .thenReturn(false);
-        when(paymentRepository.findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
-                .thenReturn(Optional.ofNullable(payment1));
+        when(paymentRepository.save(newPayment1)).thenReturn(payment1);
 
         // Call the service method that uses the Repository
         Payment result = paymentService.createPayment(paymentDTO1);
@@ -56,18 +70,16 @@ class PaymentServiceTests {
 
         // Perform assertions
         verify(paymentRepository, atLeastOnce()).existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod());
-        verify(paymentRepository, atLeastOnce()).findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod());
+        verify(paymentRepository, atLeastOnce()).save(newPayment1);
         assertNotNull(result);
         assertEquals(expected, result);
     }
 
     @Test
-    void test_CreateExistingPayment() throws NotFoundException {
+    void test_CreateExistingPayment() {
         // Define the behavior of the mock
         when(paymentRepository.existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
-                .thenReturn(false);
-        when(paymentRepository.findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
-                .thenReturn(Optional.ofNullable(payment1));
+                .thenReturn(true);
 
         // Call the service method that uses the Repository
         Payment result = paymentService.createPayment(paymentDTO1);
@@ -75,23 +87,6 @@ class PaymentServiceTests {
 
         // Perform assertions
         verify(paymentRepository, atLeastOnce()).existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod());
-        verify(paymentRepository, atLeastOnce()).findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod());
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetPaymentByUser() throws NotFoundException {
-        // Define the behavior of the mock
-        when(paymentRepository.findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
-                .thenReturn(Optional.ofNullable(payment1));
-
-        // Call the service method that uses the Repository
-        Payment result = paymentService.createPayment(paymentDTO1);
-        Payment expected = payment1;
-
-        // Perform assertions
-        verify(paymentRepository, atLeastOnce()).findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod());
         assertNotNull(result);
         assertEquals(expected, result);
     }

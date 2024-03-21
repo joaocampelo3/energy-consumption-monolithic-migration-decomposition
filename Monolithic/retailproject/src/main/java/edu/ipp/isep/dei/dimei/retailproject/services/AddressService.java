@@ -20,17 +20,19 @@ public class AddressService {
 
         if (!existsAddressByStreetAndZipCodeAndCityAndCountry(address, user.getId())) {
             address.setUser(user);
-            this.addressRepository.save(address);
+            address = this.addressRepository.save(address);
+        } else {
+            address = getAddressByUser(address, user.getId());
         }
 
-        return getAddressByUser(address, user.getId());
+        return address;
     }
 
     private boolean existsAddressByStreetAndZipCodeAndCityAndCountry(Address address, int userId) {
         return this.addressRepository.existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(address.getStreet(), address.getZipCode(), address.getCity(), address.getCountry(), userId);
     }
 
-    public Address getAddressByUser(Address address, int userId) throws NotFoundException {
+    private Address getAddressByUser(Address address, int userId) throws NotFoundException {
         return this.addressRepository.findAddressByStreetAndZipCodeAndCityAndCountry(address.getStreet(), address.getZipCode(), address.getCity(), address.getCountry())
                 .filter(address1 -> address1.getUser().getId() == userId &&
                         address1.getStreet().compareTo(address.getStreet()) == 0 &&

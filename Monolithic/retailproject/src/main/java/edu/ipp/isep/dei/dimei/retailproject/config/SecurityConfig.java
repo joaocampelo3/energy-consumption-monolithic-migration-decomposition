@@ -45,6 +45,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
+                        // Authentication Controller
+                        .requestMatchers(POST, "/auth/register/admin").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, "/auth/register/merchant").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Categories Controller
                         .requestMatchers(GET, "/categories/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, "/categories").hasAnyAuthority(RoleEnum.ADMIN.name())
@@ -86,10 +89,6 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-                /*.logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
-                        .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
-                 */
         return http.build();
     }
 

@@ -12,7 +12,5 @@ import java.util.Optional;
 public interface PaymentRepository extends CrudRepository<Payment, Integer> {
     Optional<Payment> findById(int id);
 
-    Optional<Payment> findPaymentByAmountAndPaymentDateTimeAndPaymentMethod(double payment_amount, LocalDateTime payment_date, PaymentMethodEnum payment_method);
-
-    boolean existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(double payment_amount, LocalDateTime payment_date, PaymentMethodEnum payment_method);
+    boolean existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(double paymentAmount, LocalDateTime paymentDate, PaymentMethodEnum paymentMethod);
 }

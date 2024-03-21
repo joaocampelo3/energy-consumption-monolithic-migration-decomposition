@@ -7,6 +7,9 @@ import lombok.*;
 
 @Entity
 @Table(name = "merchants",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"merchant_email"})
+        },
         indexes = {
                 @Index(columnList = "merchant_name")
         })
@@ -24,11 +27,12 @@ public class Merchant {
     @Size(max = 50)
     @Column(name = "merchant_name", nullable = false)
     private String name;
-    @Column(name = "merchant_email", unique = true)
+    @Column(name = "merchant_email")
     @Email
     private String email;
 
-    @OneToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     public Merchant(String name, String email, Address address) {

@@ -68,4 +68,48 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.register(registerDTO));
     }
 
+    @PostMapping("/register/admin")
+    @Operation(
+            description = "Register Service",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Register admin user successfully.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"token\": \"Bearer xxxxxxxxxxxxxxxx\"}"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<AuthenticationResponse> registerAdmin(@RequestBody RegisterDTO registerDTO) {
+        return ResponseEntity.ok(authenticationService.registerAdmin(registerDTO));
+    }
+
+    @PostMapping("/register/merchant")
+    @Operation(
+            description = "Register Service",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Register merchant user successfully.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"token\": \"Bearer xxxxxxxxxxxxxxxx\"}"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<AuthenticationResponse> registerMerchant(@RequestBody RegisterDTO registerDTO) {
+        return ResponseEntity.ok(authenticationService.registerMerchant(registerDTO));
+    }
+
 }
