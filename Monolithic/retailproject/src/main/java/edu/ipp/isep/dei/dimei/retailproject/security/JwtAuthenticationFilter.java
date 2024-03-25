@@ -15,13 +15,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String[] SWAGGER_WHITELIST_URL = {
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/configuration/ui",
+            "/swagger",
+            "/configuration/security",
+            "/webjars/**"
+    };
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -31,7 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String userEmail;
 
-        if (request.getServletPath().contains("/auth") && !request.getServletPath().contains("/auth/register/admin") && !request.getServletPath().contains("/auth/register/merchant")) {
+        if ((request.getServletPath().contains("/auth") && !request.getServletPath().contains("/auth/register/admin") && !request.getServletPath().contains("/auth/register/merchant"))
+                || (Arrays.stream(SWAGGER_WHITELIST_URL).anyMatch(string -> request.getServletPath().contains(string)))) {
             filterChain.doFilter(request, response);
             return;
         }
