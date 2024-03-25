@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "addresses",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"street", "zipCode", "city", "country", "user_id"})
+                @UniqueConstraint(columnNames = {"street", "zip_code", "city", "country", "user_id"})
         },
         indexes = {
-            @Index(columnList = "street, zipCode, city, country")
+            @Index(columnList = "street, zip_code, city, country")
         }
 )
 public class Address {
