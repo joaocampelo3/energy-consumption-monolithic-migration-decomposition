@@ -26,18 +26,10 @@ class PaymentServiceTests {
     PaymentRepository paymentRepository;
     PaymentDTO paymentDTO1;
     Payment payment1;
-    Payment newPayment1;
     Payment payment1Updated;
 
     @BeforeEach
     void beforeEach() {
-        newPayment1 = Payment.builder()
-                .id(0)
-                .amount(10)
-                .paymentDateTime(LocalDateTime.now())
-                .paymentMethod(PaymentMethodEnum.CARD)
-                .status(PaymentStatusEnum.ACCEPTED)
-                .build();
         payment1 = Payment.builder()
                 .id(1)
                 .amount(10)
@@ -60,6 +52,7 @@ class PaymentServiceTests {
     void test_CreatePayment() {
         // Define the behavior of the mock
         paymentDTO1.setId(0);
+        Payment newPayment1 = paymentDTO1.dtoToEntity();
         when(paymentRepository.existsPaymentByAmountAndPaymentDateTimeAndPaymentMethod(paymentDTO1.getAmount(), paymentDTO1.getPaymentDateTime(), paymentDTO1.getPaymentMethod()))
                 .thenReturn(false);
         when(paymentRepository.save(newPayment1)).thenReturn(payment1);
