@@ -357,7 +357,7 @@ class MerchantOrderServiceTests {
     void test_FullCancelMerchantOrder() throws InvalidQuantityException, NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         ItemUpdateDTO itemUpdateDTO;
         Item itemAux = Item.builder()
                 .id(1)
@@ -478,18 +478,18 @@ class MerchantOrderServiceTests {
     void test_RejectMerchantOrder() throws NotFoundException, WrongFlowException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         ItemUpdateDTO itemUpdateDTO;
         Item itemAux = Item.builder()
-                        .id(1)
-                        .name("Item 1")
-                        .sku("ABC-12345-S-BL")
-                        .description("Item 1 Desc")
-                        .price(1)
-                        .quantityInStock(new StockQuantity(10))
-                        .category(new Category(1, "Category 1", "Category"))
-                        .merchant(merchant)
-                        .build();
+                .id(1)
+                .name("Item 1")
+                .sku("ABC-12345-S-BL")
+                .description("Item 1 Desc")
+                .price(1)
+                .quantityInStock(new StockQuantity(10))
+                .category(new Category(1, "Category 1", "Category"))
+                .merchant(merchant)
+                .build();
         merchantOrder1Updated.setStatus(MerchantOrderStatusEnum.REJECTED);
         orderUpdateDTO1.setOrderStatus(OrderStatusEnum.REJECTED);
         shippingOrderUpdateDTO1.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
