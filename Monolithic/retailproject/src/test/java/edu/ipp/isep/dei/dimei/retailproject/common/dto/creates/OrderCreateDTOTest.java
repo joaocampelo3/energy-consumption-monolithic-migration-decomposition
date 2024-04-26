@@ -32,6 +32,7 @@ class OrderCreateDTOTest {
     PaymentDTO paymentDTO;
     int merchantId;
     AddressDTO addressDTO;
+    OrderCreateDTO orderCreateDTOExpected;
 
     @BeforeEach
     void beforeEach() {
@@ -75,6 +76,7 @@ class OrderCreateDTOTest {
                 .city("New York")
                 .country("USA")
                 .build();
+        orderCreateDTOExpected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
     }
 
     @Test
@@ -92,6 +94,7 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
+        assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
     }
 
     @Test
@@ -120,6 +123,7 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
+        assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
     }
 
     @Test
