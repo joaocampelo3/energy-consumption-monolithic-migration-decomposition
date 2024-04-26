@@ -328,7 +328,7 @@ class ShippingOrderServiceTests {
     void test_FullCancelShippingOrder() throws InvalidQuantityException, WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         ItemUpdateDTO itemUpdateDTO;
         Item itemAux = Item.builder()
                 .id(1)
@@ -437,7 +437,7 @@ class ShippingOrderServiceTests {
     void test_RejectShippingOrder() throws NotFoundException, WrongFlowException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity()-merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         ItemUpdateDTO itemUpdateDTO;
         Item itemAux = Item.builder()
                 .id(1)
