@@ -6,6 +6,9 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,9 +36,13 @@ class OrderCreateDTOTest {
     int merchantId;
     AddressDTO addressDTO;
     OrderCreateDTO orderCreateDTOExpected;
+    User user;
+    Payment payment;
+    List<ItemQuantity> itemQuantities = new ArrayList<>();
+    Order orderExpected;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws InvalidQuantityException {
         id = 1;
         orderDate = LocalDateTime.now();
         customerId = 1;
@@ -77,6 +84,34 @@ class OrderCreateDTOTest {
                 .country("USA")
                 .build();
         orderCreateDTOExpected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
+
+        Account account = Account.builder()
+                .id(1)
+                .email("johndoe1234@gmail.com")
+                .password("johndoe_password")
+                .role(RoleEnum.USER)
+                .build();
+
+        user = User.builder()
+                .id(1)
+                .firstname("John")
+                .lastname("Doe")
+                .account(account)
+                .build();
+
+        payment = paymentDTO.dtoToEntity();
+
+        itemQuantities.add(itemQuantityDTO1.dtoToEntity());
+        itemQuantities.add(itemQuantityDTO2.dtoToEntity());
+
+        orderExpected = Order.builder()
+                .id(id)
+                .orderDate(orderDate)
+                .status(orderStatusEnum)
+                .user(user)
+                .itemQuantities(itemQuantities)
+                .payment(payment)
+                .build();
     }
 
     @Test
@@ -124,6 +159,7 @@ class OrderCreateDTOTest {
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
         assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
+        assertEquals(orderCreateDTOExpected, orderCreateDTO);
     }
 
     @Test
@@ -149,6 +185,16 @@ class OrderCreateDTOTest {
     void test_createOrderCreateDTONoArgsConstructor() {
         OrderCreateDTO orderCreateDTO = OrderCreateDTO.builder().build();
         assertNotNull(orderCreateDTO);
+    }
+
+    @Test
+    void test_DtoToEntityOrderCreateDTO() {
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
+        Order order = orderCreateDTO.dtoToEntity(user, payment, itemQuantities);
+
+        assertNotNull(orderCreateDTO);
+        assertEquals(orderExpected.hashCode(), order.hashCode());
+        assertEquals(orderExpected, order);
     }
 
 }

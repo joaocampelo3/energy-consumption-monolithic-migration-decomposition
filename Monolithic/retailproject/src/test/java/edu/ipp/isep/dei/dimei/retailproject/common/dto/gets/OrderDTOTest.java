@@ -172,6 +172,22 @@ class OrderDTOTest {
     }
 
     @Test
+    void test_createOrderDTOByOrder2() {
+        order.setItemQuantities(null);
+        OrderDTO orderDTO = new OrderDTO(order);
+
+        assertNotNull(orderDTO);
+        assertEquals(id, orderDTO.getId());
+        assertEquals(orderDate, orderDTO.getOrderDate());
+        assertEquals(orderStatus, orderDTO.getOrderStatus());
+        assertEquals(customerId, orderDTO.getCustomerId());
+        assertEquals(email, orderDTO.getEmail());
+        assertNotNull(orderDTO.getOrderItems());
+        assertEquals(paymentDTO, orderDTO.getPaymentDTO());
+        assertEquals(0, orderDTO.getTotalPrice());
+    }
+
+    @Test
     void test_createOrderDTOBuilder() {
         OrderDTO orderDTO = OrderDTO.builder()
                 .id(id)

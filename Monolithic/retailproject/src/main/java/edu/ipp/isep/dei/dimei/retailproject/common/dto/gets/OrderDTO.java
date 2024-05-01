@@ -33,12 +33,13 @@ public class OrderDTO {
 
         if (order.getItemQuantities() == null) {
             this.orderItems = new ArrayList<>();
+            this.totalPrice = 0;
         } else {
             this.orderItems = order.getItemQuantities().stream().map(itemQuantity -> new ItemQuantityDTO(itemQuantity)).toList();
+            this.totalPrice = order.getItemQuantities().stream().mapToDouble(ItemQuantity::getTotalPrice).sum();
         }
-
         this.paymentDTO = new PaymentDTO(order.getPayment());
 
-        this.totalPrice = order.getItemQuantities().stream().mapToDouble(ItemQuantity::getTotalPrice).sum();
+
     }
 }
