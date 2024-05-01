@@ -77,6 +77,18 @@ class ItemDTOTest {
         assertEquals(category, itemDTO.getCategory());
         assertEquals(merchant, itemDTO.getMerchant());
         assertEquals(itemDTOExpected.hashCode(), itemDTO.hashCode());
+        assertEquals(itemDTOExpected, itemDTO);
+    }
+
+    @Test
+    void test_createItemDTO2() {
+        ItemDTO itemDTO = new ItemDTO(itemExpected, category, merchant);
+
+        assertNotNull(itemDTO);
+        assertEquals(category, itemDTO.getCategory());
+        assertEquals(merchant, itemDTO.getMerchant());
+        assertEquals(itemDTOExpected.hashCode(), itemDTO.hashCode());
+        assertEquals(itemDTOExpected, itemDTO);
     }
 
     @Test
