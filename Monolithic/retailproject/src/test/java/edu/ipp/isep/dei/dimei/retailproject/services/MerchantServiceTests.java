@@ -61,7 +61,7 @@ class MerchantServiceTests {
                 .role(RoleEnum.MERCHANT)
                 .build();
 
-        account1 = Account.builder()
+        account2 = Account.builder()
                 .id(2)
                 .email("merchant_email2@gmail.com")
                 .password("merchant_password2")
@@ -123,7 +123,7 @@ class MerchantServiceTests {
                 .id(2)
                 .name("Merchant 2")
                 .email("merchant_email2@gmail.com")
-                .address(address1)
+                .address(address2)
                 .build();
 
         merchantList.add(merchant1);
