@@ -12,7 +12,6 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

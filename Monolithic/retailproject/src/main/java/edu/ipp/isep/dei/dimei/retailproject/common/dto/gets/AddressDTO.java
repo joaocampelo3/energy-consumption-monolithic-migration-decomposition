@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Data
 public class AddressDTO {
     private int id;

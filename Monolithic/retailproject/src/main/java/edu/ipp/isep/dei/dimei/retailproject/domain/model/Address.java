@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
                 @UniqueConstraint(columnNames = {"street", "zip_code", "city", "country", "user_id"})
         },
         indexes = {
-            @Index(columnList = "street, zip_code, city, country")
+                @Index(columnList = "street, zip_code, city, country")
         }
 )
 public class Address {

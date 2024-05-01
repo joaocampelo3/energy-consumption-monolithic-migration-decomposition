@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Data
 public class ItemQuantityDTO {
     private int id;

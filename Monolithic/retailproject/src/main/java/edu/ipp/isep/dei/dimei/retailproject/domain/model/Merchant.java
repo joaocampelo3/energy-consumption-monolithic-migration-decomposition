@@ -19,7 +19,6 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class Merchant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

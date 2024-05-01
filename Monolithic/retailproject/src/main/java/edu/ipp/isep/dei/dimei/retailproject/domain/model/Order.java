@@ -22,7 +22,6 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +40,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<ItemQuantity> itemQuantities;
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 

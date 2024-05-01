@@ -18,7 +18,6 @@ import java.util.List;
 
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Data
 public class OrderCreateDTO {
     private int id;

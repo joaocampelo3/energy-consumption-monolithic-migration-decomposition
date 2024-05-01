@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class MerchantOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

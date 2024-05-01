@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Data
 public class PaymentDTO {
     private int id;
