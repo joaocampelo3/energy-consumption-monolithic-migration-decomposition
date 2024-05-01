@@ -34,6 +34,7 @@ class RegisterDTOTest {
         assertEquals(email, registerDTO.getEmail());
         assertEquals(password, registerDTO.getPassword());
         assertEquals(registerDTOExpected.hashCode(), registerDTO.hashCode());
+        assertEquals(registerDTOExpected, registerDTO);
     }
 
     @Test
@@ -51,6 +52,7 @@ class RegisterDTOTest {
         assertEquals(email, registerDTO.getEmail());
         assertEquals(password, registerDTO.getPassword());
         assertEquals(registerDTOExpected.hashCode(), registerDTO.hashCode());
+        assertEquals(registerDTOExpected, registerDTO);
     }
 
     @Test
