@@ -43,6 +43,19 @@ class AccountTest {
     }
 
     @Test
+    void test_createAccount2() {
+        Account account = new Account(email, password, role);
+
+        assertNotNull(account);
+        assertEquals(email, account.getEmail());
+        assertEquals(password, account.getPassword());
+        assertEquals(role, account.getRole());
+        accountExpected.setId(0);
+        assertEquals(accountExpected.hashCode(), account.hashCode());
+        assertEquals(accountExpected, account);
+    }
+
+    @Test
     void test_createAccountBuilder() {
         Account account = Account.builder()
                 .id(id)
