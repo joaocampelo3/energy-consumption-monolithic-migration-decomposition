@@ -12,8 +12,12 @@ import java.util.Optional;
 @Repository
 public interface ShippingOrderRepository extends CrudRepository<ShippingOrder, Integer> {
     Optional<ShippingOrder> findById(int id);
+
     List<ShippingOrder> findByUser(User user);
+
     Optional<ShippingOrder> findByOrder(Order order);
+
     List<ShippingOrder> findAll();
+
     void deleteByOrderId(int orderId);
 }

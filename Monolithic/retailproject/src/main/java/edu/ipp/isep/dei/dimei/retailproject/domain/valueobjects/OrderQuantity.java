@@ -3,11 +3,12 @@ package edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects;
 import edu.ipp.isep.dei.dimei.retailproject.domain.interfaces.valueobjects.IValueObject;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import jakarta.persistence.Column;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class OrderQuantity implements IValueObject {
     @Column(name = "quantity_ordered")
     private int quantity;

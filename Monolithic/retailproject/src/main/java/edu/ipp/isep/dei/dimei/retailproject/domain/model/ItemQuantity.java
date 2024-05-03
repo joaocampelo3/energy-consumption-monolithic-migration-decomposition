@@ -12,7 +12,6 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class ItemQuantity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

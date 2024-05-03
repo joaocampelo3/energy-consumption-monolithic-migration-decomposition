@@ -26,14 +26,14 @@ import java.util.List;
 @Service
 public class MerchantOrderService {
 
+    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant order payload.";
+    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant Order not found.";
     private final MerchantOrderRepository merchantOrderRepository;
     private final UserService userService;
     private final MerchantService merchantService;
     private final OrderService orderService;
     private final ShippingOrderService shippingOrderService;
     private final ItemService itemService;
-    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant order payload.";
-    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant Order not found.";
 
     public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, UserService userService, MerchantService merchantService, @Lazy OrderService orderService, ShippingOrderService shippingOrderService, ItemService itemService) {
         this.merchantOrderRepository = merchantOrderRepository;
