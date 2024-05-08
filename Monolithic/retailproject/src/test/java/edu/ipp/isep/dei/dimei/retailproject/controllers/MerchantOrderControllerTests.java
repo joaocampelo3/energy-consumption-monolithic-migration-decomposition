@@ -59,7 +59,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.getAllMerchantOrders()).thenReturn(merchantOrderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.getAllMerchantOrders();
+        ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntity = merchantOrderController.getAllMerchantOrders();
         ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTOS);
 
         // Perform assertions
@@ -74,7 +74,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.getUserMerchantOrders(JwtTokenDummy)).thenReturn(merchantOrderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrders(JwtTokenDummy);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrders(JwtTokenDummy);
         ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTOS);
 
         // Perform assertions
@@ -90,7 +90,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, id)).thenReturn(merchantOrderDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrderById(JwtTokenDummy, id);
         ResponseEntity<MerchantOrderDTO> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTO1);
 
         // Perform assertions
@@ -108,7 +108,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.fullCancelMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.fullCancelMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -126,7 +126,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.rejectMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.rejectMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -145,7 +145,7 @@ class MerchantOrderControllerTests {
         when(merchantOrderService.approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantOrderResponseEntity = merchantOrderController.approveMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.approveMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions

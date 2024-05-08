@@ -175,7 +175,7 @@ class OrderControllerTests {
         when(orderService.getAllOrders()).thenReturn(orderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getAllOrders();
+        ResponseEntity<List<OrderDTO>> orderResponseEntity = orderController.getAllOrders();
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
@@ -190,7 +190,7 @@ class OrderControllerTests {
         when(orderService.getUserOrders(JwtTokenDummy)).thenReturn(orderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getUserOrders(JwtTokenDummy);
+        ResponseEntity<Object> orderResponseEntity = orderController.getUserOrders(JwtTokenDummy);
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
@@ -206,7 +206,7 @@ class OrderControllerTests {
         when(orderService.getUserOrder(JwtTokenDummy, id)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getUserOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> orderResponseEntity = orderController.getUserOrderById(JwtTokenDummy, id);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
@@ -238,7 +238,7 @@ class OrderControllerTests {
         when(orderService.deleteOrder(userId, id)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.deleteOrder(userId, id);
+        ResponseEntity<Object> orderResponseEntity = orderController.deleteOrder(userId, id);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
@@ -256,7 +256,7 @@ class OrderControllerTests {
         when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -274,7 +274,7 @@ class OrderControllerTests {
         when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -293,7 +293,7 @@ class OrderControllerTests {
         when(orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
