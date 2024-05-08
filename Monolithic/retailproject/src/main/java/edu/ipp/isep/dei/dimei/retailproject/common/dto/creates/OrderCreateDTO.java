@@ -11,9 +11,8 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Builder
@@ -21,7 +20,7 @@ import java.util.List;
 @Data
 public class OrderCreateDTO {
     private int id;
-    private LocalDateTime orderDate;
+    private Instant orderDate;
     private OrderStatusEnum orderStatus;
     private int customerId;
     private String email;

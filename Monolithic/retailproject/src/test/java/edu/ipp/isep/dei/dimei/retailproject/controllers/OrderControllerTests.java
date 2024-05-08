@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,14 +133,14 @@ class OrderControllerTests {
         payment = Payment.builder()
                 .id(0)
                 .amount(itemQuantity1.getTotalPrice() + itemQuantity2.getTotalPrice())
-                .paymentDateTime(LocalDateTime.now())
+                .paymentDateTime(Instant.now())
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();
 
         order = Order.builder()
                 .id(0)
-                .orderDate(LocalDateTime.now())
+                .orderDate(Instant.now())
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList)
@@ -218,11 +218,11 @@ class OrderControllerTests {
     @Test
     void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenReturn(order);
+        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
-        ResponseEntity<Order> orderResponseEntityExpected = new ResponseEntity<>(order, HttpStatus.CREATED);
+        ResponseEntity<Object> orderResponseEntity = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
+        ResponseEntity<OrderDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
 
         // Perform assertions
         verify(orderService, atMostOnce()).createOrder(JwtTokenDummy, orderCreateDTO);

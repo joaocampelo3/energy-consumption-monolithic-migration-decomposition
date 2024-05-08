@@ -22,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +80,7 @@ class OrderServiceTests {
     ItemDTO itemDTO1;
     ItemDTO itemDTO1Updated;
     List<Order> orders = new ArrayList<>();
-    LocalDateTime currentDateTime = LocalDateTime.now();
+    Instant currentDateTime = Instant.now();
     OrderCreateDTO orderCreateDTO;
     Payment payment;
     PaymentDTO paymentDTO;
@@ -356,8 +356,8 @@ class OrderServiceTests {
         when(merchantOrderService.createMerchantOrder(user, order1, orderCreateDTO.getMerchantId())).thenReturn(merchantOrder1);
 
         // Call the service method that uses the Repository
-        Order result = orderService.createOrder(JwtTokenDummy, orderCreateDTO);
-        Order expected = order1;
+        OrderDTO result = orderService.createOrder(JwtTokenDummy, orderCreateDTO);
+        OrderDTO expected = orderDTO1;
 
         // Perform assertions
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);

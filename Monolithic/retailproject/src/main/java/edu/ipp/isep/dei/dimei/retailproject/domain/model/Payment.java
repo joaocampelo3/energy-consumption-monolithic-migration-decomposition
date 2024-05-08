@@ -5,7 +5,7 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "payments",
@@ -31,7 +31,7 @@ public class Payment {
     @Column(name = "payment_amount", nullable = false)
     private double amount;
     @Column(name = "payment_date", nullable = false)
-    private LocalDateTime paymentDateTime;
+    private Instant paymentDateTime;
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     private PaymentMethodEnum paymentMethod;

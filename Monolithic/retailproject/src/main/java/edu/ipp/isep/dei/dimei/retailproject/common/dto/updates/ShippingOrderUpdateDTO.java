@@ -7,14 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Builder
 @AllArgsConstructor
 @Data
 public class ShippingOrderUpdateDTO {
     private int id;
-    private LocalDateTime shippingOrderDate;
+    private Instant shippingOrderDate;
     private ShippingOrderStatusEnum shippingOrderStatus;
     private AddressDTO addressDTO;
     private int orderId;

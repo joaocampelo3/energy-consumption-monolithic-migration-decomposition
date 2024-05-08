@@ -4,7 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -27,7 +27,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate;
+    private Instant orderDate;
 
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
@@ -44,7 +44,7 @@ public class Order {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
-    public Order(LocalDateTime orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {
+    public Order(Instant orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {
         this.orderDate = orderDate;
         this.status = status;
         this.user = user;

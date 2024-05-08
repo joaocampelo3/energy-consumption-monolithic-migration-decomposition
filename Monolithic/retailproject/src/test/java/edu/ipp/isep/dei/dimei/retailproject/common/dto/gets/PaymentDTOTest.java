@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PaymentDTOTest {
     int id;
     double amount;
-    LocalDateTime paymentDateTime;
+    Instant paymentDateTime;
     PaymentMethodEnum paymentMethod;
     PaymentStatusEnum status;
     PaymentDTO paymentDTOExpected;
@@ -28,7 +28,7 @@ class PaymentDTOTest {
     void beforeEach() {
         id = 1;
         amount = 0;
-        paymentDateTime = LocalDateTime.now();
+        paymentDateTime = Instant.now();
         paymentMethod = PaymentMethodEnum.CARD;
         status = PaymentStatusEnum.PENDING;
         paymentDTOExpected = new PaymentDTO(id, amount, paymentDateTime, paymentMethod, status);

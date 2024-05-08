@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +41,9 @@ class MerchantOrderControllerTests {
 
     @BeforeEach
     void beforeEach() {
-        merchantOrderDTO1 = MerchantOrderDTO.builder().id(1).merchantOrderDate(LocalDateTime.now()).customerId(1).email("johndoe1234@gmail.com").orderId(1).merchantId(1).build();
+        merchantOrderDTO1 = MerchantOrderDTO.builder().id(1).merchantOrderDate(Instant.now()).customerId(1).email("johndoe1234@gmail.com").orderId(1).merchantId(1).build();
 
-        merchantOrderDTO2 = MerchantOrderDTO.builder().id(2).merchantOrderDate(LocalDateTime.now()).customerId(1).email("johndoe1234@gmail.com").orderId(1).merchantId(1).build();
+        merchantOrderDTO2 = MerchantOrderDTO.builder().id(2).merchantOrderDate(Instant.now()).customerId(1).email("johndoe1234@gmail.com").orderId(1).merchantId(1).build();
 
         merchantOrderDTOS.add(merchantOrderDTO1);
         merchantOrderDTOS.add(merchantOrderDTO2);

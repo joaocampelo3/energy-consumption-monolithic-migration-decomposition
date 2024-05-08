@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class MerchantOrderDTOTest {
 
     int id;
-    LocalDateTime merchantOrderDate;
+    Instant merchantOrderDate;
     MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int customerId;
     String email;
@@ -28,7 +28,7 @@ class MerchantOrderDTOTest {
     @BeforeEach
     void beforeEach() {
         id = 1;
-        merchantOrderDate = LocalDateTime.now();
+        merchantOrderDate = Instant.now();
         customerId = 1;
         email = "merchantnumber1@gmail.com";
         orderId = 1;

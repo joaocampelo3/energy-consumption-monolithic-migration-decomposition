@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class OrderCreateDTOTest {
 
     int id = 1;
-    LocalDateTime orderDate;
+    Instant orderDate;
     OrderStatusEnum orderStatusEnum = OrderStatusEnum.PENDING;
     int customerId;
     String email;
@@ -46,7 +46,7 @@ class OrderCreateDTOTest {
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
         id = 1;
-        orderDate = LocalDateTime.now();
+        orderDate = Instant.now();
         customerId = 1;
         email = "merchant_email@gmail.com";
         itemQuantityDTO1 = ItemQuantityDTO.builder()
@@ -73,7 +73,7 @@ class OrderCreateDTOTest {
         paymentDTO = PaymentDTO.builder()
                 .id(1)
                 .amount(totalPrice)
-                .paymentDateTime(LocalDateTime.now())
+                .paymentDateTime(Instant.now())
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();

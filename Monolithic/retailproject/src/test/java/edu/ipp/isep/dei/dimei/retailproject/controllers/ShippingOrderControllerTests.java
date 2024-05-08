@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,7 @@ class ShippingOrderControllerTests {
 
         shippingOrderDTO1 = ShippingOrderDTO.builder()
                 .id(1)
-                .shippingOrderDate(LocalDateTime.now())
+                .shippingOrderDate(Instant.now())
                 .addressDTO(addressDTO)
                 .orderId(1)
                 .merchantOrderId(1)
@@ -61,7 +61,7 @@ class ShippingOrderControllerTests {
 
         shippingOrderDTO2 = ShippingOrderDTO.builder()
                 .id(2)
-                .shippingOrderDate(LocalDateTime.now())
+                .shippingOrderDate(Instant.now())
                 .addressDTO(addressDTO)
                 .orderId(2)
                 .merchantOrderId(1)
