@@ -25,12 +25,12 @@ spec:
           ports:
             - containerPort: 8080
           resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
             requests:
               cpu: 100m
               memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
 ---
 apiVersion: v1
 kind: Service
@@ -65,4 +65,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 50 # When the CPU utilization is greater than or equal 50% of 100m cpu requested, the HPA will replicated the service

@@ -53,7 +53,7 @@ public class OrderService {
         return orders;
     }
 
-    public Order createOrder(String authorizationToken, OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
+    public OrderDTO createOrder(String authorizationToken, OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         isSameMerchantForAllItems(orderDTO.getOrderItems(), orderDTO.getMerchantId());
@@ -81,7 +81,7 @@ public class OrderService {
 
         this.shippingOrderService.createShippingOrder(user, order, merchantOrder, shippingAddress);
 
-        return order;
+        return new OrderDTO(order);
     }
 
     private void isSameMerchantForAllItems(List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {

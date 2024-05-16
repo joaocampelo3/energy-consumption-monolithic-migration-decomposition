@@ -4,7 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "merchant_orders",
@@ -26,7 +26,7 @@ public class MerchantOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "merchant_order_date", nullable = false)
-    private LocalDateTime orderDate;
+    private Instant orderDate;
 
     @Column(name = "merchant_order_status")
     @Enumerated(EnumType.STRING)

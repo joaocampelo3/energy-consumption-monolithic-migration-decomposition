@@ -4,7 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "shipping_orders",
@@ -27,7 +27,7 @@ public class ShippingOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "shipping_order_date", nullable = false)
-    private LocalDateTime shippingOrderDate;
+    private Instant shippingOrderDate;
     @Column(name = "shipping_order_status")
     @Enumerated(EnumType.STRING)
     private ShippingOrderStatusEnum status;

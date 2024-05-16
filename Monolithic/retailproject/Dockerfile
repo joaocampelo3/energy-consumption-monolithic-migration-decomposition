@@ -11,7 +11,7 @@ FROM builder AS dev-envs
 COPY --from=gloursdocker/docker / /
 CMD ["mvn", "spring-boot:run"]
 
-FROM builder as prepare-production
+FROM builder AS prepare-production
 RUN mkdir -p target/dependency
 WORKDIR /workdir/server/target/dependency
 RUN jar -xf ../*.jar

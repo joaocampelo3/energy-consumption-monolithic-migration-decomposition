@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class OrderUpdateDTOTest {
 
     int id;
-    LocalDateTime orderDate;
+    Instant orderDate;
     OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     String email;
     Order order;
@@ -32,7 +32,7 @@ class OrderUpdateDTOTest {
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
-        LocalDateTime currentDate = LocalDateTime.now();
+        Instant currentDate = Instant.now();
         id = 1;
         orderDate = currentDate;
         email = "johndoe1234@gmail.com";

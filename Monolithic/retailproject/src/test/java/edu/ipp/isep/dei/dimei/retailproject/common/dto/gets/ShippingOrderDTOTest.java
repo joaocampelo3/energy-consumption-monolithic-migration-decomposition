@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 class ShippingOrderDTOTest {
     int id;
-    LocalDateTime shippingOrderDate;
+    Instant shippingOrderDate;
     ShippingOrderStatusEnum shippingOrderStatus;
     AddressDTO addressDTO;
     int orderId;
@@ -32,7 +32,7 @@ class ShippingOrderDTOTest {
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
         id = 1;
-        LocalDateTime currentDate = LocalDateTime.now();
+        Instant currentDate = Instant.now();
         shippingOrderDate = currentDate;
         shippingOrderStatus = ShippingOrderStatusEnum.PENDING;
         addressDTO = AddressDTO.builder()

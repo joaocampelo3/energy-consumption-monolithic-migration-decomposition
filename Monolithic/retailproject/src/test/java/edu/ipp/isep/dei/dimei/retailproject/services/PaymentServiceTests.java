@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,14 +33,14 @@ class PaymentServiceTests {
         payment1 = Payment.builder()
                 .id(1)
                 .amount(10)
-                .paymentDateTime(LocalDateTime.now())
+                .paymentDateTime(Instant.now())
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();
         payment1Updated = Payment.builder()
                 .id(1)
                 .amount(10)
-                .paymentDateTime(LocalDateTime.now())
+                .paymentDateTime(Instant.now())
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();

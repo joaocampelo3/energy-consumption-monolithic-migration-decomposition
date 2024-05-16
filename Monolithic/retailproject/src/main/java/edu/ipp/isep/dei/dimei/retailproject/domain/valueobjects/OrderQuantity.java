@@ -4,7 +4,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.interfaces.valueobjects.IValu
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import jakarta.persistence.Column;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

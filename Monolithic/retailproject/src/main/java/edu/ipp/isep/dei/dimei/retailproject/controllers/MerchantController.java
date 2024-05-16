@@ -10,6 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +25,21 @@ import java.util.List;
 @Tag(name = "Merchant Controller")
 @RequiredArgsConstructor
 @RequestMapping("/merchants")
+@CacheConfig(cacheNames = "merchants")
 public class MerchantController {
 
     private final MerchantService merchantService;
 
     @GetMapping("/all")
+    @Cacheable
     @Operation(description = "Get all merchants", responses = {@ApiResponse(responseCode = "200", description = "Merchants found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
     public ResponseEntity<List<MerchantDTO>> getAllMerchants() {
         return new ResponseEntity<>(this.merchantService.getAllMerchants(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getMerchantById(@PathVariable int id) {
+    @Cacheable(key = "#id")
+    public ResponseEntity<Object> getMerchantById(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.merchantService.getMerchant(id), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -41,6 +48,9 @@ public class MerchantController {
     }
 
     @PostMapping
+    @Caching(
+            evict = {@CacheEvict(allEntries = true)}
+    )
     @Operation(
             description = "Create a merchant",
             responses = {
@@ -48,7 +58,7 @@ public class MerchantController {
             }
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Merchant was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    public ResponseEntity<?> createMerchant(@RequestBody MerchantDTO merchantDTO) {
+    public ResponseEntity<Object> createMerchant(@RequestBody MerchantDTO merchantDTO) {
         try {
             return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
         } catch (NotFoundException e) {
@@ -57,7 +67,12 @@ public class MerchantController {
     }
 
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<?> updateMerchant(@PathVariable int id, @RequestBody MerchantDTO merchantDTO) {
+    @Caching(
+            evict = {@CacheEvict(allEntries = true),
+                    @CacheEvict(key = "#id")
+            }
+    )
+    public ResponseEntity<Object> updateMerchant(@PathVariable int id, @RequestBody MerchantDTO merchantDTO) {
         try {
             return new ResponseEntity<>(this.merchantService.updateMerchant(id, merchantDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
@@ -68,7 +83,12 @@ public class MerchantController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteMerchant(@PathVariable int id) {
+    @Caching(
+            evict = {@CacheEvict(allEntries = true),
+                    @CacheEvict(key = "#id")
+            }
+    )
+    public ResponseEntity<Object> deleteMerchant(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.merchantService.deleteMerchant(id), HttpStatus.OK);
         } catch (NotFoundException e) {

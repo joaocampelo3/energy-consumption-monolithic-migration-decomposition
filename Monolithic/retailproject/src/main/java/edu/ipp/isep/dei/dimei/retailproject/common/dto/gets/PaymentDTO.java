@@ -6,9 +6,8 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Builder
 @AllArgsConstructor
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 public class PaymentDTO {
     private int id;
     private double amount;
-    private LocalDateTime paymentDateTime;
+    private Instant paymentDateTime;
     private PaymentMethodEnum paymentMethod;
     private PaymentStatusEnum status;
 
@@ -28,7 +27,7 @@ public class PaymentDTO {
         this.status = payment.getStatus();
     }
 
-    public PaymentDTO(double amount, LocalDateTime paymentDateTime, PaymentMethodEnum paymentMethod, PaymentStatusEnum status) {
+    public PaymentDTO(double amount, Instant paymentDateTime, PaymentMethodEnum paymentMethod, PaymentStatusEnum status) {
         this.amount = amount;
         this.paymentDateTime = paymentDateTime;
         this.paymentMethod = paymentMethod;

@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +27,22 @@ import java.util.List;
 @Tag(name = "Merchant Order Controller")
 @RequiredArgsConstructor
 @RequestMapping("/merchantorders")
+@CacheConfig(cacheNames = "merchantorders")
 public class MerchantOrderController {
 
     private final MerchantOrderService merchantOrderService;
 
     @GetMapping("/all")
+    @Cacheable
     @Operation(description = "Get all merchant orders", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
     public ResponseEntity<List<MerchantOrderDTO>> getAllMerchantOrders() {
         return new ResponseEntity<>(this.merchantOrderService.getAllMerchantOrders(), HttpStatus.OK);
     }
 
     @GetMapping
+    @Cacheable(key = "#authorizationToken")
     @Operation(description = "Get merchant orders by user", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    public ResponseEntity<?> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
+    public ResponseEntity<Object> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
         try {
             return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(authorizationToken), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -44,7 +51,8 @@ public class MerchantOrderController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getUserMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    @Cacheable(key = "#id")
+    public ResponseEntity<Object> getUserMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
         MerchantOrderDTO merchantOrderDTO;
         try {
             merchantOrderDTO = this.merchantOrderService.getUserMerchantOrder(authorizationToken, id);
@@ -56,7 +64,13 @@ public class MerchantOrderController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> fullCancelMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    @Caching(
+            evict = {@CacheEvict(allEntries = true),
+                    @CacheEvict(key = "#authorizationToken"),
+                    @CacheEvict(key = "#id")
+            }
+    )
+    public ResponseEntity<Object> fullCancelMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
             return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
@@ -67,7 +81,13 @@ public class MerchantOrderController {
     }
 
     @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<?> rejectMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    @Caching(
+            evict = {@CacheEvict(allEntries = true),
+                    @CacheEvict(key = "#authorizationToken"),
+                    @CacheEvict(key = "#id")
+            }
+    )
+    public ResponseEntity<Object> rejectMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
             return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
@@ -79,7 +99,13 @@ public class MerchantOrderController {
     }
 
     @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<?> approveMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    @Caching(
+            evict = {@CacheEvict(allEntries = true),
+                    @CacheEvict(key = "#authorizationToken"),
+                    @CacheEvict(key = "#id")
+            }
+    )
+    public ResponseEntity<Object> approveMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
             return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {

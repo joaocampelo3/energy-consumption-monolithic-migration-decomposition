@@ -23,7 +23,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +75,7 @@ class MerchantOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<MerchantOrder> merchantOrders = new ArrayList<>();
-    LocalDateTime currentDateTime = LocalDateTime.now();
+    Instant currentDateTime = Instant.now();
     ShippingOrder shippingOrder1;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO1;
 

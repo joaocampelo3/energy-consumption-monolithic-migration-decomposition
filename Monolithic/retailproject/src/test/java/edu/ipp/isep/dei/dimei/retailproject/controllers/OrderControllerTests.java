@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,14 +133,14 @@ class OrderControllerTests {
         payment = Payment.builder()
                 .id(0)
                 .amount(itemQuantity1.getTotalPrice() + itemQuantity2.getTotalPrice())
-                .paymentDateTime(LocalDateTime.now())
+                .paymentDateTime(Instant.now())
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.ACCEPTED)
                 .build();
 
         order = Order.builder()
                 .id(0)
-                .orderDate(LocalDateTime.now())
+                .orderDate(Instant.now())
                 .status(OrderStatusEnum.PENDING)
                 .user(user)
                 .itemQuantities(itemQuantityList)
@@ -175,7 +175,7 @@ class OrderControllerTests {
         when(orderService.getAllOrders()).thenReturn(orderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getAllOrders();
+        ResponseEntity<List<OrderDTO>> orderResponseEntity = orderController.getAllOrders();
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
@@ -190,7 +190,7 @@ class OrderControllerTests {
         when(orderService.getUserOrders(JwtTokenDummy)).thenReturn(orderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getUserOrders(JwtTokenDummy);
+        ResponseEntity<Object> orderResponseEntity = orderController.getUserOrders(JwtTokenDummy);
         ResponseEntity<List<OrderDTO>> orderResponseEntityExpected = ResponseEntity.ok(orderDTOS);
 
         // Perform assertions
@@ -206,7 +206,7 @@ class OrderControllerTests {
         when(orderService.getUserOrder(JwtTokenDummy, id)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.getUserOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> orderResponseEntity = orderController.getUserOrderById(JwtTokenDummy, id);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
@@ -218,11 +218,11 @@ class OrderControllerTests {
     @Test
     void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenReturn(order);
+        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
-        ResponseEntity<Order> orderResponseEntityExpected = new ResponseEntity<>(order, HttpStatus.CREATED);
+        ResponseEntity<Object> orderResponseEntity = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
+        ResponseEntity<OrderDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
 
         // Perform assertions
         verify(orderService, atMostOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
@@ -238,7 +238,7 @@ class OrderControllerTests {
         when(orderService.deleteOrder(userId, id)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.deleteOrder(userId, id);
+        ResponseEntity<Object> orderResponseEntity = orderController.deleteOrder(userId, id);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
@@ -256,7 +256,7 @@ class OrderControllerTests {
         when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -274,7 +274,7 @@ class OrderControllerTests {
         when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -293,7 +293,7 @@ class OrderControllerTests {
         when(orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO)).thenReturn(orderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> orderResponseEntity = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
         ResponseEntity<OrderUpdateDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PaymentTest {
     int id;
     double amount;
-    LocalDateTime paymentDateTime;
+    Instant paymentDateTime;
     PaymentMethodEnum paymentMethod = PaymentMethodEnum.CARD;
     PaymentStatusEnum status = PaymentStatusEnum.PENDING;
     Payment paymentExpected;
@@ -27,7 +27,7 @@ class PaymentTest {
     void beforeEach() throws InvalidQuantityException {
         id = 1;
         amount = 10.0;
-        LocalDateTime currentDate = LocalDateTime.now();
+        Instant currentDate = Instant.now();
         paymentDateTime = currentDate;
         paymentExpected = Payment.builder()
                 .id(id)

@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Builder
 @AllArgsConstructor
 @Data
 public class OrderUpdateDTO {
     private int id;
-    private LocalDateTime orderDate;
+    private Instant orderDate;
     private OrderStatusEnum orderStatus;
     private String email;
 

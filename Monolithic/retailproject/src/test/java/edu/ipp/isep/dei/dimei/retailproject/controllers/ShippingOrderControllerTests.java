@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,7 @@ class ShippingOrderControllerTests {
 
         shippingOrderDTO1 = ShippingOrderDTO.builder()
                 .id(1)
-                .shippingOrderDate(LocalDateTime.now())
+                .shippingOrderDate(Instant.now())
                 .addressDTO(addressDTO)
                 .orderId(1)
                 .merchantOrderId(1)
@@ -61,7 +61,7 @@ class ShippingOrderControllerTests {
 
         shippingOrderDTO2 = ShippingOrderDTO.builder()
                 .id(2)
-                .shippingOrderDate(LocalDateTime.now())
+                .shippingOrderDate(Instant.now())
                 .addressDTO(addressDTO)
                 .orderId(2)
                 .merchantOrderId(1)
@@ -88,7 +88,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.getAllShippingOrders()).thenReturn(shippingOrderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.getAllShippingOrders();
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.getAllShippingOrders();
         ResponseEntity<List<ShippingOrderDTO>> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTOS);
 
         // Perform assertions
@@ -103,7 +103,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.getUserShippingOrders(JwtTokenDummy)).thenReturn(shippingOrderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.getUserShippingOrders(JwtTokenDummy);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.getUserShippingOrders(JwtTokenDummy);
         ResponseEntity<List<ShippingOrderDTO>> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTOS);
 
         // Perform assertions
@@ -119,7 +119,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, id)).thenReturn(shippingOrderDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.getUserShippingOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.getUserShippingOrderById(JwtTokenDummy, id);
         ResponseEntity<ShippingOrderDTO> shippingOrderResponseEntityExpected = ResponseEntity.ok(shippingOrderDTO1);
 
         // Perform assertions
@@ -137,7 +137,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.fullCancelShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.fullCancelShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -155,7 +155,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.rejectShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.rejectShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -174,7 +174,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -192,7 +192,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.shippedShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.shippedShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -210,7 +210,7 @@ class ShippingOrderControllerTests {
         when(shippingOrderService.deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenReturn(shippingOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> shippingOrderResponseEntity = shippingOrderController.deliveredShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> shippingOrderResponseEntity = shippingOrderController.deliveredShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
         ResponseEntity<ShippingOrderUpdateDTO> shippingOrderResponseEntityExpected = new ResponseEntity<>(shippingOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions

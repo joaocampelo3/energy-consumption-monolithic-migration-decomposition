@@ -10,6 +10,8 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
+  cache:
+    cache-names: categories, items, merchants, merchantorders, orders, shippingorders
 
 # swagger-ui custom path
 springdoc:
@@ -23,3 +25,7 @@ jwt:
   token:
     # Expires after 24h (1000*60*24)
     expirationTimeSecs: 1440000
+
+cache:
+  caffeine:
+    time-to-live: 15

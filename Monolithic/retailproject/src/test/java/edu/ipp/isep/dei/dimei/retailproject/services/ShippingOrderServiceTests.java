@@ -21,7 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +70,7 @@ class ShippingOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<ShippingOrder> shippingOrders = new ArrayList<>();
-    LocalDateTime currentDateTime = LocalDateTime.now();
+    Instant currentDateTime = Instant.now();
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
