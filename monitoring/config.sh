@@ -4,7 +4,6 @@ kubectl create namespace monitoring
 kubectl create namespace kepler
 
 ./Grafana/config.sh
-#./Prometheus/config.sh
 ./Kepler/config.sh
 
 kubectl port-forward --address localhost -n kepler service/kepler-exporter 9102:9102 &
