@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven 3.9.6"
         jdk 'Amazon Corretto JDK 17'
     }
@@ -24,20 +23,6 @@ pipeline {
     }
 
     stages {
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    echo "USER = $USER"
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                    echo "REMOTE_DIR = ${REMOTE_DIR}"
-                    echo "BUILD_DIR = ${BUILD_DIR}"
-                    echo "GITHUB_REPO = ${GITHUB_REPO}"
-                    echo "JAVA_HOME = ${JAVA_HOME}"
-                ''' 
-            }
-        }
-
         stage('Remove Directories') {
             steps {
                 parallel(
@@ -113,7 +98,6 @@ pipeline {
         
         stage('Startup') {
             steps {
-                //sh 'cd $MONOLITH_DIR && docker-compose build && kubectl apply -f ./retailproject_kubernets.yaml'
                 sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
             }
         }
