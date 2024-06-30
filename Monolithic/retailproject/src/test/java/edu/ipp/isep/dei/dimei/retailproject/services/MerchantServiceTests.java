@@ -238,7 +238,7 @@ class MerchantServiceTests {
     }
 
     @Test
-    void test_DeleteMerchant() throws NotFoundException, BadPayloadException {
+    void test_DeleteMerchant() throws NotFoundException {
         // Define the behavior of the mock
         when(merchantRepository.findById(merchant1.getId())).thenReturn(Optional.ofNullable(merchant1));
 

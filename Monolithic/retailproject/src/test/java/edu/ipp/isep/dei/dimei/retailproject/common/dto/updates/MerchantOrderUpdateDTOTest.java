@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class MerchantOrderUpdateDTOTest {
     int id;
     Instant merchantOrderDate;
-    MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
+    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     String email;
     String userEmail;
     int orderId;

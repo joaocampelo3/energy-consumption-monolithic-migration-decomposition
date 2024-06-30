@@ -25,7 +25,7 @@ class OrderUpdateDTOTest {
 
     int id;
     Instant orderDate;
-    OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
+    final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     String email;
     Order order;
     OrderUpdateDTO orderUpdateDTOExpected;

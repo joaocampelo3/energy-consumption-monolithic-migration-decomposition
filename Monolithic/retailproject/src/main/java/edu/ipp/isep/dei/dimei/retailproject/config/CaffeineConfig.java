@@ -16,6 +16,10 @@ import java.util.Arrays;
 public class CaffeineConfig {
     @Value("${cache.caffeine.time-to-live}")
     private int timeToLive;
+    @Value("${cache.caffeine.initialCapacity}")
+    private int initialCapacity;
+    @Value("${cache.caffeine.maximumSize}")
+    private int maximumSize;
 
     private static final String CATEGORIES_CACHE = "categories";
     private static final String ITEMS_CACHE = "items";
@@ -45,8 +49,8 @@ public class CaffeineConfig {
 
     Caffeine<Object, Object> caffeineCacheBuilder() {
         return Caffeine.newBuilder()
-                .initialCapacity(100)
-                .maximumSize(500)
+                .initialCapacity(initialCapacity)
+                .maximumSize(maximumSize)
                 .expireAfterWrite(Duration.ofMinutes(timeToLive));
     }
 }

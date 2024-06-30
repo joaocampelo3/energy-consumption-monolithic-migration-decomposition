@@ -36,9 +36,6 @@ public class SecurityConfig {
             "/auth",
             "/auth/**"
     };
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
-
     private static final String AUTH_REGISTER_PATH = "/auth/register";
     private static final String CATEGORIES_PATH = "/categories";
     private static final String ITEMS_PATH = "/items";
@@ -46,6 +43,9 @@ public class SecurityConfig {
     private static final String MERCHANT_ORDERS_PATH = "/merchantorders";
     private static final String ORDERS_PATH = "/orders";
     private static final String SHIPPING_ORDERS_PATH = "/shippingorders";
+    private static final String ID_PATH = "/{id}";
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,43 +54,43 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
                         // Authentication Controller
-                        .requestMatchers(POST, AUTH_REGISTER_PATH +"/admin").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(POST, AUTH_REGISTER_PATH +"/merchant").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, AUTH_REGISTER_PATH + "/admin").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(POST, AUTH_REGISTER_PATH + "/merchant").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Categories Controller
-                        .requestMatchers(GET, CATEGORIES_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, CATEGORIES_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, CATEGORIES_PATH).hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(PATCH, CATEGORIES_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(DELETE, CATEGORIES_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, CATEGORIES_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, CATEGORIES_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Item Controller
-                        .requestMatchers(GET, ITEMS_PATH +"/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, ITEMS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(GET, ITEMS_PATH).hasAnyAuthority(RoleEnum.MERCHANT.name())
-                        .requestMatchers(GET, ITEMS_PATH +"/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, ITEMS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
                         .requestMatchers(POST, ITEMS_PATH).hasAnyAuthority(RoleEnum.MERCHANT.name())
-                        .requestMatchers(DELETE, ITEMS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(PATCH, ITEMS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, ITEMS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, ITEMS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Merchants Controller
-                        .requestMatchers(GET, MERCHANTS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, MERCHANTS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(PATCH, MERCHANTS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(DELETE, MERCHANTS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Merchant Order Controller
-                        .requestMatchers(GET, MERCHANT_ORDERS_PATH +"/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, MERCHANT_ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(GET, MERCHANT_ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
-                        .requestMatchers(GET, MERCHANT_ORDERS_PATH +"/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
-                        .requestMatchers(PATCH, MERCHANT_ORDERS_PATH +"/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, MERCHANT_ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(PATCH, MERCHANT_ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
                         // Order Controller
-                        .requestMatchers(GET, ORDERS_PATH +"/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(GET, ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
-                        .requestMatchers(GET, ORDERS_PATH +"/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(GET, ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
                         .requestMatchers(POST, ORDERS_PATH).hasAnyAuthority(RoleEnum.USER.name())
-                        .requestMatchers(DELETE, ORDERS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(PATCH, ORDERS_PATH +"/{id}/cancel").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
-                        .requestMatchers(PATCH, ORDERS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(DELETE, ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(PATCH, ORDERS_PATH + "/{id}/cancel").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(PATCH, ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Shipping Order Controller
-                        .requestMatchers(GET, SHIPPING_ORDERS_PATH +"/all").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, SHIPPING_ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(GET, SHIPPING_ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
-                        .requestMatchers(GET, SHIPPING_ORDERS_PATH +"/{id}").hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
-                        .requestMatchers(PATCH, SHIPPING_ORDERS_PATH +"/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, SHIPPING_ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(PATCH, SHIPPING_ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )

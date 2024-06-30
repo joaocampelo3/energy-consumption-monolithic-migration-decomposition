@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,7 @@ class UserTest {
     User userExpected;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         id = 1;
         firstname = "John";
         lastname = "Doe";

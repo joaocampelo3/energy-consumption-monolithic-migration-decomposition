@@ -170,7 +170,7 @@ class OrderControllerTests {
 
 
     @Test
-    void test_GetAllOrders() throws NotFoundException {
+    void test_GetAllOrders() {
         // Define the behavior of the mock
         when(orderService.getAllOrders()).thenReturn(orderDTOS);
 

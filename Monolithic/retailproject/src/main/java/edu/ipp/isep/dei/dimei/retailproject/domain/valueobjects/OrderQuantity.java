@@ -14,7 +14,7 @@ public class OrderQuantity implements IValueObject {
 
     public OrderQuantity(int quantity) throws InvalidQuantityException {
 
-        if (quantity < 0 || quantity > 999999) {
+        if (quantity < 0 || quantity > Integer.MAX_VALUE) {
             throw new InvalidQuantityException("The number of quantity inserted is not valid");
         }
         this.quantity = quantity;

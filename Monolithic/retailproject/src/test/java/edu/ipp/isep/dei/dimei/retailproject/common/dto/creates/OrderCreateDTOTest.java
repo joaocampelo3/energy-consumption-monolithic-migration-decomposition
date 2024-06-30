@@ -27,7 +27,7 @@ class OrderCreateDTOTest {
 
     int id = 1;
     Instant orderDate;
-    OrderStatusEnum orderStatusEnum = OrderStatusEnum.PENDING;
+    final OrderStatusEnum orderStatusEnum = OrderStatusEnum.PENDING;
     int customerId;
     String email;
     ItemQuantityDTO itemQuantityDTO1;

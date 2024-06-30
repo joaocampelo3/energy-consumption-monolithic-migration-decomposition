@@ -3,7 +3,6 @@ package edu.ipp.isep.dei.dimei.retailproject.repositories;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Address;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 @Repository

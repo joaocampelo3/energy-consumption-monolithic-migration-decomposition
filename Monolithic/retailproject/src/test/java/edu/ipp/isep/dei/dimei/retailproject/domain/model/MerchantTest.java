@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +18,7 @@ class MerchantTest {
     Merchant merchantExpected;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         id = 1;
         name = "Merchant 1";
         email = "merchant_email@gmail.com";

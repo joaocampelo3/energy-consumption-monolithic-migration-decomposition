@@ -99,7 +99,7 @@ class CategoryServiceTests {
     }
 
     @Test
-    void test_CreateCategory() throws NotFoundException {
+    void test_CreateCategory() {
         // Define the behavior of the mock
         when(categoryRepository.save(newCategory1)).thenReturn(category1);
 
@@ -134,7 +134,7 @@ class CategoryServiceTests {
     }
 
     @Test
-    void test_DeleteCategory() throws NotFoundException, BadPayloadException {
+    void test_DeleteCategory() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(categoryRepository.findById(id)).thenReturn(Optional.ofNullable(category1));

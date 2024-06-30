@@ -75,7 +75,7 @@ class MerchantOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<MerchantOrder> merchantOrders = new ArrayList<>();
-    Instant currentDateTime = Instant.now();
+    final Instant currentDateTime = Instant.now();
     ShippingOrder shippingOrder1;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO1;
 
@@ -383,11 +383,11 @@ class MerchantOrderServiceTests {
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -505,11 +505,11 @@ class MerchantOrderServiceTests {
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -552,11 +552,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -594,11 +594,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -632,11 +632,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }

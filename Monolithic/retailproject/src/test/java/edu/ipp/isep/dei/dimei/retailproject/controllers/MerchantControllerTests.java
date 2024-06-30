@@ -140,7 +140,7 @@ class MerchantControllerTests {
     }
 
     @Test
-    void test_DeleteMerchant() throws BadPayloadException, NotFoundException {
+    void test_DeleteMerchant() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(merchantService.deleteMerchant(id)).thenReturn(merchantDTO1);

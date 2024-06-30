@@ -106,7 +106,7 @@ class CategoryControllerTests {
     }
 
     @Test
-    void test_CreateCategory() throws NotFoundException {
+    void test_CreateCategory() {
         // Define the behavior of the mock
         when(categoryService.createCategory(categoryDTO1)).thenReturn(categoryDTO1);
 
@@ -137,7 +137,7 @@ class CategoryControllerTests {
     }
 
     @Test
-    void test_DeleteCategory() throws BadPayloadException, NotFoundException {
+    void test_DeleteCategory() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(categoryService.deleteCategory(id)).thenReturn(categoryDTO1);

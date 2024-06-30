@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,15 +19,14 @@ class PaymentTest {
     double amount;
     Instant paymentDateTime;
     PaymentMethodEnum paymentMethod = PaymentMethodEnum.CARD;
-    PaymentStatusEnum status = PaymentStatusEnum.PENDING;
+    final PaymentStatusEnum status = PaymentStatusEnum.PENDING;
     Payment paymentExpected;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         id = 1;
         amount = 10.0;
-        Instant currentDate = Instant.now();
-        paymentDateTime = currentDate;
+        paymentDateTime = Instant.now();
         paymentExpected = Payment.builder()
                 .id(id)
                 .amount(amount)
