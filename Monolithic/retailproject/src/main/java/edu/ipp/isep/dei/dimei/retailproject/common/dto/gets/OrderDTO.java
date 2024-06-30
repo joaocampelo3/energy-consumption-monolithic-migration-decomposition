@@ -35,11 +35,32 @@ public class OrderDTO {
             this.orderItems = new ArrayList<>();
             this.totalPrice = 0;
         } else {
-            this.orderItems = order.getItemQuantities().stream().map(itemQuantity -> new ItemQuantityDTO(itemQuantity)).toList();
+            this.orderItems = order.getItemQuantities().stream().map(ItemQuantityDTO::new).toList();
             this.totalPrice = order.getItemQuantities().stream().mapToDouble(ItemQuantity::getTotalPrice).sum();
         }
         this.paymentDTO = new PaymentDTO(order.getPayment());
+    }
 
+    public boolean isPending() {
+        return orderStatus == OrderStatusEnum.PENDING;
+    }
 
+    public boolean isApproved() {
+        return orderStatus == OrderStatusEnum.APPROVED;
+    }
+    public boolean isRejected() {
+        return orderStatus == OrderStatusEnum.REJECTED;
+    }
+
+    public boolean isCancelled() {
+        return orderStatus == OrderStatusEnum.CANCELLED;
+    }
+
+    public boolean isShipped() {
+        return orderStatus == OrderStatusEnum.SHIPPED;
+    }
+
+    public boolean isDelivered() {
+        return orderStatus == OrderStatusEnum.DELIVERED;
     }
 }

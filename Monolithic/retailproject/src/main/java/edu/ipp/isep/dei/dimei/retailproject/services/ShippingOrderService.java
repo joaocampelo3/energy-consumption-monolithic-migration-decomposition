@@ -6,8 +6,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
@@ -26,8 +25,8 @@ import java.util.List;
 @Service
 public class ShippingOrderService {
 
-    private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong shipping order payload.";
-    private static final String NOTFOUNDEXCEPTIONMESSAGE = "Shipping Order not found.";
+    protected static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong shipping order payload.";
+    protected static final String NOTFOUNDEXCEPTIONMESSAGE = "Shipping Order not found.";
     private final ShippingOrderRepository shippingOrderRepository;
     private final UserService userService;
     private final MerchantOrderService merchantOrderService;
@@ -72,7 +71,7 @@ public class ShippingOrderService {
     }
 
     public ShippingOrderUpdateDTO fullCancelShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+        if (isIdNotEqualToOrderId(id, shippingOrderUpdateDTO)) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -102,7 +101,7 @@ public class ShippingOrderService {
     }
 
     public ShippingOrderUpdateDTO rejectShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+        if (isIdNotEqualToOrderId(id, shippingOrderUpdateDTO)) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -122,7 +121,7 @@ public class ShippingOrderService {
     public ShippingOrderUpdateDTO rejectShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException, WrongFlowException {
         ShippingOrder shippingOrder = getUserShippingOrderByOrder(authorizationToken, order);
 
-        if (!ShippingOrderStatusEnum.REJECTED.equals(shippingOrder.getStatus())) {
+        if (!shippingOrder.isRejected()) {
             shippingOrder = changeShippingOrderStatus(authorizationToken, shippingOrder.getId(), ShippingOrderStatusEnum.REJECTED);
         }
 
@@ -134,7 +133,7 @@ public class ShippingOrderService {
     }
 
     public ShippingOrderUpdateDTO approveShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
-        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+        if (isIdNotEqualToOrderId(id, shippingOrderUpdateDTO)) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -144,7 +143,7 @@ public class ShippingOrderService {
     }
 
     public ShippingOrderUpdateDTO shippedShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
-        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+        if (isIdNotEqualToOrderId(id, shippingOrderUpdateDTO)) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -157,7 +156,7 @@ public class ShippingOrderService {
     }
 
     public ShippingOrderUpdateDTO deliveredShippingOrder(String authorizationToken, int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
-        if (!isIdEqualToOrderId(id, shippingOrderUpdateDTO)) {
+        if (isIdNotEqualToOrderId(id, shippingOrderUpdateDTO)) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -173,11 +172,6 @@ public class ShippingOrderService {
         User user = this.userService.getUserByToken(authorizationToken);
 
         switch (user.getAccount().getRole()) {
-            case USER -> {
-                return this.shippingOrderRepository.findById(id)
-                        .filter(o -> o.getUser() == user)
-                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
-            }
             case ADMIN -> {
                 return this.shippingOrderRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
@@ -187,24 +181,24 @@ public class ShippingOrderService {
                         .filter(o -> o.getMerchantOrder().getMerchant().getEmail().compareTo(user.getAccount().getEmail()) == 0)
                         .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
             }
-            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+            default -> {
+                return this.shippingOrderRepository.findById(id)
+                        .filter(o -> o.getUser() == user && o.getUser().getAccount().getRole().equals(RoleEnum.USER))
+                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            }
         }
     }
 
     private ShippingOrder getUserShippingOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
-        switch (user.getAccount().getRole()) {
-            case USER -> {
-                return this.shippingOrderRepository.findByOrder(order)
-                        .filter(shippingOrder -> shippingOrder.getUser() == user)
-                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
-            }
-            case ADMIN -> {
-                return this.shippingOrderRepository.findByOrder(order)
-                        .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
-            }
-            default -> throw new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE);
+        if (user.getAccount().getRole().equals(RoleEnum.ADMIN)) {
+            return this.shippingOrderRepository.findByOrder(order)
+                    .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        } else {
+            return this.shippingOrderRepository.findByOrder(order)
+                    .filter(shippingOrder -> shippingOrder.getUser() == user && shippingOrder.getUser().getAccount().getRole().equals(RoleEnum.USER))
+                    .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
         }
     }
 
@@ -226,52 +220,29 @@ public class ShippingOrderService {
         MerchantOrderDTO merchantOrderDTO = this.merchantOrderService.getUserMerchantOrder(authorizationToken, shippingOrder.getOrder().getId());
 
         switch (newStatus) {
-            case PENDING -> {
-                return true;
-            }
             case APPROVED -> {
-                return shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.PENDING) == 0 &&
-                        (orderDTO.getOrderStatus().compareTo(OrderStatusEnum.PENDING) == 0 ||
-                                orderDTO.getOrderStatus().compareTo(OrderStatusEnum.APPROVED) == 0) &&
-                        (merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.PENDING) == 0 ||
-                                merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.APPROVED) == 0);
+                return shippingOrder.isPending() && (orderDTO.isPending() || orderDTO.isApproved()) && (merchantOrderDTO.isPending() || merchantOrderDTO.isApproved());
             }
             case REJECTED -> {
-                return (shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.PENDING) == 0 ||
-                        shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.APPROVED) == 0) &&
-                        (orderDTO.getOrderStatus().compareTo(OrderStatusEnum.PENDING) == 0 ||
-                                orderDTO.getOrderStatus().compareTo(OrderStatusEnum.APPROVED) == 0 ||
-                                orderDTO.getOrderStatus().compareTo(OrderStatusEnum.REJECTED) == 0) &&
-                        (merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.PENDING) == 0 ||
-                                merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.APPROVED) == 0 ||
-                                merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.REJECTED) == 0);
+                return shippingOrder.isPendingOrApproved() && (orderDTO.isPending() || orderDTO.isApproved() || orderDTO.isRejected()) && (merchantOrderDTO.isPending() || merchantOrderDTO.isApproved() || merchantOrderDTO.isRejected());
             }
             case CANCELLED -> {
-                return (shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.PENDING) == 0 ||
-                        shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.APPROVED) == 0) &&
-                        (orderDTO.getOrderStatus().compareTo(OrderStatusEnum.PENDING) == 0 ||
-                                orderDTO.getOrderStatus().compareTo(OrderStatusEnum.APPROVED) == 0 ||
-                                orderDTO.getOrderStatus().compareTo(OrderStatusEnum.CANCELLED) == 0) &&
-                        (merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.PENDING) == 0 ||
-                                merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.APPROVED) == 0 ||
-                                merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.CANCELLED) == 0);
+                return shippingOrder.isPendingOrApproved() && (orderDTO.isPending() || orderDTO.isApproved() || orderDTO.isCancelled()) && (merchantOrderDTO.isPending() || merchantOrderDTO.isApproved() || merchantOrderDTO.isCancelled());
             }
             case SHIPPED -> {
-                return shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.APPROVED) == 0 &&
-                        orderDTO.getOrderStatus().compareTo(OrderStatusEnum.APPROVED) == 0 &&
-                        merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.APPROVED) == 0;
+                return shippingOrder.isApproved() && orderDTO.isApproved() && merchantOrderDTO.isApproved();
             }
             case DELIVERED -> {
-                return shippingOrder.getStatus().compareTo(ShippingOrderStatusEnum.SHIPPED) == 0 &&
-                        orderDTO.getOrderStatus().compareTo(OrderStatusEnum.SHIPPED) == 0 &&
-                        merchantOrderDTO.getMerchantOrderStatus().compareTo(MerchantOrderStatusEnum.SHIPPED) == 0;
+                return shippingOrder.isShipped() && orderDTO.isShipped() && merchantOrderDTO.isShipped();
+            }
+            default -> {
+                return false;
             }
         }
-        return false;
     }
 
-    private boolean isIdEqualToOrderId(int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
-        return id == shippingOrderUpdateDTO.getId();
+    private boolean isIdNotEqualToOrderId(int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+        return id != shippingOrderUpdateDTO.getId();
     }
 
     private void addItemStock(String authorizationToken, ShippingOrder shippingOrder) throws InvalidQuantityException, BadPayloadException, NotFoundException {

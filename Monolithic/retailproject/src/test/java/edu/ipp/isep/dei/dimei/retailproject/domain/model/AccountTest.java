@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -15,7 +14,7 @@ class AccountTest {
     int id;
     String email;
     String password;
-    RoleEnum role = RoleEnum.USER;
+    final RoleEnum role = RoleEnum.USER;
     Account accountExpected;
 
     @BeforeEach
@@ -71,8 +70,44 @@ class AccountTest {
         assertEquals(email, account.getEmail());
         assertEquals(password, account.getPassword());
         assertEquals(role, account.getRole());
+        assertEquals(accountExpected.getUsername(), account.getUsername());
+        assertEquals(accountExpected.isEnabled(), account.isEnabled());
+        assertEquals(accountExpected.isAccountNonExpired(), account.isAccountNonExpired());
+        assertEquals(accountExpected.isAccountNonLocked(), account.isAccountNonLocked());
+        assertEquals(accountExpected.isCredentialsNonExpired(), account.isCredentialsNonExpired());
+        assertEquals(accountExpected.getAuthorities(), account.getAuthorities());
         assertEquals(accountExpected.hashCode(), account.hashCode());
         assertEquals(accountExpected, account);
-        assertEquals(accountExpected, account);
+        assertEquals(accountExpected.toString(), account.toString());
+    }
+
+    @Test
+    void test_AccountSets() {
+        Account account = Account.builder().build();
+
+        account.setId(id);
+        account.setEmail(email);
+        account.setPassword(password);
+        account.setRole(role);
+
+        assertEquals(id, account.getId());
+        assertEquals(email, account.getEmail());
+        assertEquals(password, account.getPassword());
+        assertEquals(role, account.getRole());
+    }
+
+    @Test
+    void test_AccountSetsFalse() {
+        Account account = Account.builder().build();
+
+        account.setId(2);
+        account.setEmail("aaaaaa@aaaa.com");
+        account.setPassword("12345");
+        account.setRole(RoleEnum.ADMIN);
+
+        assertNotEquals(account.getId(), id);
+        assertNotEquals(account.getEmail(), email);
+        assertNotEquals(account.getPassword(), password);
+        assertNotEquals(account.getRole(), role);
     }
 }

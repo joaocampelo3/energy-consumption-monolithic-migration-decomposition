@@ -25,7 +25,7 @@ class OrderDTOTest {
 
     int id;
     Instant orderDate;
-    OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
+    final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     int customerId;
     String email;
     List<ItemQuantityDTO> orderItemsDTO = new ArrayList<>();
@@ -222,5 +222,36 @@ class OrderDTOTest {
     void test_createOrderDTONoArgsConstructor() {
         OrderDTO orderDTO = OrderDTO.builder().build();
         assertNotNull(orderDTO);
+    }
+
+    @Test
+    void test_isRejectedOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isRejected());
+    }
+
+    @Test
+    void test_isCancelledOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isCancelled());
+    }
+
+    @Test
+    void test_isShippedOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isShipped());
+    }
+
+    @Test
+    void test_isDeliveredOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.DELIVERED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isDelivered());
+    }
+
+    @Test
+    void test_isDeliveredOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isDelivered());
     }
 }

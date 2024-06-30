@@ -9,8 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -18,7 +17,7 @@ class MerchantOrderDTOTest {
 
     int id;
     Instant merchantOrderDate;
-    MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
+    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int customerId;
     String email;
     int orderId;
@@ -78,5 +77,281 @@ class MerchantOrderDTOTest {
     void test_createMerchantOrderDTONoArgsConstructor() {
         MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder().build();
         assertNotNull(merchantDTO);
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOPending() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isPending());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOPendingFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.APPROVED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.APPROVED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isPending());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOApproved() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.APPROVED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.APPROVED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isApproved());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOApprovedFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isApproved());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOCancelled() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.CANCELLED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.CANCELLED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isCancelled());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOCancelledFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isCancelled());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTORejected() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.REJECTED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.REJECTED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isRejected());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTORejectedFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isRejected());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOShipped() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.SHIPPED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.SHIPPED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isShipped());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTOShippedFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isShipped());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTODelivered() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.DELIVERED)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.DELIVERED, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertTrue(merchantDTO.isDelivered());
+    }
+
+    @Test
+    void test_statusMerchantOrderDTODeliveredFail() {
+        MerchantOrderDTO merchantDTO = MerchantOrderDTO.builder()
+                .id(id)
+                .merchantOrderDate(merchantOrderDate)
+                .merchantOrderStatus(MerchantOrderStatusEnum.PENDING)
+                .customerId(customerId)
+                .email(email)
+                .orderId(orderId)
+                .merchantId(merchantId)
+                .build();
+
+        assertNotNull(merchantDTO);
+        assertEquals(id, merchantDTO.getId());
+        assertEquals(merchantOrderDate, merchantDTO.getMerchantOrderDate());
+        assertEquals(MerchantOrderStatusEnum.PENDING, merchantDTO.getMerchantOrderStatus());
+        assertEquals(customerId, merchantDTO.getCustomerId());
+        assertEquals(email, merchantDTO.getEmail());
+        assertEquals(orderId, merchantDTO.getOrderId());
+        assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertFalse(merchantDTO.isDelivered());
     }
 }

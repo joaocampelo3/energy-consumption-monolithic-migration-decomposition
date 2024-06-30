@@ -13,8 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -204,5 +203,70 @@ class ShippingOrderDTOTest {
     void test_createShippingOrderDTONoArgsConstructor() {
         ShippingOrderDTO shippingOrderDTO = ShippingOrderDTO.builder().build();
         assertNotNull(shippingOrderDTO);
+    }
+
+    @Test
+    void test_isApprovedShippingOrderDTO() {
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
+        assertNotNull(shippingOrderDTOExpected);
+        assertTrue(shippingOrderDTOExpected.isApproved());
+    }
+
+    @Test
+    void test_isApprovedShippingOrderDTOFail() {
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isApproved());
+    }
+
+    @Test
+    void test_isRejectedShippingOrderDTOFail() {
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isRejected());
+    }
+
+    @Test
+    void test_isCancelledShippingOrderDTOFail() {
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isCancelled());
+    }
+
+    @Test
+    void test_isShippedShippingOrderDTOFail() {
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isShipped());
+    }
+
+    @Test
+    void test_isDeliveredShippingOrderDTOFail() {
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isDelivered());
+    }
+
+    @Test
+    void test_isPendingOrApprovedShippingOrderDTO() {
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
+        assertNotNull(shippingOrderDTOExpected);
+        assertTrue(shippingOrderDTOExpected.isPendingOrApproved());
+    }
+
+    @Test
+    void test_isPendingOrApprovedShippingOrderDTOFail() {
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isPendingOrApproved());
+    }
+
+    @Test
+    void test_isPendingOrApprovedOrRejectedShippingOrderDTOFail() {
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isPendingOrApprovedOrRejected());
+    }
+
+    @Test
+    void test_isPendingOrApprovedOrCancelledShippingOrderDTOFail() {
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
+        assertNotNull(shippingOrderDTOExpected);
+        assertFalse(shippingOrderDTOExpected.isPendingOrApprovedOrCancelled());
     }
 }

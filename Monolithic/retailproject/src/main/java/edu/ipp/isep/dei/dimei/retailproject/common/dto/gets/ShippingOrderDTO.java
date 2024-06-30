@@ -29,4 +29,40 @@ public class ShippingOrderDTO {
         this.merchantOrderId = shippingOrder.getMerchantOrder().getId();
         this.email = shippingOrder.getUser().getAccount().getEmail();
     }
+
+    public boolean isPending() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.PENDING;
+    }
+
+    public boolean isApproved() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.APPROVED;
+    }
+
+    public boolean isRejected() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.REJECTED;
+    }
+
+    public boolean isCancelled() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.CANCELLED;
+    }
+
+    public boolean isShipped() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.SHIPPED;
+    }
+
+    public boolean isDelivered() {
+        return shippingOrderStatus == ShippingOrderStatusEnum.DELIVERED;
+    }
+
+    public boolean isPendingOrApproved() {
+        return this.isPending() || this.isApproved();
+    }
+
+    public boolean isPendingOrApprovedOrRejected() {
+        return this.isPendingOrApproved() || this.isRejected();
+    }
+
+    public boolean isPendingOrApprovedOrCancelled() {
+        return this.isPendingOrApproved() || this.isCancelled();
+    }
 }

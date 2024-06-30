@@ -56,4 +56,24 @@ public class ShippingOrder {
         this.merchantOrder = merchantOrder;
         this.user = user;
     }
+
+    public boolean isPending() {
+        return status == ShippingOrderStatusEnum.PENDING;
+    }
+
+    public boolean isApproved() {
+        return status == ShippingOrderStatusEnum.APPROVED;
+    }
+
+    public boolean isRejected() {
+        return status == ShippingOrderStatusEnum.REJECTED;
+    }
+
+    public boolean isShipped() {
+        return status == ShippingOrderStatusEnum.SHIPPED;
+    }
+
+    public boolean isPendingOrApproved() {
+        return this.isPending() || this.isApproved();
+    }
 }

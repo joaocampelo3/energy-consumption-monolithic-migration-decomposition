@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class OrderTest {
     int id;
     Instant orderDate;
-    OrderStatusEnum status = OrderStatusEnum.PENDING;
+    final OrderStatusEnum status = OrderStatusEnum.PENDING;
     User user;
     List<ItemQuantity> itemQuantities = new ArrayList<>();
     Payment payment;
@@ -147,6 +147,28 @@ class OrderTest {
                 .itemQuantities(itemQuantities)
                 .payment(payment)
                 .build();
+
+        assertNotNull(order);
+        assertEquals(id, order.getId());
+        assertEquals(orderDate, order.getOrderDate());
+        assertEquals(status, order.getStatus());
+        assertEquals(user, order.getUser());
+        assertEquals(itemQuantities, order.getItemQuantities());
+        assertEquals(payment, order.getPayment());
+        assertEquals(orderExpected.hashCode(), order.hashCode());
+        assertEquals(orderExpected, order);
+    }
+
+    @Test
+    void test_OrderSets() {
+        Order order = Order.builder().build();
+
+        order.setId(id);
+        order.setOrderDate(orderDate);
+        order.setStatus(status);
+        order.setUser(user);
+        order.setItemQuantities(itemQuantities);
+        order.setPayment(payment);
 
         assertNotNull(order);
         assertEquals(id, order.getId());
