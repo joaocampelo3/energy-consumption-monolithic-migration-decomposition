@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 class OrderUpdateDTOTest {
 
+    final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     int id;
     Instant orderDate;
-    final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     String email;
     Order order;
     OrderUpdateDTO orderUpdateDTOExpected;
@@ -143,6 +143,26 @@ class OrderUpdateDTOTest {
     void test_createOrderUpdateDTONoArgsConstructor() {
         OrderUpdateDTO orderUpdateDTO = OrderUpdateDTO.builder().build();
         assertNotNull(orderUpdateDTO);
+    }
+
+    @Test
+    void test_SetsOrderUpdateDTO() {
+        OrderUpdateDTO expected = new OrderUpdateDTO(id, orderDate, orderStatus, email);
+        OrderUpdateDTO result = OrderUpdateDTO.builder().build();
+
+        result.setId(id);
+        result.setOrderDate(orderDate);
+        result.setOrderStatus(orderStatus);
+        result.setEmail(email);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(orderDate, result.getOrderDate());
+        assertEquals(orderStatus, result.getOrderStatus());
+        assertEquals(email, result.getEmail());
+        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
+        assertEquals(expected.toString(), result.toString());
     }
 }
 

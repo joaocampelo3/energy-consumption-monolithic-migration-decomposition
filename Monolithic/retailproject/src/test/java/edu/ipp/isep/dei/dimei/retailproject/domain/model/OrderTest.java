@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class OrderTest {
+    final OrderStatusEnum status = OrderStatusEnum.PENDING;
     int id;
     Instant orderDate;
-    final OrderStatusEnum status = OrderStatusEnum.PENDING;
     User user;
     List<ItemQuantity> itemQuantities = new ArrayList<>();
     Payment payment;
