@@ -269,4 +269,29 @@ class ShippingOrderDTOTest {
         assertNotNull(shippingOrderDTOExpected);
         assertFalse(shippingOrderDTOExpected.isPendingOrApprovedOrCancelled());
     }
+
+    @Test
+    void test_SetsShippingOrderDTO() {
+        ShippingOrderDTO result = ShippingOrderDTO.builder().build();
+
+        result.setId(id);
+        result.setShippingOrderDate(shippingOrderDate);
+        result.setShippingOrderStatus(shippingOrderStatus);
+        result.setAddressDTO(addressDTO);
+        result.setOrderId(orderId);
+        result.setMerchantOrderId(merchantOrderId);
+        result.setEmail(email);
+
+        assertNotNull(result);
+        assertEquals(id, result.getOrderId());
+        assertEquals(shippingOrderDate, result.getShippingOrderDate());
+        assertEquals(shippingOrderStatus, result.getShippingOrderStatus());
+        assertEquals(addressDTO, result.getAddressDTO());
+        assertEquals(orderId, result.getOrderId());
+        assertEquals(merchantOrderId, result.getMerchantOrderId());
+        assertEquals(email, result.getEmail());
+        assertEquals(shippingOrderDTOExpected.hashCode(), result.hashCode());
+        assertEquals(shippingOrderDTOExpected, result);
+        assertEquals(shippingOrderDTOExpected.toString(), result.toString());
+    }
 }

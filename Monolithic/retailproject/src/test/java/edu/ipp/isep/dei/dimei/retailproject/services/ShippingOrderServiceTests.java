@@ -35,6 +35,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ShippingOrderServiceTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final Instant currentDateTime = Instant.now();
     @InjectMocks
     ShippingOrderService shippingOrderService;
     @Mock
@@ -71,7 +72,6 @@ class ShippingOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<ShippingOrder> shippingOrders = new ArrayList<>();
-    final Instant currentDateTime = Instant.now();
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
