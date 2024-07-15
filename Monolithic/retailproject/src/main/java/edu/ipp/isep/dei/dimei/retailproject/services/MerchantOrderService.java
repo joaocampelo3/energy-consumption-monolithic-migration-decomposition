@@ -166,7 +166,7 @@ public class MerchantOrderService {
         return changeMerchantOrderStatus(authorizationToken, id, MerchantOrderStatusEnum.DELIVERED);
     }
 
-    private MerchantOrder getUserMerchantOrderById(String authorizationToken, int id) throws NotFoundException {
+    MerchantOrder getUserMerchantOrderById(String authorizationToken, int id) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         switch (user.getAccount().getRole()) {
@@ -188,7 +188,7 @@ public class MerchantOrderService {
         }
     }
 
-    private MerchantOrder getUserMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
+    MerchantOrder getUserMerchantOrderByOrder(String authorizationToken, Order order) throws NotFoundException {
         User user = this.userService.getUserByToken(authorizationToken);
 
         switch (user.getAccount().getRole()) {
@@ -269,23 +269,23 @@ public class MerchantOrderService {
         this.merchantOrderRepository.deleteByOrderId(orderId);
     }
 
-    private boolean orderDTOIsPendingOrApproved(OrderDTO orderDTO){
+    private boolean orderDTOIsPendingOrApproved(OrderDTO orderDTO) {
         return orderDTO.isPending() || orderDTO.isApproved();
     }
 
-    private boolean orderDTOIsPendingOrApprovedOrRejected(OrderDTO orderDTO){
+    private boolean orderDTOIsPendingOrApprovedOrRejected(OrderDTO orderDTO) {
         return orderDTOIsPendingOrApproved(orderDTO) || orderDTO.isRejected();
     }
 
-    private boolean orderDTOIsPendingOrApprovedOrCancelled(OrderDTO orderDTO){
+    private boolean orderDTOIsPendingOrApprovedOrCancelled(OrderDTO orderDTO) {
         return orderDTOIsPendingOrApproved(orderDTO) || orderDTO.isCancelled();
     }
 
-    private boolean orderDTOIsApprovedOrShipped(OrderDTO orderDTO){
+    private boolean orderDTOIsApprovedOrShipped(OrderDTO orderDTO) {
         return orderDTO.isApproved() || orderDTO.isShipped();
     }
 
-    private boolean orderDTOIsShippedOrDelivered(OrderDTO orderDTO){
+    private boolean orderDTOIsShippedOrDelivered(OrderDTO orderDTO) {
         return orderDTO.isShipped() || orderDTO.isDelivered();
     }
 
