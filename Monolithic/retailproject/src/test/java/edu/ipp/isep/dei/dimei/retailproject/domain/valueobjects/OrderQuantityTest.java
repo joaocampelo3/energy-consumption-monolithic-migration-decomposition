@@ -45,7 +45,7 @@ class OrderQuantityTest {
 
     @Test
     void test_SetsOrderQuantity() throws InvalidQuantityException {
-        OrderQuantity result = new OrderQuantity(validQuantity+1);
+        OrderQuantity result = new OrderQuantity(validQuantity + 1);
 
         result.setQuantity(validQuantity);
 

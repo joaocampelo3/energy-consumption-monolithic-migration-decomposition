@@ -16,8 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -179,5 +178,35 @@ class OrderTest {
         assertEquals(payment, order.getPayment());
         assertEquals(orderExpected.hashCode(), order.hashCode());
         assertEquals(orderExpected, order);
+    }
+
+    @Test
+    void test_isPendingFail() {
+        OrderStatusEnum newStatus = OrderStatusEnum.APPROVED;
+        Order order = new Order(id, orderDate, newStatus, user, itemQuantities, payment);
+
+        assertFalse(order.isPending());
+    }
+
+    @Test
+    void test_isApprovedFail() {
+        Order order = new Order(id, orderDate, status, user, itemQuantities, payment);
+
+        assertFalse(order.isApproved());
+    }
+
+    @Test
+    void test_isShippedFail() {
+        Order order = new Order(id, orderDate, status, user, itemQuantities, payment);
+
+        assertFalse(order.isShipped());
+    }
+
+    @Test
+    void test_isPendingOrApprovedFail() {
+        OrderStatusEnum newStatus = OrderStatusEnum.REJECTED;
+        Order order = new Order(id, orderDate, newStatus, user, itemQuantities, payment);
+
+        assertFalse(order.isPendingOrApproved());
     }
 }

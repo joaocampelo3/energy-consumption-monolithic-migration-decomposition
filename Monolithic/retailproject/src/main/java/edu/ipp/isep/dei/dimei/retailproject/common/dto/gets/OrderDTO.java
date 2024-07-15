@@ -48,6 +48,7 @@ public class OrderDTO {
     public boolean isApproved() {
         return orderStatus == OrderStatusEnum.APPROVED;
     }
+
     public boolean isRejected() {
         return orderStatus == OrderStatusEnum.REJECTED;
     }
