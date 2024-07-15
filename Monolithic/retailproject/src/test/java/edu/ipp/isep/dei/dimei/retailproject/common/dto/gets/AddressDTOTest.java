@@ -96,4 +96,25 @@ class AddressDTOTest {
         assertEquals(addressExpected.hashCode(), address.hashCode());
     }
 
+    @Test
+    void test_SetsAddressDTO() {
+        AddressDTO result = AddressDTO.builder().build();
+
+        result.setId(id);
+        result.setStreet(street);
+        result.setZipCode(zipCode);
+        result.setCity(city);
+        result.setCountry(country);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(street, result.getStreet());
+        assertEquals(zipCode, result.getZipCode());
+        assertEquals(city, result.getCity());
+        assertEquals(country, result.getCountry());
+        assertEquals(addressDTOExpected.hashCode(), result.hashCode());
+        assertEquals(addressDTOExpected, result);
+        assertEquals(addressDTOExpected.toString(), result.toString());
+    }
+
 }
