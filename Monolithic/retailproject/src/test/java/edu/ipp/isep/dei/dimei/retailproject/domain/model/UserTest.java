@@ -68,4 +68,22 @@ class UserTest {
         assertEquals(userExpected.hashCode(), user.hashCode());
         assertEquals(userExpected, user);
     }
+
+    @Test
+    void test_UserSets() {
+        User user = User.builder().build();
+
+        user.setId(id);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setAccount(account);
+
+        assertNotNull(user);
+        assertEquals(id, user.getId());
+        assertEquals(firstname, user.getFirstname());
+        assertEquals(lastname, user.getLastname());
+        assertEquals(account, user.getAccount());
+        assertEquals(userExpected.hashCode(), user.hashCode());
+        assertEquals(userExpected, user);
+    }
 }

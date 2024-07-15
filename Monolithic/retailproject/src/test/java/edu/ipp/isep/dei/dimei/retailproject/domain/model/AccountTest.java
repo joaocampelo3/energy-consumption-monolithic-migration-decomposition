@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class AccountTest {
+    final RoleEnum role = RoleEnum.USER;
     int id;
     String email;
     String password;
-    final RoleEnum role = RoleEnum.USER;
     Account accountExpected;
 
     @BeforeEach

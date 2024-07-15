@@ -62,4 +62,23 @@ class RegisterDTOTest {
         RegisterDTO registerDTO = RegisterDTO.builder().build();
         assertNotNull(registerDTO);
     }
+
+    @Test
+    void test_SetsRegisterDTO() {
+        RegisterDTO result = RegisterDTO.builder().build();
+
+        result.setFirstname(firstname);
+        result.setLastname(lastname);
+        result.setEmail(email);
+        result.setPassword(password);
+
+        assertNotNull(result);
+        assertEquals(firstname, result.getFirstname());
+        assertEquals(lastname, result.getLastname());
+        assertEquals(email, result.getEmail());
+        assertEquals(password, result.getPassword());
+        assertEquals(registerDTOExpected.hashCode(), result.hashCode());
+        assertEquals(registerDTOExpected, result);
+        assertEquals(registerDTOExpected.toString(), result.toString());
+    }
 }
