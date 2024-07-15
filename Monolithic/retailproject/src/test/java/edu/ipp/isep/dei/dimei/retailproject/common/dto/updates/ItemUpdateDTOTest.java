@@ -116,4 +116,24 @@ class ItemUpdateDTOTest {
         assertNotNull(itemUpdateDTO);
     }
 
+    @Test
+    void test_SetsItemUpdateDTO() {
+        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        ItemUpdateDTO result = ItemUpdateDTO.builder().build();
+
+        result.setId(id);
+        result.setSku(sku);
+        result.setPrice(price);
+        result.setQuantityInStock(quantityInStock);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(sku, result.getSku());
+        assertEquals(price, result.getPrice());
+        assertEquals(quantityInStock, result.getQuantityInStock());
+        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
+        assertEquals(expected.toString(), result.toString());
+    }
+
 }

@@ -32,6 +32,7 @@ import static org.mockito.Mockito.*;
 class ItemControllerTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     final String exceptionItemNotFound = "Item not found.";
+    final String exceptionBadRequest = "You can not create item for this merchant.";
     @InjectMocks
     ItemController itemController;
     @Mock
@@ -136,7 +137,7 @@ class ItemControllerTests {
         when(itemService.getAllItems()).thenReturn(items);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.getAllItems();
+        ResponseEntity<Object> itemResponseEntity = itemController.getAllItems();
         ResponseEntity<List<ItemDTO>> itemResponseEntityExpected = ResponseEntity.ok(items);
 
         // Perform assertions
@@ -151,8 +152,8 @@ class ItemControllerTests {
         when(itemService.getAllItems()).thenThrow(new NotFoundException(exceptionItemNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> result = itemController.getAllItems();
-        ResponseEntity<?> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+        ResponseEntity<Object> result = itemController.getAllItems();
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
         verify(itemService, atLeastOnce()).getAllItems();
@@ -168,7 +169,7 @@ class ItemControllerTests {
         when(itemService.getUserItems(JwtTokenDummy)).thenReturn(items);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.getUserItems(JwtTokenDummy);
+        ResponseEntity<Object> itemResponseEntity = itemController.getUserItems(JwtTokenDummy);
         ResponseEntity<List<ItemDTO>> itemResponseEntityExpected = ResponseEntity.ok(items);
 
         // Perform assertions
@@ -178,13 +179,30 @@ class ItemControllerTests {
     }
 
     @Test
+    void test_GetUserItemsFail() throws NotFoundException {
+        // Define the behavior of the mock
+        when(itemService.getUserItems(JwtTokenDummy)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.getUserItems(JwtTokenDummy);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atLeastOnce()).getUserItems(JwtTokenDummy);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_GetItemById() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(itemService.getUserItemDTO(JwtTokenDummy, id)).thenReturn(itemDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.getUserItemById(JwtTokenDummy, id);
+        ResponseEntity<Object> itemResponseEntity = itemController.getUserItemById(JwtTokenDummy, id);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
@@ -194,12 +212,30 @@ class ItemControllerTests {
     }
 
     @Test
+    void test_GetItemByIdFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.getUserItemDTO(JwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.getUserItemById(JwtTokenDummy, id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atLeastOnce()).getUserItemDTO(JwtTokenDummy, id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_CreateItem() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         when(itemService.createItem(JwtTokenDummy, itemDTO1)).thenReturn(itemDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.createItem(JwtTokenDummy, itemDTO1);
+        ResponseEntity<Object> itemResponseEntity = itemController.createItem(JwtTokenDummy, itemDTO1);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = new ResponseEntity<>(itemDTO1, HttpStatus.CREATED);
 
         // Perform assertions
@@ -209,13 +245,47 @@ class ItemControllerTests {
     }
 
     @Test
+    void test_CreateItemFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        when(itemService.createItem(JwtTokenDummy, itemDTO1)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.createItem(JwtTokenDummy, itemDTO1);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).createItem(JwtTokenDummy, itemDTO1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_CreateItemFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        when(itemService.createItem(JwtTokenDummy, itemDTO1)).thenThrow(new BadPayloadException(exceptionBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.createItem(JwtTokenDummy, itemDTO1);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).createItem(JwtTokenDummy, itemDTO1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_DeleteItem() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(itemService.deleteItem(JwtTokenDummy, id)).thenReturn(itemDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.deleteItem(JwtTokenDummy, id);
+        ResponseEntity<Object> itemResponseEntity = itemController.deleteItem(JwtTokenDummy, id);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
@@ -225,13 +295,31 @@ class ItemControllerTests {
     }
 
     @Test
+    void test_DeleteItemFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.deleteItem(JwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.deleteItem(JwtTokenDummy, id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).deleteItem(JwtTokenDummy, id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_AddItemStock() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
         when(itemService.addItemStock(JwtTokenDummy, id, itemDTO1Update)).thenReturn(itemDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.addItemStock(JwtTokenDummy, id, itemDTO1Update);
+        ResponseEntity<Object> itemResponseEntity = itemController.addItemStock(JwtTokenDummy, id, itemDTO1Update);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO1);
 
         // Perform assertions
@@ -241,19 +329,91 @@ class ItemControllerTests {
     }
 
     @Test
+    void test_AddItemStock1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.addItemStock(JwtTokenDummy, id, itemDTO1Update)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.addItemStock(JwtTokenDummy, id, itemDTO1Update);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).addItemStock(JwtTokenDummy, id, itemDTO1Update);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_AddItemStock2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.addItemStock(JwtTokenDummy, id, itemDTO1Update)).thenThrow(new BadPayloadException(exceptionBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.addItemStock(JwtTokenDummy, id, itemDTO1Update);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).addItemStock(JwtTokenDummy, id, itemDTO1Update);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_RemoveItemStock() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = 2;
         when(itemService.removeItemStock(JwtTokenDummy, id, itemDTO2Update)).thenReturn(itemDTO2);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> itemResponseEntity = itemController.removeItemStock(JwtTokenDummy, id, itemDTO2Update);
+        ResponseEntity<Object> itemResponseEntity = itemController.removeItemStock(JwtTokenDummy, id, itemDTO2Update);
         ResponseEntity<ItemDTO> itemResponseEntityExpected = ResponseEntity.ok(itemDTO2);
 
         // Perform assertions
         verify(itemService, atMostOnce()).removeItemStock(JwtTokenDummy, id, itemDTO2Update);
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
+    }
+
+    @Test
+    void test_RemoveItemStockFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.removeItemStock(JwtTokenDummy, id, itemDTO1Update)).thenThrow(new NotFoundException(exceptionItemNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.removeItemStock(JwtTokenDummy, id, itemDTO1Update);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).removeItemStock(JwtTokenDummy, id, itemDTO1Update);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_RemoveItemStockFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(itemService.removeItemStock(JwtTokenDummy, id, itemDTO1Update)).thenThrow(new BadPayloadException(exceptionBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = itemController.removeItemStock(JwtTokenDummy, id, itemDTO1Update);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(itemService, atMostOnce()).removeItemStock(JwtTokenDummy, id, itemDTO1Update);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
 }

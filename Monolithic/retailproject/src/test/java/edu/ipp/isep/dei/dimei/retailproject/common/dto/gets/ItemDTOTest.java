@@ -152,4 +152,31 @@ class ItemDTOTest {
         assertEquals(itemExpected.hashCode(), item.hashCode());
     }
 
+    @Test
+    void test_SetsItemDTO() {
+        ItemDTO result = ItemDTO.builder().build();
+
+        result.setId(id);
+        result.setItemName(itemName);
+        result.setSku(sku);
+        result.setItemDescription(itemDescription);
+        result.setPrice(price);
+        result.setQuantityInStock(quantityInStock);
+        result.setCategory(category);
+        result.setMerchant(merchant);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(itemName, result.getItemName());
+        assertEquals(sku, result.getSku());
+        assertEquals(itemDescription, result.getItemDescription());
+        assertEquals(price, result.getPrice());
+        assertEquals(quantityInStock, result.getQuantityInStock());
+        assertEquals(category, result.getCategory());
+        assertEquals(merchant, result.getMerchant());
+        assertEquals(itemDTOExpected.hashCode(), result.hashCode());
+        assertEquals(itemDTOExpected, result);
+        assertEquals(itemDTOExpected.toString(), result.toString());
+    }
+
 }

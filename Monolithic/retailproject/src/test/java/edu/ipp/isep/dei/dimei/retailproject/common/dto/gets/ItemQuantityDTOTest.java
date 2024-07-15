@@ -137,4 +137,29 @@ class ItemQuantityDTOTest {
 
     }
 
+    @Test
+    void test_SetsItemQuantityDTO() {
+        ItemQuantityDTO result = ItemQuantityDTO.builder().build();
+
+        result.setId(id);
+        result.setItemId(itemId);
+        result.setItemName(itemName);
+        result.setItemSku(itemSku);
+        result.setItemDescription(itemDescription);
+        result.setQty(qty);
+        result.setPrice(price);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(itemId, result.getItemId());
+        assertEquals(itemName, result.getItemName());
+        assertEquals(itemSku, result.getItemSku());
+        assertEquals(itemDescription, result.getItemDescription());
+        assertEquals(qty, result.getQty());
+        assertEquals(price, result.getPrice());
+        assertEquals(itemQuantityDTOExpected.hashCode(), result.hashCode());
+        assertEquals(itemQuantityDTOExpected, result);
+        assertEquals(itemQuantityDTOExpected.toString(), result.toString());
+    }
+
 }
