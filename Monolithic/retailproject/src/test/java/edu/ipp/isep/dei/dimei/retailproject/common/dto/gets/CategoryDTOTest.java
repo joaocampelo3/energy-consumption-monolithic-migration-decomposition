@@ -80,4 +80,21 @@ class CategoryDTOTest {
         assertEquals(categoryExpected.hashCode(), category.hashCode());
     }
 
+    @Test
+    void test_SetsCategoryDTO() {
+        CategoryDTO result = CategoryDTO.builder().build();
+
+        result.setId(id);
+        result.setName(name);
+        result.setDescription(description);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(name, result.getName());
+        assertEquals(description, result.getDescription());
+        assertEquals(categoryDTOExpected.hashCode(), result.hashCode());
+        assertEquals(categoryDTOExpected, result);
+        assertEquals(categoryDTOExpected.toString(), result.toString());
+    }
+
 }
