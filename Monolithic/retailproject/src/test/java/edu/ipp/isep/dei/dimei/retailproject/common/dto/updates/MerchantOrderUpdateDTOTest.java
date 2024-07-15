@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class MerchantOrderUpdateDTOTest {
+    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int id;
     Instant merchantOrderDate;
-    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     String email;
     String userEmail;
     int orderId;
@@ -174,5 +174,29 @@ class MerchantOrderUpdateDTOTest {
     void test_createMerchantOrderUpdateDTONoArgsConstructor() {
         MerchantOrderUpdateDTO merchantDTO = MerchantOrderUpdateDTO.builder().build();
         assertNotNull(merchantDTO);
+    }
+
+    @Test
+    void test_SetsMerchantOrderUpdateDTO() {
+        MerchantOrderUpdateDTO expected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        MerchantOrderUpdateDTO result = MerchantOrderUpdateDTO.builder().build();
+
+        result.setId(id);
+        result.setMerchantOrderDate(merchantOrderDate);
+        result.setMerchantOrderStatus(merchantOrderStatus);
+        result.setEmail(email);
+        result.setOrderId(orderId);
+        result.setMerchantId(merchantId);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(merchantOrderDate, result.getMerchantOrderDate());
+        assertEquals(merchantOrderStatus, result.getMerchantOrderStatus());
+        assertEquals(email, result.getEmail());
+        assertEquals(orderId, result.getOrderId());
+        assertEquals(merchantId, result.getMerchantId());
+        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
+        assertEquals(expected.toString(), result.toString());
     }
 }

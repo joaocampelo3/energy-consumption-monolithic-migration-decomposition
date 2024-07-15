@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class MerchantOrderDTOTest {
 
+    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int id;
     Instant merchantOrderDate;
-    final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int customerId;
     String email;
     int orderId;
@@ -353,5 +353,29 @@ class MerchantOrderDTOTest {
         assertEquals(orderId, merchantDTO.getOrderId());
         assertEquals(merchantId, merchantDTO.getMerchantId());
         assertFalse(merchantDTO.isDelivered());
+    }
+
+    @Test
+    void test_SetsMerchantOrderDTO() {
+        MerchantOrderDTO result = MerchantOrderDTO.builder().build();
+
+        result.setId(id);
+        result.setMerchantOrderDate(merchantOrderDate);
+        result.setMerchantOrderStatus(merchantOrderStatus);
+        result.setCustomerId(customerId);
+        result.setEmail(email);
+        result.setOrderId(orderId);
+        result.setMerchantId(merchantId);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(merchantOrderDate, result.getMerchantOrderDate());
+        assertEquals(merchantOrderStatus, result.getMerchantOrderStatus());
+        assertEquals(email, result.getEmail());
+        assertEquals(orderId, result.getOrderId());
+        assertEquals(merchantId, result.getMerchantId());
+        assertEquals(merchantOrderDTOExpected.hashCode(), result.hashCode());
+        assertEquals(merchantOrderDTOExpected, result);
+        assertEquals(merchantOrderDTOExpected.toString(), result.toString());
     }
 }

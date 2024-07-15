@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class MerchantOrderTest {
+    final MerchantOrderStatusEnum status = MerchantOrderStatusEnum.PENDING;
     int id;
     Instant orderDate;
-    final MerchantOrderStatusEnum status = MerchantOrderStatusEnum.PENDING;
     User user;
     Order order;
     Merchant merchant;

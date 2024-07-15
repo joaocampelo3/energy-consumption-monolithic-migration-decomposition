@@ -36,6 +36,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MerchantOrderServiceTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final Instant currentDateTime = Instant.now();
     @InjectMocks
     MerchantOrderService merchantOrderService;
     @Mock
@@ -75,7 +76,6 @@ class MerchantOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<MerchantOrder> merchantOrders = new ArrayList<>();
-    final Instant currentDateTime = Instant.now();
     ShippingOrder shippingOrder1;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO1;
 
