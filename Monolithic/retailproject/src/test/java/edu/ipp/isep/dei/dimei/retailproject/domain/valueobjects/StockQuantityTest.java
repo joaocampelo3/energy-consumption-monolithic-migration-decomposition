@@ -65,9 +65,10 @@ class StockQuantityTest {
     }
 
     @Test
-    void test_increaseStockQuantityFail1() {
+    void test_increaseStockQuantityFail1() throws InvalidQuantityException {
+        StockQuantity stockQuantity = new StockQuantity(validQuantity);
+
         InvalidQuantityException result = assertThrows(InvalidQuantityException.class, () -> {
-            StockQuantity stockQuantity = new StockQuantity(validQuantity);
             stockQuantity.increaseStockQuantity(invalidQuantity);
         });
 
@@ -76,10 +77,11 @@ class StockQuantityTest {
     }
 
     @Test
-    void test_increaseStockQuantityFail2() {
+    void test_increaseStockQuantityFail2() throws InvalidQuantityException {
         newQuantity = 0;
+        StockQuantity stockQuantity = new StockQuantity(validQuantity);
+
         InvalidQuantityException result = assertThrows(InvalidQuantityException.class, () -> {
-            StockQuantity stockQuantity = new StockQuantity(validQuantity);
             stockQuantity.increaseStockQuantity(newQuantity);
         });
 
@@ -99,9 +101,10 @@ class StockQuantityTest {
     }
 
     @Test
-    void test_decreaseStockQuantityFail1() {
+    void test_decreaseStockQuantityFail1() throws InvalidQuantityException {
+        StockQuantity stockQuantity = new StockQuantity(validQuantity);
+
         InvalidQuantityException result = assertThrows(InvalidQuantityException.class, () -> {
-            StockQuantity stockQuantity = new StockQuantity(validQuantity);
             stockQuantity.decreaseStockQuantity(invalidQuantity);
         });
 
@@ -110,10 +113,11 @@ class StockQuantityTest {
     }
 
     @Test
-    void test_decreaseStockQuantityFail2() {
+    void test_decreaseStockQuantityFail2() throws InvalidQuantityException {
         newQuantity = 3;
+        StockQuantity stockQuantity = new StockQuantity(validQuantity);
+
         InvalidQuantityException result = assertThrows(InvalidQuantityException.class, () -> {
-            StockQuantity stockQuantity = new StockQuantity(validQuantity);
             stockQuantity.decreaseStockQuantity(newQuantity);
         });
 
