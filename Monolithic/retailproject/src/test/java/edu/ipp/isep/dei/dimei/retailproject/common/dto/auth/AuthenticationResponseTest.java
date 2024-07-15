@@ -11,15 +11,29 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class AuthenticationResponseTest {
+    static final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
 
     @Test
     void test_createAuthenticationResponse() {
-        String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(JwtTokenDummy);
 
         assertNotNull(authenticationResponse);
         assertEquals(JwtTokenDummy, authenticationResponse.getToken());
 
+    }
+
+    @Test
+    void test_noArgsConstructorAuthenticationResponse() {
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+
+        assertNotNull(authenticationResponse);
+    }
+
+    @Test
+    void test_getterAndSetter() {
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setToken(JwtTokenDummy);
+        assertEquals(JwtTokenDummy, response.getToken());
     }
 
 }

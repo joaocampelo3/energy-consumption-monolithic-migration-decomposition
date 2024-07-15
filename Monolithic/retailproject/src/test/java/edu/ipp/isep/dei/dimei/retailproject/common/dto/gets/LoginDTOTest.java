@@ -66,4 +66,14 @@ class LoginDTOTest {
         assertEquals(loginDTOExpected, result);
         assertEquals(loginDTOExpected.toString(), result.toString());
     }
+
+    @Test
+    void test_getterAndSetter() {
+        LoginDTO loginDTO = new LoginDTO("a", "b");
+        loginDTO.setEmail(email);
+        loginDTO.setPassword(password);
+
+        assertEquals(email, loginDTO.getEmail());
+        assertEquals(password, loginDTO.getPassword());
+    }
 }
