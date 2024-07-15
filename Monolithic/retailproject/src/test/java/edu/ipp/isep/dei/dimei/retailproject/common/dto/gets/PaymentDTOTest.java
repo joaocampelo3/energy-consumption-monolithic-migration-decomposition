@@ -55,6 +55,19 @@ class PaymentDTOTest {
     }
 
     @Test
+    void test_createPaymentDTO2() {
+        PaymentDTO paymentDTO = new PaymentDTO(amount, paymentDateTime, paymentMethod, status);
+
+        assertNotNull(paymentDTO);
+        assertEquals(amount, paymentDTO.getAmount());
+        assertEquals(paymentDateTime, paymentDTO.getPaymentDateTime());
+        assertEquals(paymentMethod, paymentDTO.getPaymentMethod());
+        assertEquals(status, paymentDTO.getStatus());
+        paymentDTOExpected.setId(0);
+        assertEquals(paymentDTOExpected.hashCode(), paymentDTO.hashCode());
+    }
+
+    @Test
     void test_createPaymentDTOBuilder() {
         PaymentDTO paymentDTO = PaymentDTO.builder()
                 .id(id)
