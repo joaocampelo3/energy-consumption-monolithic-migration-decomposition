@@ -15,11 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class PaymentTest {
+    final PaymentStatusEnum status = PaymentStatusEnum.PENDING;
     int id;
     double amount;
     Instant paymentDateTime;
     PaymentMethodEnum paymentMethod = PaymentMethodEnum.CARD;
-    final PaymentStatusEnum status = PaymentStatusEnum.PENDING;
     Payment paymentExpected;
 
     @BeforeEach
@@ -59,6 +59,26 @@ class PaymentTest {
                 .paymentMethod(paymentMethod)
                 .status(status)
                 .build();
+
+        assertNotNull(payment);
+        assertEquals(id, payment.getId());
+        assertEquals(amount, payment.getAmount());
+        assertEquals(paymentDateTime, payment.getPaymentDateTime());
+        assertEquals(paymentMethod, payment.getPaymentMethod());
+        assertEquals(status, payment.getStatus());
+        assertEquals(paymentExpected.hashCode(), payment.hashCode());
+        assertEquals(paymentExpected, payment);
+    }
+
+    @Test
+    void test_PaymentSets() {
+        Payment payment = Payment.builder().build();
+
+        payment.setId(id);
+        payment.setAmount(amount);
+        payment.setPaymentDateTime(paymentDateTime);
+        payment.setPaymentMethod(paymentMethod);
+        payment.setStatus(status);
 
         assertNotNull(payment);
         assertEquals(id, payment.getId());
