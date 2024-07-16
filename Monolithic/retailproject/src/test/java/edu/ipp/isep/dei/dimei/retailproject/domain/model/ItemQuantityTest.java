@@ -17,11 +17,13 @@ class ItemQuantityTest {
     OrderQuantity quantityOrdered;
     Item item;
     ItemQuantity itemQuantityExpected;
+    double price;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
         id = 1;
         quantityOrdered = new OrderQuantity(5);
+        price = 12.0;
         Category category = Category.builder()
                 .id(1)
                 .name("Category 1")
@@ -48,7 +50,7 @@ class ItemQuantityTest {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 description")
-                .price(12.0)
+                .price(price)
                 .quantityInStock(new StockQuantity(10))
                 .category(category)
                 .merchant(merchant)
@@ -57,17 +59,19 @@ class ItemQuantityTest {
                 .id(id)
                 .quantityOrdered(quantityOrdered)
                 .item(item)
+                .price(price)
                 .build();
     }
 
     @Test
     void test_createItemQuantity() {
-        ItemQuantity itemQuantity = new ItemQuantity(quantityOrdered, item);
+        ItemQuantity itemQuantity = new ItemQuantity(quantityOrdered, item, price);
 
         assertNotNull(itemQuantity);
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
         assertEquals(item, itemQuantity.getItem());
+        assertEquals(price, itemQuantity.getPrice());
         itemQuantityExpected.setId(0);
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
         assertEquals(itemQuantityExpected, itemQuantity);
@@ -75,13 +79,14 @@ class ItemQuantityTest {
 
     @Test
     void test_createItemQuantity2() {
-        ItemQuantity itemQuantity = new ItemQuantity(id, quantityOrdered, item);
+        ItemQuantity itemQuantity = new ItemQuantity(id, quantityOrdered, item, price);
 
         assertNotNull(itemQuantity);
         assertEquals(id, itemQuantity.getId());
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
         assertEquals(item, itemQuantity.getItem());
+        assertEquals(price, itemQuantity.getPrice());
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
         assertEquals(itemQuantityExpected, itemQuantity);
     }
@@ -92,6 +97,7 @@ class ItemQuantityTest {
                 .id(id)
                 .quantityOrdered(quantityOrdered)
                 .item(item)
+                .price(price)
                 .build();
 
         assertNotNull(itemQuantity);
@@ -99,6 +105,7 @@ class ItemQuantityTest {
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
         assertEquals(item, itemQuantity.getItem());
+        assertEquals(price, itemQuantity.getPrice());
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
         assertEquals(itemQuantityExpected, itemQuantity);
     }
@@ -109,6 +116,7 @@ class ItemQuantityTest {
                 .id(id)
                 .quantityOrdered(quantityOrdered)
                 .item(item)
+                .price(price)
                 .build();
 
         assertTrue(itemQuantity.getTotalPrice() >= 0);

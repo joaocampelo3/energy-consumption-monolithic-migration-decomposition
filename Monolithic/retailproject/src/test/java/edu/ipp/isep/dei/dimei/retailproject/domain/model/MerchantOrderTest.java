@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MerchantOrderTest {
     final MerchantOrderStatusEnum status = MerchantOrderStatusEnum.PENDING;
     int id;
+    double price;
     Instant orderDate;
     User user;
     Order order;
@@ -31,6 +32,7 @@ class MerchantOrderTest {
         id = 1;
         Instant currentDate = Instant.now();
         orderDate = currentDate;
+        price = 12.0;
 
         Account userAccount = Account.builder()
                 .id(1)
@@ -70,7 +72,7 @@ class MerchantOrderTest {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 Description")
-                .price(12.0)
+                .price(price)
                 .quantityInStock(new StockQuantity(10))
                 .category(category)
                 .merchant(merchant)
@@ -80,6 +82,7 @@ class MerchantOrderTest {
                 .id(1)
                 .quantityOrdered(new OrderQuantity(1))
                 .item(item)
+                .price(price)
                 .build();
         itemQuantityList.add(itemQuantity1);
         double totalPrice = itemQuantityList.stream().mapToDouble(value -> value.getItem().getPrice() * value.getQuantityOrdered().getQuantity()).sum();

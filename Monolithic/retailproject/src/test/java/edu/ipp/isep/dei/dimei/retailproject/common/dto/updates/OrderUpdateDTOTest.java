@@ -36,6 +36,8 @@ class OrderUpdateDTOTest {
         id = 1;
         orderDate = currentDate;
         email = "johndoe1234@gmail.com";
+        double price1 = 12.0;
+        double price2 = 5.0;
 
         Account account = Account.builder()
                 .id(1)
@@ -58,7 +60,7 @@ class OrderUpdateDTOTest {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 description")
-                .price(12)
+                .price(price1)
                 .build();
 
         Item item2 = Item.builder()
@@ -66,11 +68,11 @@ class OrderUpdateDTOTest {
                 .name("Item 2")
                 .sku("ABC-12345-XS-BL")
                 .description("Item 2 description")
-                .price(5)
+                .price(price2)
                 .build();
 
-        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1);
-        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2);
+        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1, price1);
+        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2, price2);
 
         orderItems.add(itemQuantity1);
         orderItems.add(itemQuantity2);

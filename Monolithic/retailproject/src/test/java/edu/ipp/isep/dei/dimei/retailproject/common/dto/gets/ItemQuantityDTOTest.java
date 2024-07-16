@@ -48,6 +48,7 @@ class ItemQuantityDTOTest {
                 .id(id)
                 .item(item)
                 .quantityOrdered(new OrderQuantity(qty))
+                .price(price)
                 .build();
     }
 

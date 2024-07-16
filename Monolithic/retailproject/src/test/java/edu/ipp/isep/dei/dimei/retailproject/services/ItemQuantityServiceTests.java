@@ -27,6 +27,8 @@ class ItemQuantityServiceTests {
     ItemQuantityRepository itemQuantityRepository;
     @Mock
     ItemService itemService;
+
+    double price;
     ItemQuantityDTO itemQuantityDTO1;
     ItemQuantity itemQuantity1;
     ItemQuantity itemQuantity1Updated;
@@ -38,6 +40,8 @@ class ItemQuantityServiceTests {
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
+        price = 10.0;
+
         category = Category.builder()
                 .id(1)
                 .name("Category 1")
@@ -64,7 +68,7 @@ class ItemQuantityServiceTests {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 Desc")
-                .price(10)
+                .price(price)
                 .quantityInStock(new StockQuantity(10))
                 .category(category)
                 .merchant(merchant)
@@ -76,12 +80,14 @@ class ItemQuantityServiceTests {
                 .id(1)
                 .quantityOrdered(orderQuantity)
                 .item(item1)
+                .price(price)
                 .build();
 
         itemQuantity1Updated = ItemQuantity.builder()
                 .id(1)
                 .quantityOrdered(orderQuantity)
                 .item(item1)
+                .price(price)
                 .build();
 
         itemQuantityDTO1 = new ItemQuantityDTO(itemQuantity1);
