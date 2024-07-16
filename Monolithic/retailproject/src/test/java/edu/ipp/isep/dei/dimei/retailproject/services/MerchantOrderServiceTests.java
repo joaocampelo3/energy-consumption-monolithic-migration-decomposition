@@ -29,13 +29,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MerchantOrderServiceTests {
+    static final String exceptionBadPayload = "Wrong merchant order payload.";
+    static final String exceptionNotFound = "Merchant Order not found.";
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final Instant currentDateTime = Instant.now();
     @InjectMocks
     MerchantOrderService merchantOrderService;
     @Mock
@@ -75,7 +77,6 @@ class MerchantOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<MerchantOrder> merchantOrders = new ArrayList<>();
-    Instant currentDateTime = Instant.now();
     ShippingOrder shippingOrder1;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO1;
 
@@ -383,11 +384,11 @@ class MerchantOrderServiceTests {
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -411,6 +412,21 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_FullCancelMerchantOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+
+        // Call the service method that uses the Repository
+        BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
+            merchantOrderService.fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO1);
+        });
+
+        // Perform assertions
+        assertNotNull(result);
+        assertEquals(exceptionBadPayload, result.getMessage());
     }
 
     @Test
@@ -441,6 +457,205 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_FullCancelMerchantOrderByOrder2() throws WrongFlowException, NotFoundException {
+        // Define the behavior of the mock
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+        merchantOrderUpdateDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findByOrder(order1).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenReturn(Optional.ofNullable(merchantOrder1));
+
+
+        // Call the service method that uses the Repository
+        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(JwtTokenDummy, order1);
+        MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_getUserMerchantOrderByOrderByAdmin() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.ADMIN);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(merchantOrder1));
+
+        // Call the service method that uses the Repository
+        MerchantOrder result = merchantOrderService.getUserMerchantOrderByOrder(JwtTokenDummy, order1);
+        MerchantOrder expected = merchantOrder1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_getUserMerchantOrderByOrderByAdminFail() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.ADMIN);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findByOrder(order1)).thenReturn(Optional.empty());
+
+
+        // Call the service method that uses the Repository
+        NotFoundException result = assertThrows(NotFoundException.class, () -> {
+            merchantOrderService.getUserMerchantOrderByOrder(JwtTokenDummy, order1);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(exceptionNotFound, result.getMessage());
+    }
+
+    @Test
+    void test_getUserMerchantOrderByOrderByUser() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.USER);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findByOrder(order1).filter(o -> o.getUser().equals(merchantUser))).thenReturn(Optional.ofNullable(merchantOrder1));
+
+
+        // Call the service method that uses the Repository
+        MerchantOrder result = merchantOrderService.getUserMerchantOrderByOrder(JwtTokenDummy, order1);
+        MerchantOrder expected = merchantOrder1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_getUserMerchantOrderByOrderByUserFail() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.USER);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findByOrder(order1).filter(o -> o.getUser().equals(merchantUser))).thenReturn(Optional.empty());
+
+        // Call the service method that uses the Repository
+        NotFoundException result = assertThrows(NotFoundException.class, () -> {
+            merchantOrderService.getUserMerchantOrderByOrder(JwtTokenDummy, order1);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(exceptionNotFound, result.getMessage());
+    }
+
+
+    @Test
+    void test_getUserMerchantOrderByIdByAdmin() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.ADMIN);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findById(order1.getId())).thenReturn(Optional.ofNullable(merchantOrder1));
+
+        // Call the service method that uses the Repository
+        MerchantOrder result = merchantOrderService.getUserMerchantOrderById(JwtTokenDummy, order1.getId());
+        MerchantOrder expected = merchantOrder1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findById(order1.getId());
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_getUserMerchantOrderByIdByAdminFail() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.ADMIN);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findById(order1.getId())).thenReturn(Optional.empty());
+
+
+        // Call the service method that uses the Repository
+        NotFoundException result = assertThrows(NotFoundException.class, () -> {
+            merchantOrderService.getUserMerchantOrderById(JwtTokenDummy, order1.getId());
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findById(order1.getId());
+        assertNotNull(result);
+        assertEquals(exceptionNotFound, result.getMessage());
+    }
+
+    @Test
+    void test_getUserMerchantOrderByIdByUser() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.USER);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findById(order1.getId()).filter(o -> o.getUser().equals(merchantUser))).thenReturn(Optional.ofNullable(merchantOrder1));
+
+
+        // Call the service method that uses the Repository
+        MerchantOrder result = merchantOrderService.getUserMerchantOrderById(JwtTokenDummy, order1.getId());
+        MerchantOrder expected = merchantOrder1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findById(order1.getId());
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_getUserMerchantOrderByIdByUserFail() throws NotFoundException {
+        // Define the behavior of the mock
+        merchantUser.getAccount().setRole(RoleEnum.USER);
+        merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
+        order1.setStatus(OrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(merchantOrderRepository.findById(order1.getId()).filter(o -> o.getUser().equals(merchantUser))).thenReturn(Optional.empty());
+
+        // Call the service method that uses the Repository
+        NotFoundException result = assertThrows(NotFoundException.class, () -> {
+            merchantOrderService.getUserMerchantOrderById(JwtTokenDummy, order1.getId());
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(merchantOrderRepository, atLeastOnce()).findById(order1.getId());
+        assertNotNull(result);
+        assertEquals(exceptionNotFound, result.getMessage());
     }
 
     @Test
@@ -505,11 +720,11 @@ class MerchantOrderServiceTests {
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(JwtTokenDummy, itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -537,6 +752,21 @@ class MerchantOrderServiceTests {
     }
 
     @Test
+    void test_RejectMerchantOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+
+        // Call the service method that uses the Repository
+        BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
+            merchantOrderService.rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO1);
+        });
+
+        // Perform assertions
+        assertNotNull(result);
+        assertEquals(exceptionBadPayload, result.getMessage());
+    }
+
+    @Test
     void test_RejectMerchantOrderByOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = merchantOrder1.getId();
@@ -552,11 +782,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -594,11 +824,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(id).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -632,11 +862,11 @@ class MerchantOrderServiceTests {
         when(orderService.getUserOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
-        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer() {
+        when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUser.getAccount().getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Optional<MerchantOrder> answer(InvocationOnMock invocationOnMock) {
                 if (count++ < 3) {
                     return Optional.ofNullable(merchantOrder1);
                 }
@@ -656,6 +886,21 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_ApproveMerchantOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+
+        // Call the service method that uses the Repository
+        BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
+            merchantOrderService.approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO1);
+        });
+
+        // Perform assertions
+        assertNotNull(result);
+        assertEquals(exceptionBadPayload, result.getMessage());
     }
 
     @Test
@@ -714,6 +959,14 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_DeleteMerchantOrderByOrderId() {
+        // Call the service method that uses the Repository
+        merchantOrderService.deleteMerchantOrderByOrderId(order1.getId());
+
+        verify(merchantOrderRepository, times(1)).deleteByOrderId(order1.getId());
     }
 
 }

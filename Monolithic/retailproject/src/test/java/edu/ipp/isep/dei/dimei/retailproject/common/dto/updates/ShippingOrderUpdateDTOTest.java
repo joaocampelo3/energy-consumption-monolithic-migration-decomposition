@@ -206,4 +206,30 @@ class ShippingOrderUpdateDTOTest {
         ShippingOrderUpdateDTO shippingUpdOrderDTO = ShippingOrderUpdateDTO.builder().build();
         assertNotNull(shippingUpdOrderDTO);
     }
+
+    @Test
+    void test_SetsShippingOrderUpdateDTO() {
+        ShippingOrderUpdateDTO expected = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        ShippingOrderUpdateDTO result = ShippingOrderUpdateDTO.builder().build();
+
+        result.setId(id);
+        result.setShippingOrderDate(shippingOrderDate);
+        result.setShippingOrderStatus(shippingOrderStatus);
+        result.setAddressDTO(addressDTO);
+        result.setOrderId(orderId);
+        result.setMerchantOrderId(merchantOrderId);
+        result.setEmail(email);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(shippingOrderDate, result.getShippingOrderDate());
+        assertEquals(shippingOrderStatus, result.getShippingOrderStatus());
+        assertEquals(addressDTO, result.getAddressDTO());
+        assertEquals(orderId, result.getOrderId());
+        assertEquals(merchantOrderId, result.getMerchantOrderId());
+        assertEquals(email, result.getEmail());
+        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
+        assertEquals(expected.toString(), result.toString());
+    }
 }

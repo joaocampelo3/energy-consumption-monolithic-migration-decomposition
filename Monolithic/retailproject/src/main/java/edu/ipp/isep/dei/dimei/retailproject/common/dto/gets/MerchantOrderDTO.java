@@ -29,4 +29,28 @@ public class MerchantOrderDTO {
         this.orderId = merchantOrder.getOrder().getId();
         this.merchantId = merchantOrder.getMerchant().getId();
     }
+
+    public boolean isPending() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.PENDING;
+    }
+
+    public boolean isApproved() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.APPROVED;
+    }
+
+    public boolean isRejected() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.REJECTED;
+    }
+
+    public boolean isCancelled() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.CANCELLED;
+    }
+
+    public boolean isShipped() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.SHIPPED;
+    }
+
+    public boolean isDelivered() {
+        return merchantOrderStatus == MerchantOrderStatusEnum.DELIVERED;
+    }
 }

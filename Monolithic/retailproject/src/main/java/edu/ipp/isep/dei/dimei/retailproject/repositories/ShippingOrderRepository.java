@@ -4,6 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public interface ShippingOrderRepository extends CrudRepository<ShippingOrder, I
 
     Optional<ShippingOrder> findByOrder(Order order);
 
+    @NonNull
     List<ShippingOrder> findAll();
 
     void deleteByOrderId(int orderId);

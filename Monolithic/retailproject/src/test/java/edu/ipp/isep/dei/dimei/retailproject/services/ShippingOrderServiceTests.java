@@ -27,13 +27,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static edu.ipp.isep.dei.dimei.retailproject.services.ShippingOrderService.BADPAYLOADEXCEPTIONMESSAGE;
+import static edu.ipp.isep.dei.dimei.retailproject.services.ShippingOrderService.NOTFOUNDEXCEPTIONMESSAGE;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ShippingOrderServiceTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final Instant currentDateTime = Instant.now();
     @InjectMocks
     ShippingOrderService shippingOrderService;
     @Mock
@@ -70,7 +72,6 @@ class ShippingOrderServiceTests {
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<ShippingOrder> shippingOrders = new ArrayList<>();
-    Instant currentDateTime = Instant.now();
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -275,6 +276,15 @@ class ShippingOrderServiceTests {
     }
 
     @Test
+    void test_createShippingOrder() {
+        // Call the service method that uses the Repository
+        shippingOrderService.createShippingOrder(user, order1, merchantOrder1, address);
+
+        // Perform assertions
+        verify(shippingOrderRepository, times(1)).save(any(ShippingOrder.class));
+    }
+
+    @Test
     void test_GetAllShippingOrders() {
         // Define the behavior of the mock
         when(shippingOrderRepository.findAll()).thenReturn(shippingOrders);
@@ -322,6 +332,40 @@ class ShippingOrderServiceTests {
         verify(shippingOrderRepository, atLeastOnce()).findById(id);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_GetUserShippingOrderFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrder1.getUser().setId(2);
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+
+        // Call the service method
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        assertEquals(NOTFOUNDEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_GetUserShippingOrderByUserFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        user.setId(2);
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+
+        // Call the service method
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        assertEquals(NOTFOUNDEXCEPTIONMESSAGE, exception.getMessage());
     }
 
     @Test
@@ -374,6 +418,21 @@ class ShippingOrderServiceTests {
     }
 
     @Test
+    void test_FullCancelShippingOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        // Call the service method
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            shippingOrderService.fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
     void test_FullCancelShippingOrderByOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
@@ -401,6 +460,58 @@ class ShippingOrderServiceTests {
         verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_FullCancelShippingOrderByOrderByAdmin() throws WrongFlowException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        user.getAccount().setRole(RoleEnum.ADMIN);
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+        shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(shippingOrder1));
+        when(shippingOrderRepository.findById(id)).thenReturn(Optional.ofNullable(shippingOrder1));
+        when(orderService.getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
+        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId())).thenReturn(new MerchantOrderDTO(merchantOrder1));
+        when(shippingOrderRepository.save(shippingOrder1)).thenReturn(shippingOrder1Updated);
+
+        // Call the service method that uses the Repository
+        ShippingOrderUpdateDTO result = shippingOrderService.fullCancelShippingOrderByOrder(JwtTokenDummy, order1);
+        ShippingOrderUpdateDTO expected = shippingOrderUpdateDTO;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(shippingOrderRepository, atLeastOnce()).findByOrder(order1);
+        verify(shippingOrderRepository, atLeastOnce()).findById(id);
+        verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
+        verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_FullCancelShippingOrderByOrderByAdminFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        user.getAccount().setRole(RoleEnum.ADMIN);
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+        shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+
+        // Call the service method
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            shippingOrderService.fullCancelShippingOrderByOrder(JwtTokenDummy, order1);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        assertEquals(NOTFOUNDEXCEPTIONMESSAGE, exception.getMessage());
     }
 
     @Test
@@ -483,7 +594,7 @@ class ShippingOrderServiceTests {
     }
 
     @Test
-    void test_RejectOrderByOrder() throws WrongFlowException, NotFoundException {
+    void test_RejectShippingOrderByOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
@@ -513,6 +624,44 @@ class ShippingOrderServiceTests {
     }
 
     @Test
+    void test_RejectShippingOrderByOrderWhereShippingOrderAlreadyReject() throws WrongFlowException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+        shippingOrder1.setStatus(ShippingOrderStatusEnum.REJECTED);
+        shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findByOrder(order1)).thenReturn(Optional.ofNullable(shippingOrder1));
+
+        // Call the service method that uses the Repository
+        ShippingOrderUpdateDTO result = shippingOrderService.rejectShippingOrderByOrder(JwtTokenDummy, order1);
+        ShippingOrderUpdateDTO expected = shippingOrderUpdateDTO;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(shippingOrderRepository, atLeastOnce()).findByOrder(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_RejectShippingOrderByOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        // Call the service method
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            shippingOrderService.rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
     void test_RejectOrderByMerchantOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
@@ -534,6 +683,35 @@ class ShippingOrderServiceTests {
         // Perform assertions
         verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
         verify(shippingOrderRepository, atLeastOnce()).findByOrder(order1);
+        verify(shippingOrderRepository, atLeastOnce()).findById(id);
+        verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
+        verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_ApproveShippingOrderPending() throws NotFoundException, WrongFlowException, BadPayloadException {
+        // Define the behavior of the mock
+        int id = 1;
+        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
+        shippingOrder1.setStatus(ShippingOrderStatusEnum.PENDING);
+        shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.APPROVED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findById(id)).thenReturn(Optional.ofNullable(shippingOrder1));
+        when(orderService.getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId())).thenReturn(new OrderDTO(order1));
+        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId())).thenReturn(new MerchantOrderDTO(merchantOrder1));
+        when(shippingOrderRepository.save(shippingOrder1)).thenReturn(shippingOrder1Updated);
+
+        // Call the service method that uses the Repository
+        ShippingOrderUpdateDTO result = shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ShippingOrderUpdateDTO expected = shippingOrderUpdateDTO;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
         verify(shippingOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
         verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, shippingOrder1.getOrder().getId());
@@ -571,6 +749,42 @@ class ShippingOrderServiceTests {
     }
 
     @Test
+    void test_ApproveShippingOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
+
+        // Call the service method
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_ApproveShippingOrderFail2() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
+        shippingOrder1.setStatus(ShippingOrderStatusEnum.SHIPPED);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findById(id)).thenReturn(Optional.ofNullable(shippingOrder1));
+
+        // Call the service method
+        WrongFlowException exception = assertThrows(WrongFlowException.class, () -> {
+            shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(shippingOrderRepository, atLeastOnce()).findById(id);
+        assertEquals("It is not possible to change Shipping Order status", exception.getMessage());
+    }
+
+    @Test
     void test_ShippedShippingOrder() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
@@ -601,6 +815,21 @@ class ShippingOrderServiceTests {
     }
 
     @Test
+    void test_ShippedShippingOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
+
+        // Call the service method
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            shippingOrderService.shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
     void test_DeliveredShippingOrder() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
@@ -628,6 +857,110 @@ class ShippingOrderServiceTests {
         verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_DeliveredShippingOrderFail() {
+        // Define the behavior of the mock
+        int id = 2;
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.DELIVERED);
+
+        // Call the service method
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            shippingOrderService.deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_GetUserShippingOrderByAdmin() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        user.getAccount().setRole(RoleEnum.ADMIN);
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findById(id)).thenReturn(Optional.ofNullable(shippingOrder1));
+
+        // Call the service method that uses the Repository
+        ShippingOrderDTO result = shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        ShippingOrderDTO expected = shippingOrderDTO1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(shippingOrderRepository, atLeastOnce()).findById(id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_GetUserShippingOrderByAdminFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrder1.getUser().setId(2);
+        user.getAccount().setRole(RoleEnum.ADMIN);
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+
+        // Call the service method
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        assertEquals(NOTFOUNDEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_GetUserShippingOrderByMerchant() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        user.getAccount().setRole(RoleEnum.MERCHANT);
+        shippingOrder1.getMerchantOrder().getMerchant().setEmail(user.getAccount().getEmail());
+
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(shippingOrderRepository.findById(id)).thenReturn(Optional.ofNullable(shippingOrder1));
+
+        // Call the service method that uses the Repository
+        ShippingOrderDTO result = shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        ShippingOrderDTO expected = shippingOrderDTO1;
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(shippingOrderRepository, atLeastOnce()).findById(id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_GetUserShippingOrderByMerchantFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrder1.getUser().setId(2);
+        user.getAccount().setRole(RoleEnum.MERCHANT);
+        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+
+        // Call the service method
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            shippingOrderService.getUserShippingOrder(JwtTokenDummy, id);
+        });
+
+        // Perform assertions
+        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        assertEquals(NOTFOUNDEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_DeleteShippingOrderByOrderId() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+
+        // Call the service method
+        shippingOrderService.deleteShippingOrderByOrderId(id);
+
+        // Perform assertions
+        verify(shippingOrderRepository, times(1)).deleteByOrderId(id);
     }
 
 }

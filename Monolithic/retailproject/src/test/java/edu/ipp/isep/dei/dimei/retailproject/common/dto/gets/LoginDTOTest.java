@@ -51,4 +51,29 @@ class LoginDTOTest {
         LoginDTO loginDTO = LoginDTO.builder().build();
         assertNotNull(loginDTO);
     }
+
+    @Test
+    void test_SetsLoginDTO() {
+        LoginDTO result = LoginDTO.builder().build();
+
+        result.setEmail(email);
+        result.setPassword(password);
+
+        assertNotNull(result);
+        assertEquals(email, result.getEmail());
+        assertEquals(password, result.getPassword());
+        assertEquals(loginDTOExpected.hashCode(), result.hashCode());
+        assertEquals(loginDTOExpected, result);
+        assertEquals(loginDTOExpected.toString(), result.toString());
+    }
+
+    @Test
+    void test_getterAndSetter() {
+        LoginDTO loginDTO = new LoginDTO("a", "b");
+        loginDTO.setEmail(email);
+        loginDTO.setPassword(password);
+
+        assertEquals(email, loginDTO.getEmail());
+        assertEquals(password, loginDTO.getPassword());
+    }
 }

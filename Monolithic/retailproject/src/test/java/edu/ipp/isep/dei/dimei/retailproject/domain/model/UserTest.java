@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,7 @@ class UserTest {
     User userExpected;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         id = 1;
         firstname = "John";
         lastname = "Doe";
@@ -60,6 +59,24 @@ class UserTest {
                 .lastname(lastname)
                 .account(account)
                 .build();
+
+        assertNotNull(user);
+        assertEquals(id, user.getId());
+        assertEquals(firstname, user.getFirstname());
+        assertEquals(lastname, user.getLastname());
+        assertEquals(account, user.getAccount());
+        assertEquals(userExpected.hashCode(), user.hashCode());
+        assertEquals(userExpected, user);
+    }
+
+    @Test
+    void test_UserSets() {
+        User user = User.builder().build();
+
+        user.setId(id);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setAccount(account);
 
         assertNotNull(user);
         assertEquals(id, user.getId());

@@ -13,15 +13,14 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class ShippingOrderTest {
+    final ShippingOrderStatusEnum status = ShippingOrderStatusEnum.PENDING;
     int id;
     Instant shippingOrderDate;
-    ShippingOrderStatusEnum status = ShippingOrderStatusEnum.PENDING;
     Address shippingAddress;
     Order order;
     MerchantOrder merchantOrder;
@@ -33,7 +32,6 @@ class ShippingOrderTest {
         id = 1;
         Instant currentDate = Instant.now();
         shippingOrderDate = currentDate;
-        Instant orderDate = currentDate;
 
         Account userAccount = Account.builder()
                 .id(1)
@@ -106,7 +104,7 @@ class ShippingOrderTest {
 
         merchantOrder = MerchantOrder.builder()
                 .id(1)
-                .orderDate(orderDate)
+                .orderDate(currentDate)
                 .status(MerchantOrderStatusEnum.PENDING)
                 .user(user)
                 .order(order)
@@ -186,5 +184,74 @@ class ShippingOrderTest {
         assertEquals(user, shippingOrder.getUser());
         assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
         assertEquals(shippingOrderExpected, shippingOrder);
+    }
+
+    @Test
+    void test_ShippingOrderSets() {
+        ShippingOrder shippingOrder = ShippingOrder.builder().build();
+
+        shippingOrder.setId(id);
+        shippingOrder.setShippingOrderDate(shippingOrderDate);
+        shippingOrder.setStatus(status);
+        shippingOrder.setShippingAddress(shippingAddress);
+        shippingOrder.setOrder(order);
+        shippingOrder.setMerchantOrder(merchantOrder);
+        shippingOrder.setUser(user);
+
+        assertEquals(shippingOrder.getShippingOrderDate(), shippingOrder.getShippingOrderDate());
+        assertEquals(shippingOrder.getStatus(), shippingOrder.getStatus());
+        assertEquals(shippingOrder.getShippingAddress(), shippingOrder.getShippingAddress());
+        assertEquals(shippingOrder.getOrder(), shippingOrder.getOrder());
+        assertEquals(shippingOrder.getMerchantOrder(), shippingOrder.getMerchantOrder());
+        assertEquals(shippingOrder.getUser(), shippingOrder.getUser());
+
+        assertEquals(shippingOrderExpected, shippingOrder);
+        assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
+    }
+
+    @Test
+    void test_ShippingOrderSets2() {
+        ShippingOrder shippingOrder = ShippingOrder.builder().build();
+
+        shippingOrder.setId(2);
+        shippingOrder.setShippingOrderDate(Instant.MAX);
+        shippingOrder.setStatus(ShippingOrderStatusEnum.APPROVED);
+        shippingOrder.setShippingAddress(shippingAddress);
+        shippingOrder.setOrder(order);
+        shippingOrder.setMerchantOrder(merchantOrder);
+        shippingOrder.setUser(user);
+
+        assertNotEquals(shippingOrder.getId(), id);
+        assertNotEquals(shippingOrder.getShippingOrderDate(), shippingOrderDate);
+        assertNotEquals(shippingOrder.getStatus(), status);
+
+        assertNotEquals(shippingOrderExpected, shippingOrder);
+        assertNotEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
+    }
+
+    @Test
+    void test_isApprovedShippingOrderFail() {
+        assertNotNull(shippingOrderExpected);
+        assertFalse(shippingOrderExpected.isApproved());
+    }
+
+    @Test
+    void test_isShippedShippingOrderFail() {
+        assertNotNull(shippingOrderExpected);
+        assertFalse(shippingOrderExpected.isShipped());
+    }
+
+    @Test
+    void test_isPendingOrApprovedShippingOrder() {
+        shippingOrderExpected.setStatus(ShippingOrderStatusEnum.APPROVED);
+        assertNotNull(shippingOrderExpected);
+        assertTrue(shippingOrderExpected.isPendingOrApproved());
+    }
+
+    @Test
+    void test_isPendingOrApprovedShippingOrderFail() {
+        shippingOrderExpected.setStatus(ShippingOrderStatusEnum.SHIPPED);
+        assertNotNull(shippingOrderExpected);
+        assertFalse(shippingOrderExpected.isPendingOrApproved());
     }
 }

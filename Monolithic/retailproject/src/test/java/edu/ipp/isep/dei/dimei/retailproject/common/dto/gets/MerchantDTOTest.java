@@ -93,4 +93,24 @@ class MerchantDTOTest {
         assertEquals(address.dtoToEntity(), merchant.getAddress());
         assertEquals(merchantExpected.hashCode(), merchant.hashCode());
     }
+
+    @Test
+    void test_SetsMerchantDTO() {
+        MerchantDTO result = MerchantDTO.builder().build();
+
+
+        result.setId(id);
+        result.setName(name);
+        result.setEmail(email);
+        result.setAddress(address);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(name, result.getName());
+        assertEquals(email, result.getEmail());
+        assertEquals(address, result.getAddress());
+        assertEquals(merchantDTOExpected.hashCode(), result.hashCode());
+        assertEquals(merchantDTOExpected, result);
+        assertEquals(merchantDTOExpected.toString(), result.toString());
+    }
 }

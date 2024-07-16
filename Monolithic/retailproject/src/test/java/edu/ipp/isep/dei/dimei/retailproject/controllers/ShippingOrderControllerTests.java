@@ -30,6 +30,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ShippingOrderControllerTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String exceptionShippingOrderNotFound = "Shipping Order not found.";
+    final String exceptionShippingOrderBadRequest = "Wrong shipping order payload.";
     @InjectMocks
     ShippingOrderController shippingOrderController;
     @Mock
@@ -113,6 +115,23 @@ class ShippingOrderControllerTests {
     }
 
     @Test
+    void test_GetUserShippingOrdersFail() throws NotFoundException {
+        // Define the behavior of the mock
+        when(shippingOrderService.getUserShippingOrders(JwtTokenDummy)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.getUserShippingOrders(JwtTokenDummy);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrders(JwtTokenDummy);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_GetShippingOrderById() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
@@ -126,6 +145,24 @@ class ShippingOrderControllerTests {
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, id);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
+    }
+
+    @Test
+    void test_GetShippingOrderByIdFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.getUserShippingOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
     @Test
@@ -147,6 +184,46 @@ class ShippingOrderControllerTests {
     }
 
     @Test
+    void test_FullCancelShippingOrderByIdFail1() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        when(shippingOrderService.fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.fullCancelShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_FullCancelShippingOrderByIdFail2() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        when(shippingOrderService.fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionShippingOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.fullCancelShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).fullCancelShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_RejectShippingOrderById() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
         // Define the behavior of the mock
         int id = 1;
@@ -162,6 +239,46 @@ class ShippingOrderControllerTests {
         verify(shippingOrderService, atLeastOnce()).rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
+    }
+
+    @Test
+    void test_RejectShippingOrderByIdFail1() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.rejectShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_RejectShippingOrderByIdFail2() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionShippingOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.rejectShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).rejectShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
 
@@ -184,6 +301,46 @@ class ShippingOrderControllerTests {
     }
 
     @Test
+    void test_ApproveShippingOrderByIdFail1() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_ApproveShippingOrderByIdFail2() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionShippingOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.approveShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).approveShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_ShippedShippingOrderById() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
@@ -202,6 +359,46 @@ class ShippingOrderControllerTests {
     }
 
     @Test
+    void test_ShippedShippingOrderByIdFail1() throws NotFoundException, WrongFlowException, BadPayloadException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.shippedShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_ShippedShippingOrderByIdFail2() throws NotFoundException, WrongFlowException, BadPayloadException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionShippingOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.shippedShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).shippedShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_DeliveredShippingOrderById() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
@@ -217,6 +414,46 @@ class ShippingOrderControllerTests {
         verify(shippingOrderService, atLeastOnce()).deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
         assertNotNull(shippingOrderResponseEntity);
         assertEquals(shippingOrderResponseEntityExpected, shippingOrderResponseEntity);
+    }
+
+    @Test
+    void test_DeliveredShippingOrderByIdFail1() throws NotFoundException, WrongFlowException, BadPayloadException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionShippingOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.deliveredShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_DeliveredShippingOrderByIdFail2() throws NotFoundException, WrongFlowException, BadPayloadException {
+        // Define the behavior of the mock
+        int id = 1;
+        shippingOrderDTOExpected.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
+
+        when(shippingOrderService.deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionShippingOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = shippingOrderController.deliveredShippingOrderById(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionShippingOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(shippingOrderService, atMostOnce()).deliveredShippingOrder(JwtTokenDummy, id, shippingOrderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
 }

@@ -29,3 +29,5 @@ jwt:
 cache:
   caffeine:
     time-to-live: 15
+    initialCapacity: 100
+    maximumSize: 500

@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class OrderDTOTest {
 
+    final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     int id;
     Instant orderDate;
-    OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
     int customerId;
     String email;
     List<ItemQuantityDTO> orderItemsDTO = new ArrayList<>();
@@ -222,5 +222,63 @@ class OrderDTOTest {
     void test_createOrderDTONoArgsConstructor() {
         OrderDTO orderDTO = OrderDTO.builder().build();
         assertNotNull(orderDTO);
+    }
+
+    @Test
+    void test_isRejectedOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isRejected());
+    }
+
+    @Test
+    void test_isCancelledOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isCancelled());
+    }
+
+    @Test
+    void test_isShippedOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isShipped());
+    }
+
+    @Test
+    void test_isDeliveredOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.DELIVERED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isDelivered());
+    }
+
+    @Test
+    void test_isDeliveredOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isDelivered());
+    }
+
+    @Test
+    void test_SetsOrderDTO() {
+        OrderDTO result = OrderDTO.builder().build();
+
+        result.setId(id);
+        result.setOrderDate(orderDate);
+        result.setOrderStatus(orderStatus);
+        result.setCustomerId(customerId);
+        result.setEmail(email);
+        result.setOrderItems(orderItemsDTO);
+        result.setTotalPrice(totalPrice);
+        result.setPaymentDTO(paymentDTO);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(orderDate, result.getOrderDate());
+        assertEquals(orderStatus, result.getOrderStatus());
+        assertEquals(customerId, result.getCustomerId());
+        assertEquals(email, result.getEmail());
+        assertEquals(orderItemsDTO, result.getOrderItems());
+        assertEquals(totalPrice, result.getTotalPrice());
+        assertEquals(paymentDTO, result.getPaymentDTO());
+        assertEquals(orderDTOExpected.hashCode(), result.hashCode());
+        assertEquals(orderDTOExpected, result);
+        assertEquals(orderDTOExpected.toString(), result.toString());
     }
 }

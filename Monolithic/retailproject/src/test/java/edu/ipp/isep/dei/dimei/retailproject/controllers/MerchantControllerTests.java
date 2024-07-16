@@ -23,6 +23,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MerchantControllerTests {
+    final String exceptionMerchantNotFound = "Merchant not found.";
+    final String exceptionMerchantBadRequest = "Wrong merchant payload.";
     @InjectMocks
     MerchantController merchantController;
     @Mock
@@ -109,12 +111,30 @@ class MerchantControllerTests {
     }
 
     @Test
+    void test_GetMerchantByIdFail() throws NotFoundException {
+        int id = 1;
+        // Define the behavior of the mock
+        when(merchantService.getMerchant(id)).thenThrow(new NotFoundException(exceptionMerchantNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = merchantController.getMerchantById(id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(merchantService, atLeastOnce()).getMerchant(id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_CreateMerchant() throws NotFoundException {
         // Define the behavior of the mock
         when(merchantService.createMerchant(merchantDTO1)).thenReturn(merchantDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.createMerchant(merchantDTO1);
+        ResponseEntity<Object> merchantResponseEntity = merchantController.createMerchant(merchantDTO1);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = new ResponseEntity<>(merchantDTO1, HttpStatus.CREATED);
 
         // Perform assertions
@@ -124,13 +144,30 @@ class MerchantControllerTests {
     }
 
     @Test
+    void test_CreateMerchantFail() throws NotFoundException {
+        // Define the behavior of the mock
+        when(merchantService.createMerchant(merchantDTO1)).thenThrow(new NotFoundException(exceptionMerchantNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = merchantController.createMerchant(merchantDTO1);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(merchantService, atLeastOnce()).createMerchant(merchantDTO1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_UpdateMerchant() throws BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(merchantService.updateMerchant(id, merchantUpdateDTO)).thenReturn(merchantUpdateDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.updateMerchant(id, merchantUpdateDTO);
+        ResponseEntity<Object> merchantResponseEntity = merchantController.updateMerchant(id, merchantUpdateDTO);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = new ResponseEntity<>(merchantUpdateDTO, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -140,13 +177,49 @@ class MerchantControllerTests {
     }
 
     @Test
-    void test_DeleteMerchant() throws BadPayloadException, NotFoundException {
+    void test_UpdateMerchantFail1() throws BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(merchantService.updateMerchant(id, merchantUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = merchantController.updateMerchant(id, merchantUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(merchantService, atLeastOnce()).updateMerchant(id, merchantUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_UpdateMerchantFail2() throws BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(merchantService.updateMerchant(id, merchantUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = merchantController.updateMerchant(id, merchantUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(merchantService, atLeastOnce()).updateMerchant(id, merchantUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_DeleteMerchant() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(merchantService.deleteMerchant(id)).thenReturn(merchantDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> merchantResponseEntity = merchantController.deleteMerchant(id);
+        ResponseEntity<Object> merchantResponseEntity = merchantController.deleteMerchant(id);
         ResponseEntity<MerchantDTO> merchantResponseEntityExpected = new ResponseEntity<>(merchantDTO1, HttpStatus.OK);
 
         // Perform assertions
@@ -155,4 +228,21 @@ class MerchantControllerTests {
         assertEquals(merchantResponseEntityExpected, merchantResponseEntity);
     }
 
+    @Test
+    void test_DeleteMerchantFail() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(merchantService.deleteMerchant(id)).thenThrow(new NotFoundException(exceptionMerchantNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = merchantController.deleteMerchant(id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(merchantService, atLeastOnce()).deleteMerchant(id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
 }

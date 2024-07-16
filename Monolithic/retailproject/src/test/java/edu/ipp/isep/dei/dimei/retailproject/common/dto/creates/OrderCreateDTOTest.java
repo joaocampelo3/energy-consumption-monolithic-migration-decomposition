@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 class OrderCreateDTOTest {
 
+    final OrderStatusEnum orderStatusEnum = OrderStatusEnum.PENDING;
     int id = 1;
     Instant orderDate;
-    OrderStatusEnum orderStatusEnum = OrderStatusEnum.PENDING;
     int customerId;
     String email;
     ItemQuantityDTO itemQuantityDTO1;
@@ -197,6 +197,37 @@ class OrderCreateDTOTest {
         assertNotNull(orderCreateDTO);
         assertEquals(orderExpected.hashCode(), order.hashCode());
         assertEquals(orderExpected, order);
+    }
+
+    @Test
+    void test_SetsOrderCreateDTO() {
+        OrderCreateDTO expected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
+        OrderCreateDTO result = OrderCreateDTO.builder().build();
+
+        result.setId(id);
+        result.setOrderDate(orderDate);
+        result.setOrderStatus(orderStatusEnum);
+        result.setCustomerId(customerId);
+        result.setEmail(email);
+        result.setOrderItems(itemQuantityDTOList);
+        result.setTotalPrice(totalPrice);
+        result.setPayment(paymentDTO);
+        result.setMerchantId(merchantId);
+        result.setAddress(addressDTO);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(orderDate, result.getOrderDate());
+        assertEquals(orderStatusEnum, result.getOrderStatus());
+        assertEquals(customerId, result.getCustomerId());
+        assertEquals(email, result.getEmail());
+        assertEquals(itemQuantityDTOList, result.getOrderItems());
+        assertEquals(totalPrice, result.getTotalPrice());
+        assertEquals(paymentDTO, result.getPayment());
+        assertEquals(merchantId, result.getMerchantId());
+        assertEquals(addressDTO, result.getAddress());
+        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
     }
 
 }

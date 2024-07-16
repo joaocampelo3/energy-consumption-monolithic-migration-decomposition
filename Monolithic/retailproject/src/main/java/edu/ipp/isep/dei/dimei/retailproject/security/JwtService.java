@@ -23,11 +23,7 @@ public class JwtService {
     private long tokenExpirationTime;
 
     public String generateToken(UserDetails userDetails) {
-        try {
-            return generateToken(new HashMap<>(), userDetails);
-        } catch (Exception e) {
-            throw e;
-        }
+        return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {

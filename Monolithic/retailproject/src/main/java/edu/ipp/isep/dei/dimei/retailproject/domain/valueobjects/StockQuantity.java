@@ -13,6 +13,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StockQuantity implements IValueObject {
+    private static final String INVALIDQUANTITYEXCEPTION = "The number of quantity inserted is not valid";
+
     @Column(name = "item_stock_quantity")
     private int quantity;
 
@@ -24,8 +26,8 @@ public class StockQuantity implements IValueObject {
     }
 
     private void isStockQuantityValid(int quantity) throws InvalidQuantityException {
-        if (quantity < 0 || quantity > 999999) {
-            throw new InvalidQuantityException("The number of quantity inserted is not valid");
+        if (quantity < 0 || quantity > Integer.MAX_VALUE) {
+            throw new InvalidQuantityException(INVALIDQUANTITYEXCEPTION);
         }
     }
 
@@ -33,6 +35,8 @@ public class StockQuantity implements IValueObject {
         if (this.quantity < quantity) {
             isStockQuantityValid(quantity);
             this.quantity = quantity;
+        } else {
+            throw new InvalidQuantityException(INVALIDQUANTITYEXCEPTION);
         }
     }
 
@@ -40,6 +44,8 @@ public class StockQuantity implements IValueObject {
         if (this.quantity > quantity) {
             isStockQuantityValid(quantity);
             this.quantity = quantity;
+        } else {
+            throw new InvalidQuantityException(INVALIDQUANTITYEXCEPTION);
         }
     }
 

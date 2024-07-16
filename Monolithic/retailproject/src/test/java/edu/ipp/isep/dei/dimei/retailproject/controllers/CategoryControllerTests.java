@@ -22,6 +22,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTests {
+    final String exceptionCategoryNotFound = "Category not found";
+    final String exceptionCategoryBadRequest = "Wrong category payload.";
     @InjectMocks
     CategoryController categoryController;
     @Mock
@@ -79,7 +81,7 @@ class CategoryControllerTests {
         when(categoryService.getCategory(id)).thenReturn(categoryDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> categoryResponseEntity = categoryController.getCategoryById(id);
+        ResponseEntity<Object> categoryResponseEntity = categoryController.getCategoryById(id);
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = ResponseEntity.ok(categoryDTO1);
 
         // Perform assertions
@@ -96,7 +98,7 @@ class CategoryControllerTests {
         when(categoryService.getCategory(id)).thenThrow(notFoundException);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> categoryResponseEntity = categoryController.getCategoryById(id);
+        ResponseEntity<Object> categoryResponseEntity = categoryController.getCategoryById(id);
         ResponseEntity<String> categoryResponseEntityExpected = new ResponseEntity<>(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
 
         // Perform assertions
@@ -106,12 +108,12 @@ class CategoryControllerTests {
     }
 
     @Test
-    void test_CreateCategory() throws NotFoundException {
+    void test_CreateCategory() {
         // Define the behavior of the mock
         when(categoryService.createCategory(categoryDTO1)).thenReturn(categoryDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> categoryResponseEntity = categoryController.createCategory(categoryDTO1);
+        ResponseEntity<Object> categoryResponseEntity = categoryController.createCategory(categoryDTO1);
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.CREATED);
 
         // Perform assertions
@@ -127,7 +129,7 @@ class CategoryControllerTests {
         when(categoryService.updateCategory(id, categoryDTO1)).thenReturn(categoryDTO1Update);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> categoryResponseEntity = categoryController.updateCategory(id, categoryDTO1);
+        ResponseEntity<Object> categoryResponseEntity = categoryController.updateCategory(id, categoryDTO1);
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1Update, HttpStatus.ACCEPTED);
 
         // Perform assertions
@@ -137,18 +139,72 @@ class CategoryControllerTests {
     }
 
     @Test
-    void test_DeleteCategory() throws BadPayloadException, NotFoundException {
+    void test_UpdateCategoryFail1() throws BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(categoryService.updateCategory(id, categoryDTO1)).thenThrow(new NotFoundException(exceptionCategoryNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = categoryController.updateCategory(id, categoryDTO1);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionCategoryNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(categoryService, atMostOnce()).updateCategory(id, categoryDTO1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_UpdateCategoryFail2() throws BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(categoryService.updateCategory(id, categoryDTO1)).thenThrow(new BadPayloadException(exceptionCategoryBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = categoryController.updateCategory(id, categoryDTO1);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionCategoryBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(categoryService, atMostOnce()).updateCategory(id, categoryDTO1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_DeleteCategory() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
         when(categoryService.deleteCategory(id)).thenReturn(categoryDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<?> categoryResponseEntity = categoryController.deleteCategory(id);
+        ResponseEntity<Object> categoryResponseEntity = categoryController.deleteCategory(id);
         ResponseEntity<CategoryDTO> categoryResponseEntityExpected = new ResponseEntity<>(categoryDTO1, HttpStatus.OK);
 
         // Perform assertions
         verify(categoryService, atMostOnce()).deleteCategory(id);
         assertNotNull(categoryResponseEntity);
         assertEquals(categoryResponseEntityExpected, categoryResponseEntity);
+    }
+
+    @Test
+    void test_DeleteCategoryFail1() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(categoryService.deleteCategory(id)).thenThrow(new NotFoundException(exceptionCategoryNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = categoryController.deleteCategory(id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionCategoryNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(categoryService, atMostOnce()).deleteCategory(id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 }

@@ -39,6 +39,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTests {
     final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String exceptionOrderNotFound = "Order not found.";
+    final String exceptionOrderBadRequest = "Wrong order payload.";
+    final String exceptionOrderInvalidQuantity = "The number of quantity inserted is not valid";
+    final String exceptionOrderWrongFlow = "It is not possible to change Order status";
     @InjectMocks
     OrderController orderController;
     @Mock
@@ -170,7 +174,7 @@ class OrderControllerTests {
 
 
     @Test
-    void test_GetAllOrders() throws NotFoundException {
+    void test_GetAllOrders() {
         // Define the behavior of the mock
         when(orderService.getAllOrders()).thenReturn(orderDTOS);
 
@@ -200,6 +204,23 @@ class OrderControllerTests {
     }
 
     @Test
+    void test_GetUserOrdersFail1() throws NotFoundException {
+        // Define the behavior of the mock
+        when(orderService.getUserOrders(JwtTokenDummy)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.getUserOrders(JwtTokenDummy);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).getUserOrders(JwtTokenDummy);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_GetOrderById() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
@@ -213,6 +234,24 @@ class OrderControllerTests {
         verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, id);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
+    }
+
+    @Test
+    void test_GetOrderByIdFail1() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        when(orderService.getUserOrder(JwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.getUserOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).getUserOrder(JwtTokenDummy, id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
     @Test
@@ -231,6 +270,57 @@ class OrderControllerTests {
     }
 
     @Test
+    void test_CreateOrderFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_CreateOrderFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_CreateOrderFail3() throws InvalidQuantityException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        when(orderService.createOrder(JwtTokenDummy, orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderInvalidQuantity));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.createOrder(JwtTokenDummy, orderCreateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderInvalidQuantity, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).createOrder(JwtTokenDummy, orderCreateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_DeleteOrder() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
@@ -245,6 +335,25 @@ class OrderControllerTests {
         verify(orderService, atMostOnce()).deleteOrder(userId, id);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
+    }
+
+    @Test
+    void test_test_DeleteOrderFail1() throws NotFoundException {
+        // Define the behavior of the mock
+        int id = 1;
+        int userId = 1;
+        when(orderService.deleteOrder(userId, id)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.deleteOrder(userId, id);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).deleteOrder(userId, id);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
     @Test
@@ -266,6 +375,86 @@ class OrderControllerTests {
     }
 
     @Test
+    void test_FullCancelOrderByIdFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.CANCELLED);
+
+        when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_FullCancelOrderByIdFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.CANCELLED);
+
+        when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_FullCancelOrderByIdFail3() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.CANCELLED);
+
+        when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new InvalidQuantityException(exceptionOrderInvalidQuantity));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderInvalidQuantity, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_FullCancelOrderByIdFail4() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.CANCELLED);
+
+        when(orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new WrongFlowException(exceptionOrderWrongFlow));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.fullCancelOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderWrongFlow, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
     void test_RejectOrderById() throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
         // Define the behavior of the mock
         int id = 1;
@@ -281,6 +470,86 @@ class OrderControllerTests {
         verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
+    }
+
+    @Test
+    void test_RejectOrderByIdFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.REJECTED);
+
+        when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_RejectOrderByIdFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.REJECTED);
+
+        when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_RejectOrderByIdFail3() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.REJECTED);
+
+        when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new InvalidQuantityException(exceptionOrderInvalidQuantity));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderInvalidQuantity, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_RejectOrderByIdFail4() throws InvalidQuantityException, BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.REJECTED);
+
+        when(orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new WrongFlowException(exceptionOrderWrongFlow));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.rejectOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderWrongFlow, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 
 
@@ -300,5 +569,65 @@ class OrderControllerTests {
         verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
+    }
+
+    @Test
+    void test_ApproveOrderByIdFail1() throws BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.APPROVED);
+
+        when(orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_ApproveOrderByIdFail2() throws BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.APPROVED);
+
+        when(orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
+    }
+
+    @Test
+    void test_ApproveOrderByIdFail3() throws BadPayloadException, NotFoundException, WrongFlowException {
+        // Define the behavior of the mock
+        int id = 1;
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.APPROVED);
+
+        when(orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO)).thenThrow(new WrongFlowException(exceptionOrderWrongFlow));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> result = orderController.approveOrderById(JwtTokenDummy, id, orderUpdateDTO);
+        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderWrongFlow, HttpStatus.BAD_REQUEST);
+
+        // Perform assertions
+        verify(orderService, atLeastOnce()).approveOrder(JwtTokenDummy, id, orderUpdateDTO);
+        assertNotNull(result);
+        assertEquals(expected, result);
+        assertEquals(expected.getStatusCode(), result.getStatusCode());
+        assertEquals(expected.getBody(), result.getBody());
     }
 }

@@ -125,4 +125,30 @@ class ItemTest {
         assertEquals(itemExpected.hashCode(), item.hashCode());
         assertEquals(itemExpected, item);
     }
+
+    @Test
+    void test_ItemSets() {
+        Item item = Item.builder().build();
+
+        item.setId(id);
+        item.setName(name);
+        item.setSku(sku);
+        item.setDescription(description);
+        item.setPrice(price);
+        item.setQuantityInStock(quantityInStock);
+        item.setCategory(category);
+        item.setMerchant(merchant);
+
+        assertNotNull(item);
+        assertEquals(id, item.getId());
+        assertEquals(name, item.getName());
+        assertEquals(sku, item.getSku());
+        assertEquals(description, item.getDescription());
+        assertEquals(price, item.getPrice());
+        assertEquals(quantityInStock, item.getQuantityInStock());
+        assertEquals(category, item.getCategory());
+        assertEquals(merchant, item.getMerchant());
+        assertEquals(itemExpected.hashCode(), item.hashCode());
+        assertEquals(itemExpected, item);
+    }
 }

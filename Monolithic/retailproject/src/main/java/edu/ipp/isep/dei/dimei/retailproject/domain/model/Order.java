@@ -51,4 +51,20 @@ public class Order {
         this.itemQuantities = itemQuantities;
         this.payment = payment;
     }
+
+    public boolean isPending() {
+        return status == OrderStatusEnum.PENDING;
+    }
+
+    public boolean isApproved() {
+        return status == OrderStatusEnum.APPROVED;
+    }
+
+    public boolean isShipped() {
+        return status == OrderStatusEnum.SHIPPED;
+    }
+
+    public boolean isPendingOrApproved() {
+        return this.isPending() || this.isApproved();
+    }
 }
