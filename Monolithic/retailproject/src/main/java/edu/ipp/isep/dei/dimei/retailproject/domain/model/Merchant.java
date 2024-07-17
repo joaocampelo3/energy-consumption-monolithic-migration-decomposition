@@ -26,7 +26,7 @@ public class Merchant {
     @Size(max = 50)
     @Column(name = "merchant_name", nullable = false)
     private String name;
-    @Column(name = "merchant_email")
+    @Column(name = "merchant_email", nullable = false)
     @Email
     private String email;
 

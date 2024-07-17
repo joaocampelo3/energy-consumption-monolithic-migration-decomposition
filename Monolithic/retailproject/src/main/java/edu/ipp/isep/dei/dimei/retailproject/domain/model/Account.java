@@ -28,9 +28,10 @@ public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
+    @Column(nullable = false)
     @Email
     private String email;
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)

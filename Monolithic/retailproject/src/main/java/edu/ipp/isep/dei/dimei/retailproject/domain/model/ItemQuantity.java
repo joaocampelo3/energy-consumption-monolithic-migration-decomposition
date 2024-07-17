@@ -18,6 +18,7 @@ public class ItemQuantity {
     private int id;
 
     @Embedded
+    @Column(nullable = false)
     private OrderQuantity quantityOrdered;
 
     @ManyToOne(optional = false)

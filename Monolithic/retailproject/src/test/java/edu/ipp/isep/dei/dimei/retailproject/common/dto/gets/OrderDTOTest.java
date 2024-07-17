@@ -71,7 +71,7 @@ class OrderDTOTest {
         totalPrice = 61;
         paymentDTO = PaymentDTO.builder()
                 .id(1)
-                .amount(61)
+                .amount(price1+price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)
@@ -117,7 +117,7 @@ class OrderDTOTest {
 
         Payment payment = Payment.builder()
                 .id(1)
-                .amount(61)
+                .amount(price1+price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)

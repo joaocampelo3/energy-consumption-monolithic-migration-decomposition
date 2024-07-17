@@ -23,6 +23,6 @@ public class User {
     @Column(name = "user_lastname", nullable = false)
     private String lastname;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Account account;
 }
