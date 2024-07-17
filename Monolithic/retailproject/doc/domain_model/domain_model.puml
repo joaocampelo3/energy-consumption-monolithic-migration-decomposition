@@ -23,7 +23,6 @@ class Item {
   - sku: String
   - description: String
   - price: double
-  - category: Category
 }
 class Merchant {
   - id: int
@@ -32,21 +31,20 @@ class Merchant {
 }
 class MerchantOrder {
   - id: int
-  - orderDate: LocalDateTime
+  - orderDate: Instant
 }
 class Order {
   - id: int
-  - orderDate: LocalDateTime
-  - user: User
+  - orderDate: Instant
 }
 class Payment {
   - id: int
   - amount: double
-  - paymentDateTime: LocalDateTime
+  - paymentDateTime: Instant
 }
 class ShippingOrder {
   - id: int
-  - shippingOrderDate: LocalDateTime
+  - shippingOrderDate: Instant
 }
 class User {
   - id: int
@@ -56,6 +54,7 @@ class User {
 interface IValueObject << interface >>
 class ItemQuantity {
   - id: int
+  - price: double
 }
 class OrderQuantity {
   - quantity: int
@@ -64,18 +63,20 @@ class StockQuantity {
   - quantity: int
 }
 enum MerchantOrderStatusEnum << enumeration >> {
-  + APPROVED:
-  + DELIVERED:
   + PENDING:
+  + APPROVED:
   + REJECTED:
   + SHIPPED:
+  + CANCELLED:
+  + DELIVERED:
 }
 enum OrderStatusEnum << enumeration >> {
   + PENDING:
   + APPROVED:
   + REJECTED:
-  + DELIVERED:
   + SHIPPED:
+  + CANCELLED:
+  + DELIVERED:
 }
 enum PaymentMethodEnum << enumeration >> {
   + PAYPAL:
@@ -92,37 +93,73 @@ enum RoleEnum << enumeration >> {
   + MERCHANT:
 }
 enum ShippingOrderStatusEnum << enumeration >> {
-  + REJECTED:
-  + APPROVED:
-  + DELIVERED:
-  + SHIPPED:
   + PENDING:
+  + APPROVED:
+  + REJECTED:
+  + SHIPPED:
+  + CANCELLED:
+  + DELIVERED:
 }
 
-Account                 "1" *-> "role\n1" RoleEnum
-Address                 "*" *-right> "user\n1" User
-Item                    "1" *-left> "category\n1" Category
-Item                    "1" *-left> "merchant\n1" Merchant
-Item                    "1" *--> "quantityInStock\n1" StockQuantity
-ItemQuantity            "*" *-left> "item\n1" Item
-ItemQuantity            "1" *-> "quantityOrdered\n1" OrderQuantity
-Merchant                "1" *-up-> "address\n1" Address
-MerchantOrder           "1" *-down-> "merchant\n1" Merchant
-MerchantOrder           "1" *-left> "status\n1" MerchantOrderStatusEnum
-MerchantOrder           "1" *-up-> "order\n1" Order
-MerchantOrder           "1" *-down-> "user\n1" User
-Order                   "1" *-> "itemQuantities\n*" ItemQuantity
-Order                   "1" *-> "status\n1" OrderStatusEnum
-Order                   "1" *-up-> "payment\n1" Payment
-Order                   "1" *-down-> "user\n1" User
-Payment                 "1" *-> "paymentMethod\n1" PaymentMethodEnum
-Payment                 "1" *-> "status\n1" PaymentStatusEnum
-ShippingOrder           "1" *-down-> "shippingAddress\n1" Address
-ShippingOrder           "1" *-left> "merchantOrder\n1" MerchantOrder
-ShippingOrder           "1" *-up-> "order\n1" Order
-ShippingOrder           "1" *-> "status\n1" ShippingOrderStatusEnum
-ShippingOrder           "1" *-down-> "user\n1" User
-User                    "1" *-right-> "account\n1" Account
+together {
+class ShippingOrder
+enum ShippingOrderStatusEnum
+}
+together {
+class MerchantOrder
+enum MerchantOrderStatusEnum
+class Merchant
+}
+together {
+class Order
+enum OrderStatusEnum
+class ItemQuantity
+class Payment
+enum PaymentMethodEnum
+enum PaymentStatusEnum
+class OrderQuantity
+}
+together {
+class ItemQuantity
+class Item
+class OrderQuantity
+class StockQuantity
+class Category
+interface IValueObject
+}
+
+ShippingOrder -[hidden]-> ShippingOrderStatusEnum
+ShippingOrder -[hidden]-> MerchantOrder
+MerchantOrder -[hidden]-> MerchantOrderStatusEnum
+MerchantOrderStatusEnum -[hidden]left- ShippingOrder
+Account -[hidden]-> RoleEnum
+Payment --[hidden]--> Category
+
+Account                 *--right> "role" RoleEnum
+Address                 "*" ----> "user\n1" User
+Item                    *-right> "category\n1" Category
+Item                    ----> "merchant\n1" Merchant
+Item                    *--> "quantityInStock\n1" StockQuantity
+ItemQuantity            *-> "item\n1" Item
+ItemQuantity            *--> "quantityOrdered\n1" OrderQuantity
+Merchant                --> "address\n1" Address
+MerchantOrder           *--> "merchant\n1" Merchant
+MerchantOrder           *-> "status" MerchantOrderStatusEnum
+MerchantOrder           ----up> "order\n1" Order
+MerchantOrder           -> "user\n1" User
+Order                   *-> "itemQuantities\n*" ItemQuantity
+Order                   *-> "status" OrderStatusEnum
+Order                   --up> "payment\n1" Payment
+Order                   -> "user\n1" User
+Payment                 *--up> "paymentMethod" PaymentMethodEnum
+Payment                 *--up> "status" PaymentStatusEnum
+ShippingOrder           -> "shippingAddress\n1" Address
+ShippingOrder           -left> "merchantOrder\n1" MerchantOrder
+ShippingOrder           -up> "order\n1" Order
+ShippingOrder           *-left> "status" ShippingOrderStatusEnum
+ShippingOrder           -> "user\n1" User
+User                    *--> "account\n1" Account
 OrderQuantity            --^  IValueObject
 StockQuantity            --^  IValueObject
+
 @enduml
