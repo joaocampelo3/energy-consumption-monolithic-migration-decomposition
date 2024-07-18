@@ -28,7 +28,7 @@ public class ShippingOrder {
     private int id;
     @Column(name = "shipping_order_date", nullable = false)
     private Instant shippingOrderDate;
-    @Column(name = "shipping_order_status")
+    @Column(name = "shipping_order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ShippingOrderStatusEnum status;
 

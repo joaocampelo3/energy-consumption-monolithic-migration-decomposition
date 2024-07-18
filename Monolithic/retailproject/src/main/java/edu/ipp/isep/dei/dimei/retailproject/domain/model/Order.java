@@ -29,7 +29,7 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private Instant orderDate;
 
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
 
@@ -37,7 +37,7 @@ public class Order {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemQuantity> itemQuantities;
 
     @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderTest {
     final OrderStatusEnum status = OrderStatusEnum.PENDING;
     int id;
+    double price;
     Instant orderDate;
     User user;
     List<ItemQuantity> itemQuantities = new ArrayList<>();
@@ -35,6 +36,7 @@ class OrderTest {
         id = 1;
         Instant currentDate = Instant.now();
         orderDate = currentDate;
+        price = 12.0;
 
         Account userAccount = Account.builder()
                 .id(1)
@@ -74,7 +76,7 @@ class OrderTest {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 Description")
-                .price(12.0)
+                .price(price)
                 .quantityInStock(new StockQuantity(10))
                 .category(category)
                 .merchant(merchant)
@@ -84,6 +86,7 @@ class OrderTest {
                 .id(1)
                 .quantityOrdered(new OrderQuantity(1))
                 .item(item)
+                .price(price)
                 .build();
         itemQuantities.add(itemQuantity1);
         double totalPrice = itemQuantities.stream().mapToDouble(value -> value.getItem().getPrice() * value.getQuantityOrdered().getQuantity()).sum();

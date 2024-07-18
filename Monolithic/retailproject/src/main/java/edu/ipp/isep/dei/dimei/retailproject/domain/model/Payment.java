@@ -32,10 +32,10 @@ public class Payment {
     private double amount;
     @Column(name = "payment_date", nullable = false)
     private Instant paymentDateTime;
-    @Column(name = "payment_method")
+    @Column(name = "payment_method", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodEnum paymentMethod;
-    @Column(name = "payment_status")
+    @Column(name = "payment_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatusEnum status;
 

@@ -48,6 +48,8 @@ class ShippingOrderServiceTests {
     OrderService orderService;
     @Mock
     ItemService itemService;
+
+    double price;
     ShippingOrderDTO shippingOrderDTO1;
     ShippingOrderDTO shippingOrderDTO2;
     List<ShippingOrderDTO> shippingOrderDTOS = new ArrayList<>();
@@ -75,6 +77,8 @@ class ShippingOrderServiceTests {
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
+        price = 12.0;
+
         account = Account.builder()
                 .id(1)
                 .email("johndoe1234@gmail.com")
@@ -131,7 +135,7 @@ class ShippingOrderServiceTests {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 Desc")
-                .price(1)
+                .price(price)
                 .quantityInStock(new StockQuantity(10))
                 .category(new Category(1, "Category 1", "Category"))
                 .merchant(merchant)
@@ -141,12 +145,14 @@ class ShippingOrderServiceTests {
                 .id(1)
                 .quantityOrdered(new OrderQuantity(1))
                 .item(item)
+                .price(price)
                 .build();
 
         itemQuantity2 = ItemQuantity.builder()
                 .id(2)
                 .quantityOrdered(new OrderQuantity(1))
                 .item(item)
+                .price(price)
                 .build();
 
         itemQuantityList.add(itemQuantity1);

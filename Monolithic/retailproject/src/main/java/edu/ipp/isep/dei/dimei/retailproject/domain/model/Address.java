@@ -23,12 +23,16 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
     private String street;
+    @Column(nullable = false)
     private String zipCode;
+    @Column(nullable = false)
     private String city;
+    @Column(nullable = false)
     private String country;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -69,6 +69,8 @@ class OrderControllerTests {
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
+        double price1 = 12.0;
+        double price2 = 5.0;
         category = Category.builder()
                 .id(0)
                 .name("Category 1")
@@ -94,7 +96,7 @@ class OrderControllerTests {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 Description")
-                .price(15.0)
+                .price(price1)
                 .quantityInStock(new StockQuantity(10))
                 .category(category)
                 .merchant(merchant)
@@ -105,7 +107,7 @@ class OrderControllerTests {
                 .name("Item 2")
                 .sku("ABC-12345-M-BL")
                 .description("Item 2 Description")
-                .price(20.0)
+                .price(price2)
                 .quantityInStock(new StockQuantity(5))
                 .category(category)
                 .merchant(merchant)
@@ -114,8 +116,8 @@ class OrderControllerTests {
         orderQuantity1 = new OrderQuantity(2);
         orderQuantity2 = new OrderQuantity(1);
 
-        itemQuantity1 = new ItemQuantity(orderQuantity1, item1);
-        itemQuantity2 = new ItemQuantity(orderQuantity2, item2);
+        itemQuantity1 = new ItemQuantity(orderQuantity1, item1, price1);
+        itemQuantity2 = new ItemQuantity(orderQuantity2, item2, price2);
 
         itemQuantityList.add(itemQuantity1);
         itemQuantityList.add(itemQuantity2);

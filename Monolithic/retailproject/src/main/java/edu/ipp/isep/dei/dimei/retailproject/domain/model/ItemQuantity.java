@@ -18,17 +18,21 @@ public class ItemQuantity {
     private int id;
 
     @Embedded
+    @Column(nullable = false)
     private OrderQuantity quantityOrdered;
 
     @ManyToOne(optional = false)
     private Item item;
 
-    public ItemQuantity(OrderQuantity quantityOrdered, Item item) {
+    private double price;
+
+    public ItemQuantity(OrderQuantity quantityOrdered, Item item, double price) {
         this.quantityOrdered = quantityOrdered;
         this.item = item;
+        this.price = price;
     }
 
     public double getTotalPrice() {
-        return item.getPrice() * quantityOrdered.getQuantity();
+        return this.price * quantityOrdered.getQuantity();
     }
 }

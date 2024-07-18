@@ -28,7 +28,7 @@ public class MerchantOrder {
     @Column(name = "merchant_order_date", nullable = false)
     private Instant orderDate;
 
-    @Column(name = "merchant_order_status")
+    @Column(name = "merchant_order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private MerchantOrderStatusEnum status;
 

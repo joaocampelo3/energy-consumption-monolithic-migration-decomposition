@@ -45,6 +45,7 @@ public class ItemQuantityDTO {
                 .id(this.id)
                 .quantityOrdered(new OrderQuantity(this.qty))
                 .item(dtoToItem())
+                .price(this.price)
                 .build();
     }
 }

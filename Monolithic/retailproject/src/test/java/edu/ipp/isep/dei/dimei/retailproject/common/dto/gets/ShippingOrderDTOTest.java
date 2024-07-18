@@ -34,6 +34,8 @@ class ShippingOrderDTOTest {
         Instant currentDate = Instant.now();
         shippingOrderDate = currentDate;
         shippingOrderStatus = ShippingOrderStatusEnum.PENDING;
+        double price1 = 12.0;
+        double price2 = 5.0;
         addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
@@ -83,7 +85,7 @@ class ShippingOrderDTOTest {
                 .name("Item 1")
                 .sku("ABC-12345-S-BL")
                 .description("Item 1 description")
-                .price(12)
+                .price(price1)
                 .build();
 
         Item item2 = Item.builder()
@@ -91,18 +93,18 @@ class ShippingOrderDTOTest {
                 .name("Item 2")
                 .sku("ABC-12345-XS-BL")
                 .description("Item 2 description")
-                .price(5)
+                .price(price2)
                 .build();
 
-        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1);
-        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2);
+        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1, price1);
+        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2, price2);
 
         orderItems.add(itemQuantity1);
         orderItems.add(itemQuantity2);
 
         Payment payment = Payment.builder()
                 .id(1)
-                .amount(61)
+                .amount(price1+price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)
