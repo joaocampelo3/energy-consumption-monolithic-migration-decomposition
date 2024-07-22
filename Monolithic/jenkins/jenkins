@@ -20,6 +20,9 @@ pipeline {
         // KEPLER VARIABLES
         KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
         KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
+        //GOLANG_HOME
+        GOLANG_HOME = '/usr/local/go/bin'
+        PATH = "${GOLANG_HOME}:${env.PATH}"
     }
 
     stages {
