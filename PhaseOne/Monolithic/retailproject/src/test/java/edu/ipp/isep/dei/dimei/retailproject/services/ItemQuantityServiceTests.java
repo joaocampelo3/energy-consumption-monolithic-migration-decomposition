@@ -1,7 +1,11 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
@@ -33,7 +37,7 @@ class ItemQuantityServiceTests {
     ItemQuantity itemQuantity1;
     ItemQuantity itemQuantity1Updated;
     Category category;
-    Address merchantAddress;
+    AddressDTO merchantAddressDTO;
     Merchant merchant;
     Item item1;
     OrderQuantity orderQuantity;
@@ -48,7 +52,7 @@ class ItemQuantityServiceTests {
                 .description("Category 1 Description")
                 .build();
 
-        merchantAddress = Address.builder()
+        merchantAddressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -60,7 +64,7 @@ class ItemQuantityServiceTests {
                 .id(1)
                 .name("Merchant 1")
                 .email("merchant_email@gmail.com")
-                .address(merchantAddress)
+                .addressId(merchantAddressDTO.getId())
                 .build();
 
         item1 = Item.builder()

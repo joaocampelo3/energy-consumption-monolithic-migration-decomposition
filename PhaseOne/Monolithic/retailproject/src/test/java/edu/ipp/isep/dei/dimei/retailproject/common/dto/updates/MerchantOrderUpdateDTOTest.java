@@ -1,5 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.updates;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
@@ -28,6 +30,7 @@ class MerchantOrderUpdateDTOTest {
     int merchantId;
     MerchantOrderUpdateDTO merchantOrderUpdateDTOExpected;
     MerchantOrder merchantOrder;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -40,28 +43,20 @@ class MerchantOrderUpdateDTOTest {
         merchantId = 1;
         double price1 = 12.0;
         double price2 = 5.0;
-        merchantOrderUpdateDTOExpected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        merchantOrderUpdateDTOExpected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
 
-        Address address = Address.builder()
-                .id(2)
+        AddressDTO addressDTO = AddressDTO.builder()
+                .id(1)
                 .street("Other Avenue")
                 .zipCode("10128")
                 .city("New York")
                 .country("USA")
                 .build();
 
-        Account account = Account.builder()
-                .id(1)
+        userDTO = UserDTO.builder()
+                .userId(1)
                 .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
                 .role(RoleEnum.USER)
-                .build();
-
-        User user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(account)
                 .build();
 
         List<ItemQuantity> orderItems = new ArrayList<>();
@@ -90,7 +85,7 @@ class MerchantOrderUpdateDTOTest {
 
         Payment payment = Payment.builder()
                 .id(1)
-                .amount(price1+price2)
+                .amount(price1 + price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)
@@ -100,7 +95,7 @@ class MerchantOrderUpdateDTOTest {
                 .id(1)
                 .orderDate(currentDate)
                 .status(OrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(orderItems)
                 .payment(payment)
                 .build();
@@ -109,14 +104,14 @@ class MerchantOrderUpdateDTOTest {
                 .id(1)
                 .name("Merchant 1")
                 .email(email)
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
 
         merchantOrder = MerchantOrder.builder()
                 .id(1)
                 .orderDate(currentDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -124,7 +119,7 @@ class MerchantOrderUpdateDTOTest {
 
     @Test
     void test_createMerchantOrderUpdateDTO() {
-        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
 
         assertNotNull(merchantDTO);
         assertEquals(id, merchantDTO.getId());
@@ -160,7 +155,7 @@ class MerchantOrderUpdateDTOTest {
 
     @Test
     void test_createMerchantOrderUpdateDTOByMerchantOrder() {
-        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(merchantOrder);
+        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(merchantOrder, userDTO.getEmail());
 
         assertNotNull(merchantDTO);
         assertEquals(id, merchantDTO.getId());
@@ -180,7 +175,7 @@ class MerchantOrderUpdateDTOTest {
 
     @Test
     void test_SetsMerchantOrderUpdateDTO() {
-        MerchantOrderUpdateDTO expected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        MerchantOrderUpdateDTO expected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
         MerchantOrderUpdateDTO result = MerchantOrderUpdateDTO.builder().build();
 
         result.setId(id);
@@ -189,6 +184,7 @@ class MerchantOrderUpdateDTOTest {
         result.setEmail(email);
         result.setOrderId(orderId);
         result.setMerchantId(merchantId);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
@@ -197,8 +193,8 @@ class MerchantOrderUpdateDTOTest {
         assertEquals(email, result.getEmail());
         assertEquals(orderId, result.getOrderId());
         assertEquals(merchantId, result.getMerchantId());
-        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected, result);
+        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected.toString(), result.toString());
     }
 }

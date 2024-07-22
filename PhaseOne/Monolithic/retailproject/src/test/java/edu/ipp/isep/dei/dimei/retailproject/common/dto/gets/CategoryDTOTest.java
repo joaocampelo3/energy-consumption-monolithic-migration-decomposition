@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,13 +18,19 @@ class CategoryDTOTest {
     String description;
     CategoryDTO categoryDTOExpected;
     Category categoryExpected;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
         id = 1;
         name = "Category 1";
         description = "Category 1 description";
-        categoryDTOExpected = new CategoryDTO(id, name, description);
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
+        categoryDTOExpected = new CategoryDTO(id, name, description, userDTO);
         categoryExpected = Category.builder()
                 .id(id)
                 .name(name)
@@ -33,12 +40,13 @@ class CategoryDTOTest {
 
     @Test
     void test_createCategoryDTO() {
-        CategoryDTO categoryDTO = new CategoryDTO(id, name, description);
+        CategoryDTO categoryDTO = new CategoryDTO(id, name, description, userDTO);
 
         assertNotNull(categoryDTO);
         assertEquals(id, categoryDTO.getId());
         assertEquals(name, categoryDTO.getName());
         assertEquals(description, categoryDTO.getDescription());
+        assertEquals(userDTO, categoryDTO.getUserDTO());
         assertEquals(categoryDTOExpected.hashCode(), categoryDTO.hashCode());
     }
 
@@ -48,6 +56,7 @@ class CategoryDTOTest {
                 .id(id)
                 .name(name)
                 .description(description)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(categoryDTO);
@@ -69,6 +78,7 @@ class CategoryDTOTest {
                 .id(id)
                 .name(name)
                 .description(description)
+                .userDTO(userDTO)
                 .build();
 
         Category category = categoryDTO.dtoToEntity();
@@ -87,13 +97,15 @@ class CategoryDTOTest {
         result.setId(id);
         result.setName(name);
         result.setDescription(description);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals(name, result.getName());
         assertEquals(description, result.getDescription());
-        assertEquals(categoryDTOExpected.hashCode(), result.hashCode());
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(categoryDTOExpected, result);
+        assertEquals(categoryDTOExpected.hashCode(), result.hashCode());
         assertEquals(categoryDTOExpected.toString(), result.toString());
     }
 

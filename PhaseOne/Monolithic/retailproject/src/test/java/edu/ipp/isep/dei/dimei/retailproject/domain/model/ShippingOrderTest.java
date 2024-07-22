@@ -1,5 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
@@ -22,10 +24,10 @@ class ShippingOrderTest {
     int id;
     double price;
     Instant shippingOrderDate;
-    Address shippingAddress;
+    AddressDTO shippingAddressDTO;
     Order order;
     MerchantOrder merchantOrder;
-    User user;
+    UserDTO userDTO;
     ShippingOrder shippingOrderExpected;
 
     @BeforeEach
@@ -35,20 +37,13 @@ class ShippingOrderTest {
         shippingOrderDate = currentDate;
         price = 12.0;
 
-        Account userAccount = Account.builder()
-                .id(1)
+        userDTO = UserDTO.builder()
+                .userId(1)
                 .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
                 .role(RoleEnum.USER)
                 .build();
-        user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(userAccount)
-                .build();
 
-        Address address = Address.builder()
+        AddressDTO addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -60,7 +55,7 @@ class ShippingOrderTest {
                 .id(1)
                 .name("MerchantOrder 1")
                 .email("merchant_email@gmail.com")
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
         Category category = Category.builder()
                 .id(1)
@@ -100,7 +95,7 @@ class ShippingOrderTest {
                 .id(1)
                 .orderDate(currentDate)
                 .status(OrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(itemQuantityList)
                 .payment(payment)
                 .build();
@@ -109,12 +104,12 @@ class ShippingOrderTest {
                 .id(1)
                 .orderDate(currentDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
 
-        shippingAddress = Address.builder()
+        shippingAddressDTO = AddressDTO.builder()
                 .id(2)
                 .street("Another Avenue")
                 .zipCode("10128")
@@ -126,40 +121,40 @@ class ShippingOrderTest {
                 .id(id)
                 .shippingOrderDate(shippingOrderDate)
                 .status(status)
-                .shippingAddress(shippingAddress)
+                .shippingAddressId(shippingAddressDTO.getId())
                 .order(order)
                 .merchantOrder(merchantOrder)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .build();
     }
 
     @Test
     void test_createShippingOrder() {
-        ShippingOrder shippingOrder = new ShippingOrder(id, shippingOrderDate, status, shippingAddress, order, merchantOrder, user);
+        ShippingOrder shippingOrder = new ShippingOrder(id, shippingOrderDate, status, shippingAddressDTO.getId(), order, merchantOrder, userDTO.getUserId());
 
         assertNotNull(shippingOrder);
         assertEquals(id, shippingOrder.getId());
         assertEquals(shippingOrderDate, shippingOrder.getShippingOrderDate());
         assertEquals(status, shippingOrder.getStatus());
-        assertEquals(shippingAddress, shippingOrder.getShippingAddress());
+        assertEquals(shippingAddressDTO.getId(), shippingOrder.getShippingAddressId());
         assertEquals(order, shippingOrder.getOrder());
         assertEquals(merchantOrder, shippingOrder.getMerchantOrder());
-        assertEquals(user, shippingOrder.getUser());
+        assertEquals(userDTO.getUserId(), shippingOrder.getUserId());
         assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
         assertEquals(shippingOrderExpected, shippingOrder);
     }
 
     @Test
     void test_createShippingOrder2() {
-        ShippingOrder shippingOrder = new ShippingOrder(user, order, merchantOrder, shippingAddress);
+        ShippingOrder shippingOrder = new ShippingOrder(userDTO.getUserId(), order, merchantOrder, shippingAddressDTO.getId());
 
         assertNotNull(shippingOrder);
         assertEquals(shippingOrderDate, shippingOrder.getShippingOrderDate());
         assertEquals(status, shippingOrder.getStatus());
-        assertEquals(shippingAddress, shippingOrder.getShippingAddress());
+        assertEquals(shippingAddressDTO.getId(), shippingOrder.getShippingAddressId());
         assertEquals(order, shippingOrder.getOrder());
         assertEquals(merchantOrder, shippingOrder.getMerchantOrder());
-        assertEquals(user, shippingOrder.getUser());
+        assertEquals(userDTO.getUserId(), shippingOrder.getUserId());
         shippingOrderExpected.setId(0);
         assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
         assertEquals(shippingOrderExpected, shippingOrder);
@@ -171,20 +166,20 @@ class ShippingOrderTest {
                 .id(id)
                 .shippingOrderDate(shippingOrderDate)
                 .status(status)
-                .shippingAddress(shippingAddress)
+                .shippingAddressId(shippingAddressDTO.getId())
                 .order(order)
                 .merchantOrder(merchantOrder)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .build();
 
         assertNotNull(shippingOrder);
         assertEquals(id, shippingOrder.getId());
         assertEquals(shippingOrderDate, shippingOrder.getShippingOrderDate());
         assertEquals(status, shippingOrder.getStatus());
-        assertEquals(shippingAddress, shippingOrder.getShippingAddress());
+        assertEquals(shippingAddressDTO.getId(), shippingOrder.getShippingAddressId());
         assertEquals(order, shippingOrder.getOrder());
         assertEquals(merchantOrder, shippingOrder.getMerchantOrder());
-        assertEquals(user, shippingOrder.getUser());
+        assertEquals(userDTO.getUserId(), shippingOrder.getUserId());
         assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
         assertEquals(shippingOrderExpected, shippingOrder);
     }
@@ -196,17 +191,17 @@ class ShippingOrderTest {
         shippingOrder.setId(id);
         shippingOrder.setShippingOrderDate(shippingOrderDate);
         shippingOrder.setStatus(status);
-        shippingOrder.setShippingAddress(shippingAddress);
+        shippingOrder.setShippingAddressId(shippingAddressDTO.getId());
         shippingOrder.setOrder(order);
         shippingOrder.setMerchantOrder(merchantOrder);
-        shippingOrder.setUser(user);
+        shippingOrder.setUserId(userDTO.getUserId());
 
-        assertEquals(shippingOrder.getShippingOrderDate(), shippingOrder.getShippingOrderDate());
-        assertEquals(shippingOrder.getStatus(), shippingOrder.getStatus());
-        assertEquals(shippingOrder.getShippingAddress(), shippingOrder.getShippingAddress());
-        assertEquals(shippingOrder.getOrder(), shippingOrder.getOrder());
-        assertEquals(shippingOrder.getMerchantOrder(), shippingOrder.getMerchantOrder());
-        assertEquals(shippingOrder.getUser(), shippingOrder.getUser());
+        assertEquals(shippingOrderExpected.getShippingOrderDate(), shippingOrder.getShippingOrderDate());
+        assertEquals(shippingOrderExpected.getStatus(), shippingOrder.getStatus());
+        assertEquals(shippingOrderExpected.getShippingAddressId(), shippingOrder.getShippingAddressId());
+        assertEquals(shippingOrderExpected.getOrder(), shippingOrder.getOrder());
+        assertEquals(shippingOrderExpected.getMerchantOrder(), shippingOrder.getMerchantOrder());
+        assertEquals(shippingOrderExpected.getUserId(), shippingOrder.getUserId());
 
         assertEquals(shippingOrderExpected, shippingOrder);
         assertEquals(shippingOrderExpected.hashCode(), shippingOrder.hashCode());
@@ -219,10 +214,10 @@ class ShippingOrderTest {
         shippingOrder.setId(2);
         shippingOrder.setShippingOrderDate(Instant.MAX);
         shippingOrder.setStatus(ShippingOrderStatusEnum.APPROVED);
-        shippingOrder.setShippingAddress(shippingAddress);
+        shippingOrder.setShippingAddressId(shippingAddressDTO.getId());
         shippingOrder.setOrder(order);
         shippingOrder.setMerchantOrder(merchantOrder);
-        shippingOrder.setUser(user);
+        shippingOrder.setUserId(userDTO.getUserId());
 
         assertNotEquals(shippingOrder.getId(), id);
         assertNotEquals(shippingOrder.getShippingOrderDate(), shippingOrderDate);

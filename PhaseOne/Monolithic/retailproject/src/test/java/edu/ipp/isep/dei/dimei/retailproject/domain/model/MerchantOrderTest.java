@@ -1,5 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
@@ -22,7 +24,7 @@ class MerchantOrderTest {
     int id;
     double price;
     Instant orderDate;
-    User user;
+    UserDTO userDTO;
     Order order;
     Merchant merchant;
     MerchantOrder merchantOrderExpected;
@@ -34,20 +36,13 @@ class MerchantOrderTest {
         orderDate = currentDate;
         price = 12.0;
 
-        Account userAccount = Account.builder()
-                .id(1)
+        userDTO = UserDTO.builder()
+                .userId(1)
                 .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
                 .role(RoleEnum.USER)
                 .build();
-        user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(userAccount)
-                .build();
 
-        Address address = Address.builder()
+        AddressDTO addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -59,7 +54,7 @@ class MerchantOrderTest {
                 .id(1)
                 .name("MerchantOrder 1")
                 .email("merchant_email@gmail.com")
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
         Category category = Category.builder()
                 .id(1)
@@ -99,7 +94,7 @@ class MerchantOrderTest {
                 .id(1)
                 .orderDate(currentDate)
                 .status(OrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(itemQuantityList)
                 .payment(payment)
                 .build();
@@ -108,7 +103,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(status)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -116,13 +111,13 @@ class MerchantOrderTest {
 
     @Test
     void test_createMerchantOrder() {
-        MerchantOrder merchantOrder = new MerchantOrder(id, orderDate, status, user, order, merchant);
+        MerchantOrder merchantOrder = new MerchantOrder(id, orderDate, status, userDTO.getUserId(), order, merchant);
 
         assertNotNull(merchantOrder);
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(status, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertEquals(merchantOrderExpected.hashCode(), merchantOrder.hashCode());
@@ -131,12 +126,12 @@ class MerchantOrderTest {
 
     @Test
     void test_createMerchantOrder2() {
-        MerchantOrder merchantOrder = new MerchantOrder(user, order, merchant);
+        MerchantOrder merchantOrder = new MerchantOrder(userDTO.getUserId(), order, merchant);
 
         assertNotNull(merchantOrder);
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(status, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         merchantOrderExpected.setId(0);
@@ -150,7 +145,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(status)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -159,7 +154,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(status, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertEquals(merchantOrderExpected.hashCode(), merchantOrder.hashCode());
@@ -173,7 +168,7 @@ class MerchantOrderTest {
         merchantOrder.setId(id);
         merchantOrder.setOrderDate(orderDate);
         merchantOrder.setStatus(status);
-        merchantOrder.setUser(user);
+        merchantOrder.setUserId(userDTO.getUserId());
         merchantOrder.setOrder(order);
         merchantOrder.setMerchant(merchant);
 
@@ -181,7 +176,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(status, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertEquals(merchantOrderExpected.hashCode(), merchantOrder.hashCode());
@@ -194,7 +189,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -203,7 +198,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertEquals(merchantOrderExpected.hashCode(), merchantOrder.hashCode());
@@ -217,7 +212,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.APPROVED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -226,7 +221,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.APPROVED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isPending());
@@ -238,7 +233,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.APPROVED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -247,7 +242,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.APPROVED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertTrue(merchantOrder.isApproved());
@@ -259,7 +254,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -268,7 +263,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isApproved());
@@ -280,7 +275,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.REJECTED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -289,7 +284,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.REJECTED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertTrue(merchantOrder.isRejected());
@@ -301,7 +296,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -310,7 +305,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isRejected());
@@ -322,7 +317,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.CANCELLED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -331,7 +326,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.CANCELLED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertTrue(merchantOrder.isCancelled());
@@ -343,7 +338,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -352,7 +347,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isCancelled());
@@ -364,7 +359,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.SHIPPED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -373,7 +368,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.SHIPPED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertTrue(merchantOrder.isShipped());
@@ -385,7 +380,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -394,7 +389,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isShipped());
@@ -406,7 +401,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.DELIVERED)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -415,7 +410,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.DELIVERED, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertTrue(merchantOrder.isDelivered());
@@ -427,7 +422,7 @@ class MerchantOrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -436,7 +431,7 @@ class MerchantOrderTest {
         assertEquals(id, merchantOrder.getId());
         assertEquals(orderDate, merchantOrder.getOrderDate());
         assertEquals(MerchantOrderStatusEnum.PENDING, merchantOrder.getStatus());
-        assertEquals(user, merchantOrder.getUser());
+        assertEquals(userDTO.getUserId(), merchantOrder.getUserId());
         assertEquals(order, merchantOrder.getOrder());
         assertEquals(merchant, merchantOrder.getMerchant());
         assertFalse(merchantOrder.isDelivered());

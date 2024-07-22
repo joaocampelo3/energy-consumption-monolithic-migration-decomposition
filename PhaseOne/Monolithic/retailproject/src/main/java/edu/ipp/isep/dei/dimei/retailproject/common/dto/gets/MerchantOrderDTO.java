@@ -20,12 +20,12 @@ public class MerchantOrderDTO {
     private int orderId;
     private int merchantId;
 
-    public MerchantOrderDTO(MerchantOrder merchantOrder) {
+    public MerchantOrderDTO(MerchantOrder merchantOrder, String email) {
         this.id = merchantOrder.getId();
         this.merchantOrderDate = merchantOrder.getOrderDate();
         this.merchantOrderStatus = merchantOrder.getStatus();
-        this.customerId = merchantOrder.getUser().getId();
-        this.email = merchantOrder.getUser().getAccount().getEmail();
+        this.customerId = merchantOrder.getUserId();
+        this.email = email;
         this.orderId = merchantOrder.getOrder().getId();
         this.merchantId = merchantOrder.getMerchant().getId();
     }

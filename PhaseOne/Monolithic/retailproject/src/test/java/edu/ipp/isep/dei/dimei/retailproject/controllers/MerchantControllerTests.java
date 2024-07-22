@@ -58,14 +58,14 @@ class MerchantControllerTests {
                 .id(1)
                 .name("Merchant 1")
                 .email("johndoe1234@gmail.com")
-                .address(addressDTO)
+                .addressId(addressDTO.getId())
                 .build();
 
         merchantDTO2 = MerchantDTO.builder()
                 .id(2)
                 .name("Merchant 2")
                 .email("merchant_email@gmail.com")
-                .address(addressDTO)
+                .addressId(addressDTO.getId())
                 .build();
 
         merchantDTOS.add(merchantDTO1);
@@ -75,7 +75,7 @@ class MerchantControllerTests {
                 .id(2)
                 .name("Merchant 2 Changes")
                 .email("merchant_email@gmail.com")
-                .address(addressDTOUpdated)
+                .addressId(addressDTOUpdated.getId())
                 .build();
     }
 
@@ -129,7 +129,7 @@ class MerchantControllerTests {
     }
 
     @Test
-    void test_CreateMerchant() throws NotFoundException {
+    void test_CreateMerchant() {
         // Define the behavior of the mock
         when(merchantService.createMerchant(merchantDTO1)).thenReturn(merchantDTO1);
 
@@ -141,23 +141,6 @@ class MerchantControllerTests {
         verify(merchantService, atMostOnce()).createMerchant(merchantDTO1);
         assertNotNull(merchantResponseEntity);
         assertEquals(merchantResponseEntityExpected, merchantResponseEntity);
-    }
-
-    @Test
-    void test_CreateMerchantFail() throws NotFoundException {
-        // Define the behavior of the mock
-        when(merchantService.createMerchant(merchantDTO1)).thenThrow(new NotFoundException(exceptionMerchantNotFound));
-
-        // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantController.createMerchant(merchantDTO1);
-        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantNotFound, HttpStatus.NOT_FOUND);
-
-        // Perform assertions
-        verify(merchantService, atLeastOnce()).createMerchant(merchantDTO1);
-        assertNotNull(result);
-        assertEquals(expected, result);
-        assertEquals(expected.getStatusCode(), result.getStatusCode());
-        assertEquals(expected.getBody(), result.getBody());
     }
 
     @Test

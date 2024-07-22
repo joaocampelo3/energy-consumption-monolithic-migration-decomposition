@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ class MerchantTest {
     int id;
     String name;
     String email;
-    Address address;
+    AddressDTO addressDTO;
     Merchant merchantExpected;
 
     @BeforeEach
@@ -23,7 +24,7 @@ class MerchantTest {
         name = "Merchant 1";
         email = "merchant_email@gmail.com";
 
-        address = Address.builder()
+        addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -35,31 +36,31 @@ class MerchantTest {
                 .id(id)
                 .name(name)
                 .email(email)
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
     }
 
     @Test
     void test_createMerchant() {
-        Merchant merchant = new Merchant(id, name, email, address);
+        Merchant merchant = new Merchant(id, name, email, addressDTO.getId());
 
         assertNotNull(merchant);
         assertEquals(id, merchant.getId());
         assertEquals(name, merchant.getName());
         assertEquals(email, merchant.getEmail());
-        assertEquals(address, merchant.getAddress());
+        assertEquals(addressDTO.getId(), merchant.getAddressId());
         assertEquals(merchantExpected.hashCode(), merchant.hashCode());
         assertEquals(merchantExpected, merchant);
     }
 
     @Test
     void test_createMerchant2() {
-        Merchant merchant = new Merchant(name, email, address);
+        Merchant merchant = new Merchant(name, email, addressDTO.getId());
 
         assertNotNull(merchant);
         assertEquals(name, merchant.getName());
         assertEquals(email, merchant.getEmail());
-        assertEquals(address, merchant.getAddress());
+        assertEquals(addressDTO.getId(), merchant.getAddressId());
         merchantExpected.setId(0);
         assertEquals(merchantExpected.hashCode(), merchant.hashCode());
         assertEquals(merchantExpected, merchant);
@@ -71,13 +72,13 @@ class MerchantTest {
                 .id(id)
                 .name(name)
                 .email(email)
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
 
         assertNotNull(merchant);
         assertEquals(name, merchant.getName());
         assertEquals(email, merchant.getEmail());
-        assertEquals(address, merchant.getAddress());
+        assertEquals(addressDTO.getId(), merchant.getAddressId());
         assertEquals(merchantExpected.hashCode(), merchant.hashCode());
         assertEquals(merchantExpected, merchant);
     }

@@ -26,18 +26,10 @@ class PaymentServiceTests {
     PaymentRepository paymentRepository;
     PaymentDTO paymentDTO1;
     Payment payment1;
-    Payment payment1Updated;
 
     @BeforeEach
     void beforeEach() {
         payment1 = Payment.builder()
-                .id(1)
-                .amount(10)
-                .paymentDateTime(Instant.now())
-                .paymentMethod(PaymentMethodEnum.CARD)
-                .status(PaymentStatusEnum.ACCEPTED)
-                .build();
-        payment1Updated = Payment.builder()
                 .id(1)
                 .amount(10)
                 .paymentDateTime(Instant.now())

@@ -12,13 +12,15 @@ public class MerchantDTO {
     private int id;
     private String name;
     private String email;
-    private AddressDTO address;
+    private int addressId;
+    private UserDTO userDTO;
+    private AddressDTO addressDTO;
 
     public MerchantDTO(Merchant merchant) {
         this.id = merchant.getId();
         this.name = merchant.getName();
         this.email = merchant.getEmail();
-        this.address = new AddressDTO(merchant.getAddress());
+        this.addressId = merchant.getAddressId();
     }
 
     public Merchant dtoToEntity() {
@@ -26,7 +28,7 @@ public class MerchantDTO {
                 .id(this.id)
                 .name(this.name)
                 .email(this.email)
-                .address(this.address.dtoToEntity())
+                .addressId(this.addressId)
                 .build();
     }
 }

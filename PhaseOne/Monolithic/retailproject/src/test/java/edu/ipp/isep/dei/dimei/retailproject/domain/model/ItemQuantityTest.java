@@ -30,19 +30,11 @@ class ItemQuantityTest {
                 .description("Category 1 Description")
                 .build();
 
-        Address address = Address.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
-
         Merchant merchant = Merchant.builder()
                 .id(1)
                 .name("Merchant 1")
                 .email("merchant_email@gmail.com")
-                .address(address)
+                .addressId(1)
                 .build();
 
         item = Item.builder()

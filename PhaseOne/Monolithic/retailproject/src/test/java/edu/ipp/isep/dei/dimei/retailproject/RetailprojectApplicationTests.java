@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -17,8 +16,6 @@ import java.util.List;
 @ActiveProfiles("test")
 class RetailprojectApplicationTests {
 
-    @Autowired
-    AuthenticationController authenticationController;
     @Autowired
     CategoryController categoryController;
     @Autowired
@@ -31,13 +28,10 @@ class RetailprojectApplicationTests {
     OrderController orderController;
     @Autowired
     ShippingOrderController shippingOrderController;
-    @Autowired
-    private ApplicationContext applicationContext;
 
     @Test
     void sanity_check() {
         List.of(
-                authenticationController,
                 categoryController,
                 itemController,
                 merchantController,

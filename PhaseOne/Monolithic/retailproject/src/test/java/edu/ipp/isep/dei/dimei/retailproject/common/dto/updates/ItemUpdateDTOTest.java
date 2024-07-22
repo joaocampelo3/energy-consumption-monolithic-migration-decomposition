@@ -3,6 +3,8 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.updates;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -27,6 +29,7 @@ class ItemUpdateDTOTest {
     MerchantDTO merchant;
     ItemUpdateDTO itemUpdateDTOExpected;
     Item item;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -37,6 +40,11 @@ class ItemUpdateDTOTest {
         price = 12.0;
         quantityInStock = 10;
 
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
         category = CategoryDTO.builder()
                 .id(1)
                 .name("Category 1")
@@ -54,9 +62,9 @@ class ItemUpdateDTOTest {
                 .id(1)
                 .name("Merchant 1")
                 .email("merchantnumber1@gmail.com")
-                .address(addressDTO)
+                .addressId(addressDTO.getId())
                 .build();
-        itemUpdateDTOExpected = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        itemUpdateDTOExpected = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
         item = Item.builder()
                 .id(id)
                 .name(itemName)
@@ -71,13 +79,14 @@ class ItemUpdateDTOTest {
 
     @Test
     void test_createItemUpdateDTO() {
-        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
 
         assertNotNull(itemUpdateDTO);
         assertEquals(id, itemUpdateDTO.getId());
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
+        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -88,6 +97,7 @@ class ItemUpdateDTOTest {
                 .sku(sku)
                 .price(price)
                 .quantityInStock(quantityInStock)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(itemUpdateDTO);
@@ -95,18 +105,21 @@ class ItemUpdateDTOTest {
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
+        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
     @Test
     void test_createItemUpdateDTOByItem() {
         ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(item);
+        itemUpdateDTOExpected.setUserDTO(null);
 
         assertNotNull(itemUpdateDTO);
         assertEquals(id, itemUpdateDTO.getId());
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
+        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -118,7 +131,7 @@ class ItemUpdateDTOTest {
 
     @Test
     void test_SetsItemUpdateDTO() {
-        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock, null);
         ItemUpdateDTO result = ItemUpdateDTO.builder().build();
 
         result.setId(id);

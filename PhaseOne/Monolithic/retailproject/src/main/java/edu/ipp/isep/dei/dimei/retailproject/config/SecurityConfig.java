@@ -36,7 +36,6 @@ public class SecurityConfig {
             "/auth",
             "/auth/**"
     };
-    private static final String AUTH_REGISTER_PATH = "/auth/register";
     private static final String CATEGORIES_PATH = "/categories";
     private static final String ITEMS_PATH = "/items";
     private static final String MERCHANTS_PATH = "/merchants";
@@ -53,9 +52,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(WHITELIST_URL).permitAll()
-                        // Authentication Controller
-                        .requestMatchers(POST, AUTH_REGISTER_PATH + "/admin").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(POST, AUTH_REGISTER_PATH + "/merchant").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Categories Controller
                         .requestMatchers(GET, CATEGORIES_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, CATEGORIES_PATH).hasAnyAuthority(RoleEnum.ADMIN.name())

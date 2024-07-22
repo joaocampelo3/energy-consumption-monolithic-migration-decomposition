@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -24,6 +25,7 @@ class ItemDTOTest {
     MerchantDTO merchant;
     ItemDTO itemDTOExpected;
     Item itemExpected;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -38,21 +40,14 @@ class ItemDTOTest {
                 .name("Category 1")
                 .description("Category 1 description")
                 .build();
-        AddressDTO addressDTO = AddressDTO.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
-
         merchant = MerchantDTO.builder()
                 .id(1)
                 .name("Merchant 1")
                 .email("merchantnumber1@gmail.com")
-                .address(addressDTO)
+                .addressId(1)
                 .build();
-        itemDTOExpected = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant);
+        userDTO = new UserDTO(1, "johndoe1234@gmail.com", RoleEnum.USER);
+        itemDTOExpected = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant, userDTO);
         itemExpected = Item.builder()
                 .id(id)
                 .name(itemName)
@@ -67,7 +62,7 @@ class ItemDTOTest {
 
     @Test
     void test_createItemDTO() {
-        ItemDTO itemDTO = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant);
+        ItemDTO itemDTO = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant, userDTO);
 
         assertNotNull(itemDTO);
         assertEquals(id, itemDTO.getId());
@@ -85,6 +80,7 @@ class ItemDTOTest {
     @Test
     void test_createItemDTO2() {
         ItemDTO itemDTO = new ItemDTO(itemExpected, category, merchant);
+        itemDTOExpected.setUserDTO(null);
 
         assertNotNull(itemDTO);
         assertEquals(category, itemDTO.getCategory());
@@ -105,6 +101,7 @@ class ItemDTOTest {
                 .category(category)
                 .merchant(merchant)
                 .build();
+        itemDTOExpected.setUserDTO(null);
 
         assertNotNull(itemDTO);
         assertEquals(id, itemDTO.getId());
@@ -155,6 +152,7 @@ class ItemDTOTest {
     @Test
     void test_SetsItemDTO() {
         ItemDTO result = ItemDTO.builder().build();
+        itemDTOExpected.setUserDTO(null);
 
         result.setId(id);
         result.setItemName(itemName);

@@ -3,11 +3,14 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.creates;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +41,7 @@ class OrderCreateDTOTest {
     int merchantId;
     AddressDTO addressDTO;
     OrderCreateDTO orderCreateDTOExpected;
-    User user;
+    UserDTO userDTO;
     Payment payment;
     List<ItemQuantity> itemQuantities = new ArrayList<>();
     Order orderExpected;
@@ -49,6 +52,7 @@ class OrderCreateDTOTest {
         orderDate = Instant.now();
         customerId = 1;
         email = "merchant_email@gmail.com";
+        userDTO = new UserDTO(1, "johndoe1234@gmail.com", RoleEnum.USER);
         itemQuantityDTO1 = ItemQuantityDTO.builder()
                 .id(1)
                 .itemId(1)
@@ -85,21 +89,7 @@ class OrderCreateDTOTest {
                 .city("New York")
                 .country("USA")
                 .build();
-        orderCreateDTOExpected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
-
-        Account account = Account.builder()
-                .id(1)
-                .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
-                .role(RoleEnum.USER)
-                .build();
-
-        user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(account)
-                .build();
+        orderCreateDTOExpected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO, userDTO);
 
         payment = paymentDTO.dtoToEntity();
 
@@ -110,7 +100,7 @@ class OrderCreateDTOTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(orderStatusEnum)
-                .user(user)
+                .userId(1)
                 .itemQuantities(itemQuantities)
                 .payment(payment)
                 .build();
@@ -118,7 +108,7 @@ class OrderCreateDTOTest {
 
     @Test
     void test_createOrderCreateDTO() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO, userDTO);
 
         assertNotNull(orderCreateDTO);
         assertEquals(id, orderCreateDTO.getId());
@@ -131,6 +121,8 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
+        assertEquals(userDTO, orderCreateDTO.getUserDTO());
+        assertEquals(orderCreateDTOExpected, orderCreateDTO);
         assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
     }
 
@@ -146,6 +138,7 @@ class OrderCreateDTOTest {
                 .totalPrice(totalPrice)
                 .payment(paymentDTO)
                 .merchantId(merchantId)
+                .userDTO(userDTO)
                 .address(addressDTO)
                 .build();
 
@@ -160,8 +153,9 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
-        assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
+        assertEquals(userDTO, orderCreateDTO.getUserDTO());
         assertEquals(orderCreateDTOExpected, orderCreateDTO);
+        assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
     }
 
     @Test
@@ -191,8 +185,8 @@ class OrderCreateDTOTest {
 
     @Test
     void test_DtoToEntityOrderCreateDTO() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
-        Order order = orderCreateDTO.dtoToEntity(user, payment, itemQuantities);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO, userDTO);
+        Order order = orderCreateDTO.dtoToEntity(payment, itemQuantities);
 
         assertNotNull(orderCreateDTO);
         assertEquals(orderExpected.hashCode(), order.hashCode());
@@ -201,7 +195,7 @@ class OrderCreateDTOTest {
 
     @Test
     void test_SetsOrderCreateDTO() {
-        OrderCreateDTO expected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO);
+        OrderCreateDTO expected = new OrderCreateDTO(id, orderDate, orderStatusEnum, customerId, email, itemQuantityDTOList, totalPrice, paymentDTO, merchantId, addressDTO, userDTO);
         OrderCreateDTO result = OrderCreateDTO.builder().build();
 
         result.setId(id);
@@ -214,6 +208,7 @@ class OrderCreateDTOTest {
         result.setPayment(paymentDTO);
         result.setMerchantId(merchantId);
         result.setAddress(addressDTO);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
@@ -226,6 +221,7 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, result.getPayment());
         assertEquals(merchantId, result.getMerchantId());
         assertEquals(addressDTO, result.getAddress());
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected, result);
     }

@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -33,27 +34,23 @@ public class ShippingOrderController {
     @GetMapping("/all")
     @Cacheable
     @Operation(description = "Get all shipping orders", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<Object> getAllShippingOrders() {
-        return new ResponseEntity<>(this.shippingOrderService.getAllShippingOrders(), HttpStatus.OK);
+    public ResponseEntity<Object> getAllShippingOrders(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(this.shippingOrderService.getAllShippingOrders(userDTO), HttpStatus.OK);
     }
 
     @GetMapping
-    @Cacheable(key = "#authorizationToken")
+    @Cacheable(key = "#userDTO")
     @Operation(description = "Get shipping orders by user", responses = {@ApiResponse(responseCode = "200", description = "Shipping Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    public ResponseEntity<Object> getUserShippingOrders(@RequestHeader("Authorization") String authorizationToken) {
-        try {
-            return new ResponseEntity<>(this.shippingOrderService.getUserShippingOrders(authorizationToken), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Object> getUserShippingOrders(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(this.shippingOrderService.getUserShippingOrders(userDTO), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
-    @Cacheable(key = "#id")
-    public ResponseEntity<Object> getUserShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    @GetMapping(path = "/{shippingOrderId}")
+    @Cacheable(key = "#shippingOrderId")
+    public ResponseEntity<Object> getUserShippingOrderById(@RequestBody UserDTO userDTO, @PathVariable int shippingOrderId) {
         ShippingOrderDTO shippingOrderDTO;
         try {
-            shippingOrderDTO = this.shippingOrderService.getUserShippingOrder(authorizationToken, id);
+            shippingOrderDTO = this.shippingOrderService.getUserShippingOrder(userDTO, shippingOrderId);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -61,16 +58,16 @@ public class ShippingOrderController {
         return new ResponseEntity<>(shippingOrderDTO, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/{id}/cancel")
+    @PatchMapping(path = "/{shippingOrderId}/cancel")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#shippingOrderId")
             }
     )
-    public ResponseEntity<Object> fullCancelShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<Object> fullCancelShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -78,16 +75,16 @@ public class ShippingOrderController {
         }
     }
 
-    @PatchMapping(path = "/{id}/reject")
+    @PatchMapping(path = "/{shippingOrderId}/reject")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#shippingOrderId")
             }
     )
-    public ResponseEntity<Object> rejectShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<Object> rejectShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -95,16 +92,16 @@ public class ShippingOrderController {
         }
     }
 
-    @PatchMapping(path = "/{id}/approve")
+    @PatchMapping(path = "/{shippingOrderId}/approve")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#shippingOrderId")
             }
     )
-    public ResponseEntity<Object> approveShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<Object> approveShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {
@@ -112,16 +109,16 @@ public class ShippingOrderController {
         }
     }
 
-    @PatchMapping(path = "/{id}/ship")
+    @PatchMapping(path = "/{shippingOrderId}/ship")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#shippingOrderId")
             }
     )
-    public ResponseEntity<Object> shippedShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<Object> shippedShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {
@@ -129,16 +126,16 @@ public class ShippingOrderController {
         }
     }
 
-    @PatchMapping(path = "/{id}/delivered")
+    @PatchMapping(path = "/{shippingOrderId}/delivered")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#shippingOrderId")
             }
     )
-    public ResponseEntity<Object> deliveredShippingOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
+    public ResponseEntity<Object> deliveredShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(authorizationToken, id, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {

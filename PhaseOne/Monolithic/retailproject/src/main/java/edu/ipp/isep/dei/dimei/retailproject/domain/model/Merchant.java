@@ -29,14 +29,12 @@ public class Merchant {
     @Column(name = "merchant_email", nullable = false)
     @Email
     private String email;
+    @Column(name = "addressId", nullable = false)
+    private int addressId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
-
-    public Merchant(String name, String email, Address address) {
+    public Merchant(String name, String email, int addressId) {
         this.name = name;
         this.email = email;
-        this.address = address;
+        this.addressId = addressId;
     }
 }

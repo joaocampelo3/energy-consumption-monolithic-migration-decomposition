@@ -32,9 +32,8 @@ public class MerchantOrder {
     @Enumerated(EnumType.STRING)
     private MerchantOrderStatusEnum status;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
@@ -44,10 +43,10 @@ public class MerchantOrder {
     @JoinColumn(name = "merchant_id", referencedColumnName = "id")
     private Merchant merchant;
 
-    public MerchantOrder(User user, Order order, Merchant merchant) {
+    public MerchantOrder(int userId, Order order, Merchant merchant) {
         this.orderDate = order.getOrderDate();
         this.status = MerchantOrderStatusEnum.PENDING;
-        this.user = user;
+        this.userId = userId;
         this.order = order;
         this.merchant = merchant;
     }

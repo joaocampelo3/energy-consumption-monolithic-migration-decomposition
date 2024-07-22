@@ -1,7 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.security;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,10 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
 import static org.mockito.Mockito.*;
@@ -25,43 +26,44 @@ class JwtAuthenticationFilterTest {
     final String TokenDummy = "AAA1bbb2CcC3";
     final String JwtTokenDummy = BEARER_PREFIX + TokenDummy;
     final String email = "johndoe1234@gmail.com";
-    final String password = "johndoe_password";
     @Mock
     HttpServletRequest request;
     @Mock
     HttpServletResponse response;
     @Mock
     FilterChain filterChain;
-    Account userDetails;
     @InjectMocks
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Mock
     private JwtService jwtService;
-    @Mock
-    private UserDetailsService userDetailsService;
+    private UserDTO userDTO;
+
 
     @BeforeEach
     void setUp() {
-        userDetails = new Account(email, password, RoleEnum.USER);
+        userDTO = new UserDTO(1, email, RoleEnum.USER);
     }
 
     @Test
     void test_doFilterInternal_ValidToken() throws ServletException, IOException {
         // Mock request header and path
+        String json = "{\"userId\":1,\"email\":\"johndoe1234@gmail.com\",\"role\":\"USER\"}";
+        BufferedReader reader = new BufferedReader(new StringReader(json));
         when(request.getHeader("Authorization")).thenReturn(JwtTokenDummy);
         when(request.getServletPath()).thenReturn("/api/test");
         when(jwtService.extractUsername(TokenDummy)).thenReturn(email);
-        when(jwtService.isTokenValid(TokenDummy, userDetails)).thenReturn(true);
-        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
+        when(request.getReader()).thenReturn(reader);
+        when(jwtService.isTokenValid(TokenDummy, userDTO)).thenReturn(true);
 
         // Call the method under test
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         // Verify
+        verify(request, atLeastOnce()).getHeader("Authorization");
+        verify(request, atLeastOnce()).getServletPath();
         verify(jwtService, atLeastOnce()).extractUsername(TokenDummy);
-        verify(jwtService, atLeastOnce()).isTokenValid(TokenDummy, userDetails);
-        verify(userDetailsService, atLeastOnce()).loadUserByUsername(email);
-        verify(filterChain, atLeastOnce()).doFilter(request, response);
+        verify(request, atLeastOnce()).getReader();
+        verify(jwtService, atLeastOnce()).isTokenValid(TokenDummy, userDTO);
     }
 
 
@@ -82,7 +84,6 @@ class JwtAuthenticationFilterTest {
         // Verify interactions
         verify(jwtService, atLeastOnce()).extractUsername(invalidToken);
         verify(jwtService, never()).isTokenValid(any(), any());
-        verify(userDetailsService, never()).loadUserByUsername(any());
 
         // Verify filter chain invocation
         verify(filterChain, times(1)).doFilter(request, response);
@@ -99,7 +100,6 @@ class JwtAuthenticationFilterTest {
         // Verify interactions
         verify(jwtService, never()).extractUsername(any());
         verify(jwtService, never()).isTokenValid(any(), any());
-        verify(userDetailsService, never()).loadUserByUsername(any());
 
         // Verify filter chain invocation
         verify(filterChain, atLeastOnce()).doFilter(request, response);

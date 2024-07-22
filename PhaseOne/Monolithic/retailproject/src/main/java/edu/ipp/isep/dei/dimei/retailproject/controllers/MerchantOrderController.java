@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -35,27 +36,23 @@ public class MerchantOrderController {
     @GetMapping("/all")
     @Cacheable
     @Operation(description = "Get all merchant orders", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
-    public ResponseEntity<List<MerchantOrderDTO>> getAllMerchantOrders() {
-        return new ResponseEntity<>(this.merchantOrderService.getAllMerchantOrders(), HttpStatus.OK);
+    public ResponseEntity<List<MerchantOrderDTO>> getAllMerchantOrders(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(this.merchantOrderService.getAllMerchantOrders(userDTO), HttpStatus.OK);
     }
 
     @GetMapping
-    @Cacheable(key = "#authorizationToken")
+    @Cacheable(key = "#userDTO")
     @Operation(description = "Get merchant orders by user", responses = {@ApiResponse(responseCode = "200", description = "Merchant Orders found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    public ResponseEntity<Object> getUserMerchantOrders(@RequestHeader("Authorization") String authorizationToken) {
-        try {
-            return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(authorizationToken), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Object> getUserMerchantOrders(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(this.merchantOrderService.getUserMerchantOrders(userDTO), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
-    @Cacheable(key = "#id")
-    public ResponseEntity<Object> getUserMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    @GetMapping(path = "/{merchantOrderId}")
+    @Cacheable(key = "#merchantOrderId")
+    public ResponseEntity<Object> getUserMerchantOrderById(@RequestBody UserDTO userDTO, @PathVariable int merchantOrderId) {
         MerchantOrderDTO merchantOrderDTO;
         try {
-            merchantOrderDTO = this.merchantOrderService.getUserMerchantOrder(authorizationToken, id);
+            merchantOrderDTO = this.merchantOrderService.getUserMerchantOrder(userDTO, merchantOrderId);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -63,16 +60,16 @@ public class MerchantOrderController {
         return new ResponseEntity<>(merchantOrderDTO, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/{id}/cancel")
+    @PatchMapping(path = "/{merchantOrderId}/cancel")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#merchantOrderId")
             }
     )
-    public ResponseEntity<Object> fullCancelMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<Object> fullCancelMerchantOrderById(@PathVariable int merchantOrderId, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(merchantOrderId, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -83,13 +80,13 @@ public class MerchantOrderController {
     @PatchMapping(path = "/{id}/reject")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
+                    @CacheEvict(key = "#useDTO"),
                     @CacheEvict(key = "#id")
             }
     )
-    public ResponseEntity<Object> rejectMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<Object> rejectMerchantOrderById(@PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -98,16 +95,16 @@ public class MerchantOrderController {
 
     }
 
-    @PatchMapping(path = "/{id}/approve")
+    @PatchMapping(path = "/{merchantOrderId}/approve")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#merchantOrderId")
             }
     )
-    public ResponseEntity<Object> approveMerchantOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
+    public ResponseEntity<Object> approveMerchantOrderById(@PathVariable int merchantOrderId, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(authorizationToken, id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(merchantOrderId, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {

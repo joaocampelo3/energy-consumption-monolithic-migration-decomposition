@@ -14,7 +14,7 @@ import java.time.Instant;
         },
         indexes = {
                 @Index(columnList = "shipping_order_status"),
-                @Index(columnList = "customer_id")
+                @Index(columnList = "user_id")
         })
 @Builder
 @NoArgsConstructor
@@ -31,10 +31,8 @@ public class ShippingOrder {
     @Column(name = "shipping_order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ShippingOrderStatusEnum status;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
-    private Address shippingAddress;
+    @Column(name = "shipping_order_addressId", nullable = false)
+    private int shippingAddressId;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
@@ -44,17 +42,16 @@ public class ShippingOrder {
     @JoinColumn(name = "merchant_order_id", referencedColumnName = "id")
     private MerchantOrder merchantOrder;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
 
-    public ShippingOrder(User user, Order order, MerchantOrder merchantOrder, Address address) {
+    public ShippingOrder(int userId, Order order, MerchantOrder merchantOrder, int addressId) {
         this.shippingOrderDate = order.getOrderDate();
         this.status = ShippingOrderStatusEnum.PENDING;
-        this.shippingAddress = address;
+        this.shippingAddressId = addressId;
         this.order = order;
         this.merchantOrder = merchantOrder;
-        this.user = user;
+        this.userId = userId;
     }
 
     public boolean isPending() {

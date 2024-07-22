@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.controllers;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -42,21 +43,21 @@ public class ItemController {
     }
 
     @GetMapping
-    @Cacheable(key = "#authorizationToken")
+    @Cacheable(key = "#userDTO")
     @Operation(description = "Get items by user", responses = {@ApiResponse(responseCode = "200", description = "Items found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    public ResponseEntity<Object> getUserItems(@RequestHeader("Authorization") String authorizationToken) {
+    public ResponseEntity<Object> getUserItems(@RequestBody UserDTO userDTO) {
         try {
-            return new ResponseEntity<>(itemService.getUserItems(authorizationToken), HttpStatus.OK);
+            return new ResponseEntity<>(itemService.getUserItems(userDTO), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping(path = "/{id}")
-    @Cacheable(key = "#id")
-    public ResponseEntity<Object> getUserItemById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    @GetMapping(path = "/{itemId}")
+    @Cacheable(key = "#itemId")
+    public ResponseEntity<Object> getUserItemById(@RequestBody UserDTO userDTO, @PathVariable int itemId) {
         try {
-            return new ResponseEntity<>(this.itemService.getUserItemDTO(authorizationToken, id), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.getUserItemDTO(userDTO, itemId), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -65,7 +66,7 @@ public class ItemController {
     @PostMapping
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken")
+                    @CacheEvict(key = "#userDTO")
             }
     )
     @Operation(
@@ -76,9 +77,9 @@ public class ItemController {
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Item was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> createItem(@RequestHeader("Authorization") String authorizationToken, @RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<Object> createItem(@RequestBody ItemDTO itemDTO) {
         try {
-            return new ResponseEntity<>(this.itemService.createItem(authorizationToken, itemDTO), HttpStatus.CREATED);
+            return new ResponseEntity<>(this.itemService.createItem(itemDTO), HttpStatus.CREATED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException | InvalidQuantityException e) {
@@ -86,31 +87,31 @@ public class ItemController {
         }
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{itemId}")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#itemId")
             }
     )
-    public ResponseEntity<Object> deleteItem(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+    public ResponseEntity<Object> deleteItem(@RequestBody UserDTO userDTO, @PathVariable int itemId) {
         try {
-            return new ResponseEntity<>(this.itemService.deleteItem(authorizationToken, id), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.deleteItem(userDTO, itemId), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    @PatchMapping(path = "/{id}/addStock")
+    @PatchMapping(path = "/{itemId}/addStock")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#userDTO"),
+                    @CacheEvict(key = "#itemId")
             }
     )
-    public ResponseEntity<Object> addItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+    public ResponseEntity<Object> addItemStock(@PathVariable int itemId, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.itemService.addItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.addItemStock(itemId, itemUpdateDTO), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException | InvalidQuantityException e) {
@@ -121,13 +122,13 @@ public class ItemController {
     @PatchMapping(path = "/{id}/removeStock")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#authorizationToken"),
+                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#id")
             }
     )
-    public ResponseEntity<Object> removeItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
+    public ResponseEntity<Object> removeItemStock(@PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.itemService.removeItemStock(authorizationToken, id, itemUpdateDTO), HttpStatus.OK);
+            return new ResponseEntity<>(this.itemService.removeItemStock(id, itemUpdateDTO), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException | InvalidQuantityException e) {

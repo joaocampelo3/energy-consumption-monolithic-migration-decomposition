@@ -1,18 +1,15 @@
 package edu.ipp.isep.dei.dimei.retailproject.security;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -21,21 +18,6 @@ public class JwtService {
     private String secretKey;
     @Value("${jwt.token.expirationTimeSecs}")
     private long tokenExpirationTime;
-
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpirationTime))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
 
     public String extractUsername(String jwtToken) {
         return extractClaims(jwtToken, Claims::getSubject);
@@ -68,8 +50,8 @@ public class JwtService {
         return extractClaims(jwtToken, Claims::getExpiration);
     }
 
-    public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
+    public boolean isTokenValid(String jwtToken, UserDTO userDTO) {
         final String username = extractUsername(jwtToken);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(jwtToken);
+        return (username.equals(userDTO.getEmail())) && !isTokenExpired(jwtToken);
     }
 }

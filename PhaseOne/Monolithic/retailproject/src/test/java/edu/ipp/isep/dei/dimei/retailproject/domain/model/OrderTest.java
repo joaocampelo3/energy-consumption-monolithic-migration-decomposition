@@ -1,5 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
@@ -25,7 +27,7 @@ class OrderTest {
     int id;
     double price;
     Instant orderDate;
-    User user;
+    UserDTO userDTO;
     List<ItemQuantity> itemQuantities = new ArrayList<>();
     Payment payment;
     Merchant merchant;
@@ -38,20 +40,13 @@ class OrderTest {
         orderDate = currentDate;
         price = 12.0;
 
-        Account userAccount = Account.builder()
-                .id(1)
+        userDTO = UserDTO.builder()
+                .userId(1)
                 .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
                 .role(RoleEnum.USER)
                 .build();
-        user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(userAccount)
-                .build();
 
-        Address address = Address.builder()
+        AddressDTO addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -63,7 +58,7 @@ class OrderTest {
                 .id(1)
                 .name("Order 1")
                 .email("merchant_email@gmail.com")
-                .address(address)
+                .addressId(addressDTO.getId())
                 .build();
         Category category = Category.builder()
                 .id(1)
@@ -103,7 +98,7 @@ class OrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(status)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(itemQuantities)
                 .payment(payment)
                 .build();
@@ -111,13 +106,13 @@ class OrderTest {
 
     @Test
     void test_createOrder() {
-        Order order = new Order(id, orderDate, status, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, status, userDTO.getUserId(), itemQuantities, payment);
 
         assertNotNull(order);
         assertEquals(id, order.getId());
         assertEquals(orderDate, order.getOrderDate());
         assertEquals(status, order.getStatus());
-        assertEquals(user, order.getUser());
+        assertEquals(userDTO.getUserId(), order.getUserId());
         assertEquals(itemQuantities, order.getItemQuantities());
         assertEquals(payment, order.getPayment());
         assertEquals(orderExpected.hashCode(), order.hashCode());
@@ -126,17 +121,16 @@ class OrderTest {
 
     @Test
     void test_createOrder2() {
-        Order order = new Order(orderDate, status, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, status, userDTO.getUserId(), itemQuantities, payment);
 
         assertNotNull(order);
         assertEquals(orderDate, order.getOrderDate());
         assertEquals(status, order.getStatus());
-        assertEquals(user, order.getUser());
+        assertEquals(userDTO.getUserId(), order.getUserId());
         assertEquals(itemQuantities, order.getItemQuantities());
         assertEquals(payment, order.getPayment());
-        orderExpected.setId(0);
-        assertEquals(orderExpected.hashCode(), order.hashCode());
         assertEquals(orderExpected, order);
+        assertEquals(orderExpected.hashCode(), order.hashCode());
     }
 
     @Test
@@ -145,7 +139,7 @@ class OrderTest {
                 .id(id)
                 .orderDate(orderDate)
                 .status(status)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(itemQuantities)
                 .payment(payment)
                 .build();
@@ -154,7 +148,7 @@ class OrderTest {
         assertEquals(id, order.getId());
         assertEquals(orderDate, order.getOrderDate());
         assertEquals(status, order.getStatus());
-        assertEquals(user, order.getUser());
+        assertEquals(userDTO.getUserId(), order.getUserId());
         assertEquals(itemQuantities, order.getItemQuantities());
         assertEquals(payment, order.getPayment());
         assertEquals(orderExpected.hashCode(), order.hashCode());
@@ -168,7 +162,7 @@ class OrderTest {
         order.setId(id);
         order.setOrderDate(orderDate);
         order.setStatus(status);
-        order.setUser(user);
+        order.setUserId(userDTO.getUserId());
         order.setItemQuantities(itemQuantities);
         order.setPayment(payment);
 
@@ -176,7 +170,7 @@ class OrderTest {
         assertEquals(id, order.getId());
         assertEquals(orderDate, order.getOrderDate());
         assertEquals(status, order.getStatus());
-        assertEquals(user, order.getUser());
+        assertEquals(userDTO.getUserId(), order.getUserId());
         assertEquals(itemQuantities, order.getItemQuantities());
         assertEquals(payment, order.getPayment());
         assertEquals(orderExpected.hashCode(), order.hashCode());
@@ -186,21 +180,21 @@ class OrderTest {
     @Test
     void test_isPendingFail() {
         OrderStatusEnum newStatus = OrderStatusEnum.APPROVED;
-        Order order = new Order(id, orderDate, newStatus, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, newStatus, userDTO.getUserId(), itemQuantities, payment);
 
         assertFalse(order.isPending());
     }
 
     @Test
     void test_isApprovedFail() {
-        Order order = new Order(id, orderDate, status, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, status, userDTO.getUserId(), itemQuantities, payment);
 
         assertFalse(order.isApproved());
     }
 
     @Test
     void test_isShippedFail() {
-        Order order = new Order(id, orderDate, status, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, status, userDTO.getUserId(), itemQuantities, payment);
 
         assertFalse(order.isShipped());
     }
@@ -208,7 +202,7 @@ class OrderTest {
     @Test
     void test_isPendingOrApprovedFail() {
         OrderStatusEnum newStatus = OrderStatusEnum.REJECTED;
-        Order order = new Order(id, orderDate, newStatus, user, itemQuantities, payment);
+        Order order = new Order(id, orderDate, newStatus, userDTO.getUserId(), itemQuantities, payment);
 
         assertFalse(order.isPendingOrApproved());
     }

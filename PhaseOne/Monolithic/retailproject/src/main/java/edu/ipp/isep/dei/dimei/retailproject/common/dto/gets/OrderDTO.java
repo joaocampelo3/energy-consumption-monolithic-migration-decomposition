@@ -19,7 +19,6 @@ public class OrderDTO {
     private Instant orderDate;
     private OrderStatusEnum orderStatus;
     private int customerId;
-    private String email;
     private List<ItemQuantityDTO> orderItems;
     private double totalPrice;
     private PaymentDTO paymentDTO;
@@ -28,8 +27,7 @@ public class OrderDTO {
         this.id = order.getId();
         this.orderDate = order.getOrderDate();
         this.orderStatus = order.getStatus();
-        this.customerId = order.getUser().getId();
-        this.email = order.getUser().getAccount().getEmail();
+        this.customerId = order.getUserId();
 
         if (order.getItemQuantities() == null) {
             this.orderItems = new ArrayList<>();

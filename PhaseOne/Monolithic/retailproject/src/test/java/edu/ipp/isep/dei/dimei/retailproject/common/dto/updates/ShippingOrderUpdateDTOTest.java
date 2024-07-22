@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.updates;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
@@ -23,12 +24,13 @@ class ShippingOrderUpdateDTOTest {
     int id;
     Instant shippingOrderDate;
     ShippingOrderStatusEnum shippingOrderStatus;
-    AddressDTO addressDTO;
+    AddressDTO addressDTO1;
     int orderId;
     int merchantOrderId;
-    String email;
+    int userId;
     ShippingOrder shippingOrder;
     ShippingOrderUpdateDTO shippingUpgradeOrderDTO;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -36,20 +38,19 @@ class ShippingOrderUpdateDTOTest {
         Instant currentDate = Instant.now();
         shippingOrderDate = currentDate;
         shippingOrderStatus = ShippingOrderStatusEnum.PENDING;
-        addressDTO = AddressDTO.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
         orderId = 1;
+        userId = 1;
         merchantOrderId = 1;
-        email = "johndoe1234@gmail.com";
         double price1 = 12.0;
         double price2 = 5.0;
 
-        Address address1 = Address.builder()
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
+
+        addressDTO1 = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
@@ -57,26 +58,12 @@ class ShippingOrderUpdateDTOTest {
                 .country("USA")
                 .build();
 
-        Address address2 = Address.builder()
+        AddressDTO addressDTO2 = AddressDTO.builder()
                 .id(2)
                 .street("Other Avenue")
                 .zipCode("10128")
                 .city("New York")
                 .country("USA")
-                .build();
-
-        Account account = Account.builder()
-                .id(1)
-                .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
-                .role(RoleEnum.USER)
-                .build();
-
-        User user = User.builder()
-                .id(1)
-                .firstname("John")
-                .lastname("Doe")
-                .account(account)
                 .build();
 
         List<ItemQuantity> orderItems = new ArrayList<>();
@@ -105,7 +92,7 @@ class ShippingOrderUpdateDTOTest {
 
         Payment payment = Payment.builder()
                 .id(1)
-                .amount(price1+price2)
+                .amount(price1 + price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)
@@ -115,7 +102,7 @@ class ShippingOrderUpdateDTOTest {
                 .id(1)
                 .orderDate(currentDate)
                 .status(OrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .itemQuantities(orderItems)
                 .payment(payment)
                 .build();
@@ -124,14 +111,14 @@ class ShippingOrderUpdateDTOTest {
                 .id(1)
                 .name("Merchant 1")
                 .email("johndoe1234@gmail.com")
-                .address(address2)
+                .addressId(addressDTO2.getId())
                 .build();
 
         MerchantOrder merchantOrder = MerchantOrder.builder()
                 .id(1)
                 .orderDate(currentDate)
                 .status(MerchantOrderStatusEnum.PENDING)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .order(order)
                 .merchant(merchant)
                 .build();
@@ -140,42 +127,44 @@ class ShippingOrderUpdateDTOTest {
                 .id(1)
                 .shippingOrderDate(currentDate)
                 .status(ShippingOrderStatusEnum.PENDING)
-                .shippingAddress(address1)
+                .shippingAddressId(addressDTO1.getId())
                 .order(order)
                 .merchantOrder(merchantOrder)
-                .user(user)
+                .userId(userDTO.getUserId())
                 .build();
 
-        shippingUpgradeOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        shippingUpgradeOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
     }
 
     @Test
     void test_createShippingOrderUpdateDTO() {
-        ShippingOrderUpdateDTO shippingUpdOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        ShippingOrderUpdateDTO shippingUpdOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
 
         assertNotNull(shippingUpdOrderDTO);
         assertEquals(id, shippingUpdOrderDTO.getOrderId());
         assertEquals(shippingOrderDate, shippingUpdOrderDTO.getShippingOrderDate());
         assertEquals(shippingOrderStatus, shippingUpdOrderDTO.getShippingOrderStatus());
-        assertEquals(addressDTO, shippingUpdOrderDTO.getAddressDTO());
+        assertEquals(addressDTO1.getId(), shippingUpdOrderDTO.getAddressId());
         assertEquals(orderId, shippingUpdOrderDTO.getOrderId());
         assertEquals(merchantOrderId, shippingUpdOrderDTO.getMerchantOrderId());
-        assertEquals(email, shippingUpdOrderDTO.getEmail());
+        assertEquals(userId, shippingUpdOrderDTO.getUserId());
         assertEquals(shippingUpgradeOrderDTO.hashCode(), shippingUpdOrderDTO.hashCode());
     }
 
     @Test
     void test_createShippingOrderUpdateDTOByShippingOrder() {
         ShippingOrderUpdateDTO shippingUpdOrderDTO = new ShippingOrderUpdateDTO(shippingOrder);
+        shippingUpgradeOrderDTO.setUserDTO(null);
 
         assertNotNull(shippingUpdOrderDTO);
         assertEquals(id, shippingUpdOrderDTO.getOrderId());
         assertEquals(shippingOrderDate, shippingUpdOrderDTO.getShippingOrderDate());
         assertEquals(shippingOrderStatus, shippingUpdOrderDTO.getShippingOrderStatus());
-        assertEquals(addressDTO, shippingUpdOrderDTO.getAddressDTO());
+        assertEquals(addressDTO1.getId(), shippingUpdOrderDTO.getAddressId());
         assertEquals(orderId, shippingUpdOrderDTO.getOrderId());
         assertEquals(merchantOrderId, shippingUpdOrderDTO.getMerchantOrderId());
-        assertEquals(email, shippingUpdOrderDTO.getEmail());
+        assertEquals(userId, shippingUpdOrderDTO.getUserId());
+        assertEquals(shippingUpgradeOrderDTO, shippingUpdOrderDTO);
         assertEquals(shippingUpgradeOrderDTO.hashCode(), shippingUpdOrderDTO.hashCode());
     }
 
@@ -185,20 +174,22 @@ class ShippingOrderUpdateDTOTest {
                 .id(id)
                 .shippingOrderDate(shippingOrderDate)
                 .shippingOrderStatus(shippingOrderStatus)
-                .addressDTO(addressDTO)
+                .addressId(addressDTO1.getId())
                 .orderId(orderId)
                 .merchantOrderId(merchantOrderId)
-                .email(email)
+                .userId(userId)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(shippingUpdOrderDTO);
         assertEquals(id, shippingUpdOrderDTO.getOrderId());
         assertEquals(shippingOrderDate, shippingUpdOrderDTO.getShippingOrderDate());
         assertEquals(shippingOrderStatus, shippingUpdOrderDTO.getShippingOrderStatus());
-        assertEquals(addressDTO, shippingUpdOrderDTO.getAddressDTO());
+        assertEquals(addressDTO1.getId(), shippingUpdOrderDTO.getAddressId());
         assertEquals(orderId, shippingUpdOrderDTO.getOrderId());
         assertEquals(merchantOrderId, shippingUpdOrderDTO.getMerchantOrderId());
-        assertEquals(email, shippingUpdOrderDTO.getEmail());
+        assertEquals(userId, shippingUpdOrderDTO.getUserId());
+        assertEquals(shippingUpgradeOrderDTO, shippingUpdOrderDTO);
         assertEquals(shippingUpgradeOrderDTO.hashCode(), shippingUpdOrderDTO.hashCode());
     }
 
@@ -210,27 +201,28 @@ class ShippingOrderUpdateDTOTest {
 
     @Test
     void test_SetsShippingOrderUpdateDTO() {
-        ShippingOrderUpdateDTO expected = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        ShippingOrderUpdateDTO expected = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
         ShippingOrderUpdateDTO result = ShippingOrderUpdateDTO.builder().build();
 
         result.setId(id);
         result.setShippingOrderDate(shippingOrderDate);
         result.setShippingOrderStatus(shippingOrderStatus);
-        result.setAddressDTO(addressDTO);
+        result.setAddressId(addressDTO1.getId());
         result.setOrderId(orderId);
         result.setMerchantOrderId(merchantOrderId);
-        result.setEmail(email);
+        result.setUserId(userId);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals(shippingOrderDate, result.getShippingOrderDate());
         assertEquals(shippingOrderStatus, result.getShippingOrderStatus());
-        assertEquals(addressDTO, result.getAddressDTO());
+        assertEquals(addressDTO1.getId(), result.getAddressId());
         assertEquals(orderId, result.getOrderId());
         assertEquals(merchantOrderId, result.getMerchantOrderId());
-        assertEquals(email, result.getEmail());
-        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(userId, result.getUserId());
         assertEquals(expected, result);
+        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected.toString(), result.toString());
     }
 }

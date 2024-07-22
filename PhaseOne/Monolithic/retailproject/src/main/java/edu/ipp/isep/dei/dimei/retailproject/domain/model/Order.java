@@ -14,7 +14,7 @@ import java.util.List;
         },
         indexes = {
                 @Index(columnList = "order_status"),
-                @Index(columnList = "customer_id")
+                @Index(columnList = "user_id")
         })
 @Builder
 @NoArgsConstructor
@@ -32,10 +32,8 @@ public class Order {
     @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemQuantity> itemQuantities;
@@ -44,10 +42,10 @@ public class Order {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
-    public Order(Instant orderDate, OrderStatusEnum status, User user, List<ItemQuantity> itemQuantities, Payment payment) {
+    public Order(Instant orderDate, OrderStatusEnum status, int userId, List<ItemQuantity> itemQuantities, Payment payment) {
         this.orderDate = orderDate;
         this.status = status;
-        this.user = user;
+        this.userId = userId;
         this.itemQuantities = itemQuantities;
         this.payment = payment;
     }

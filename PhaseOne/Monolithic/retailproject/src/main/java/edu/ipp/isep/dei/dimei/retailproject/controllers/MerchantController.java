@@ -37,11 +37,11 @@ public class MerchantController {
         return new ResponseEntity<>(this.merchantService.getAllMerchants(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
-    @Cacheable(key = "#id")
-    public ResponseEntity<Object> getMerchantById(@PathVariable int id) {
+    @GetMapping(path = "/{merchantId}")
+    @Cacheable(key = "#merchantId")
+    public ResponseEntity<Object> getMerchantById(@PathVariable int merchantId) {
         try {
-            return new ResponseEntity<>(this.merchantService.getMerchant(id), HttpStatus.OK);
+            return new ResponseEntity<>(this.merchantService.getMerchant(merchantId), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -59,22 +59,18 @@ public class MerchantController {
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Merchant was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<Object> createMerchant(@RequestBody MerchantDTO merchantDTO) {
-        try {
-            return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "/{id}")
+    @PatchMapping(path = "/{merchantId}")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#merchantId")
             }
     )
-    public ResponseEntity<Object> updateMerchant(@PathVariable int id, @RequestBody MerchantDTO merchantDTO) {
+    public ResponseEntity<Object> updateMerchant(@PathVariable int merchantId, @RequestBody MerchantDTO merchantDTO) {
         try {
-            return new ResponseEntity<>(this.merchantService.updateMerchant(id, merchantDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantService.updateMerchant(merchantId, merchantDTO), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException e) {
@@ -82,15 +78,15 @@ public class MerchantController {
         }
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{merchantId}")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#id")
+                    @CacheEvict(key = "#merchantId")
             }
     )
-    public ResponseEntity<Object> deleteMerchant(@PathVariable int id) {
+    public ResponseEntity<Object> deleteMerchant(@PathVariable int merchantId) {
         try {
-            return new ResponseEntity<>(this.merchantService.deleteMerchant(id), HttpStatus.OK);
+            return new ResponseEntity<>(this.merchantService.deleteMerchant(merchantId), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.updates;
 
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ public class ItemUpdateDTO {
     private String sku;
     private double price;
     private int quantityInStock;
+    private UserDTO userDTO;
 
     public ItemUpdateDTO(Item item) {
         this.id = item.getId();

@@ -1,9 +1,8 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Address;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantRepository;
@@ -22,11 +21,9 @@ public class MerchantService {
     private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant not found.";
     private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant payload.";
     private final MerchantRepository merchantRepository;
-    private final UserService userService;
-    private final AddressService addressService;
 
-    public Merchant getMerchantByUser(User user) throws NotFoundException {
-        return merchantRepository.findByEmail(user.getAccount().getEmail()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+    public Merchant getMerchantByUser(UserDTO userDTO) throws NotFoundException {
+        return merchantRepository.findByEmail(userDTO.getEmail()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     public List<MerchantDTO> getAllMerchants() {
@@ -48,13 +45,8 @@ public class MerchantService {
                 .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
-    public MerchantDTO createMerchant(MerchantDTO merchantDTO) throws NotFoundException {
-
-        User user = this.userService.findByEmail(merchantDTO.getEmail());
-
-        Address address = this.addressService.createAddress(merchantDTO.getAddress(), user);
-
-        Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), address);
+    public MerchantDTO createMerchant(MerchantDTO merchantDTO) {
+        Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), merchantDTO.getAddressDTO().getId());
 
         merchant = this.merchantRepository.save(merchant);
 
@@ -63,16 +55,13 @@ public class MerchantService {
 
     public MerchantDTO updateMerchant(int id, MerchantDTO merchantDTO) throws NotFoundException, BadPayloadException {
         Merchant merchant = getMerchantById(id);
-        User user = this.userService.findByEmail(merchant.getEmail());
 
         if (merchant.getId() != merchantDTO.getId() || !merchant.getEmail().equals(merchantDTO.getEmail())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
-        Address address = this.addressService.createAddress(merchantDTO.getAddress(), user);
-
         merchant.setName(merchantDTO.getName());
-        merchant.setAddress(address);
+        merchant.setAddressId(merchantDTO.getAddressDTO().getId());
 
         merchant = this.merchantRepository.save(merchant);
         return new MerchantDTO(merchant);
