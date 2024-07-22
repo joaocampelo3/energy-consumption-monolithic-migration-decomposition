@@ -23,14 +23,14 @@ class UserDTOTest {
     void beforeEach() {
         userId = 1;
         email = "johndoe1234@gmail.com";
-        userDTOExpected = new UserDTO(userId, email);
+        userDTOExpected = new UserDTO(userId, email, RoleEnum.USER);
         Account account = new Account(0, email, "password", RoleEnum.USER);
         user = new User(userId, "John", "Doe", account);
     }
 
     @Test
     void test_createUserDTO() {
-        UserDTO userDTO = new UserDTO(userId, email);
+        UserDTO userDTO = new UserDTO(userId, email, RoleEnum.USER);
 
         assertNotNull(userDTO);
         assertEquals(userId, userDTO.getUserId());
@@ -44,11 +44,14 @@ class UserDTOTest {
         UserDTO userDTO = UserDTO.builder()
                 .userId(userId)
                 .email(email)
+                .role(RoleEnum.USER)
                 .build();
 
         assertNotNull(userDTO);
         assertEquals(userId, userDTO.getUserId());
         assertEquals(email, userDTO.getEmail());
+        assertEquals(RoleEnum.USER, userDTO.getRole());
+        assertEquals(userDTOExpected, userDTO);
         assertEquals(userDTOExpected.hashCode(), userDTO.hashCode());
     }
 
@@ -64,23 +67,27 @@ class UserDTOTest {
 
         result.setUserId(userId);
         result.setEmail(email);
+        result.setRole(RoleEnum.USER);
 
         assertNotNull(result);
         assertEquals(userId, result.getUserId());
         assertEquals(email, result.getEmail());
-        assertEquals(userDTOExpected.hashCode(), result.hashCode());
+        assertEquals(RoleEnum.USER, result.getRole());
         assertEquals(userDTOExpected, result);
+        assertEquals(userDTOExpected.hashCode(), result.hashCode());
         assertEquals(userDTOExpected.toString(), result.toString());
     }
 
     @Test
     void test_getterAndSetter() {
-        UserDTO userDTO = new UserDTO(0, "b");
+        UserDTO userDTO = new UserDTO(0, "b", RoleEnum.USER);
         userDTO.setUserId(userId);
         userDTO.setEmail(email);
+        userDTO.setRole(RoleEnum.MERCHANT);
 
         assertEquals(userId, userDTO.getUserId());
         assertEquals(email, userDTO.getEmail());
+        assertEquals(RoleEnum.MERCHANT, userDTO.getRole());
     }
 
     @Test
@@ -90,6 +97,7 @@ class UserDTOTest {
         assertNotNull(userDTO);
         assertEquals(userId, userDTO.getUserId());
         assertEquals(email, userDTO.getEmail());
+        assertEquals(RoleEnum.USER, userDTO.getRole());
         assertEquals(userDTOExpected, userDTO);
         assertEquals(userDTOExpected.hashCode(), userDTO.hashCode());
     }

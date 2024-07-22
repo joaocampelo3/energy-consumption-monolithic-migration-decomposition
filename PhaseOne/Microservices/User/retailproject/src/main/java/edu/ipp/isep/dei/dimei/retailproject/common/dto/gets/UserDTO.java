@@ -2,6 +2,7 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
 import lombok.*;
 
@@ -18,8 +19,12 @@ public class UserDTO {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("role")
+    private RoleEnum role;
+
     public UserDTO(User user) {
         this.userId = user.getId();
         this.email = user.getAccount().getEmail();
+        this.role = user.getAccount().getRole();
     }
 }

@@ -3,20 +3,13 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.LoginDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.services.AuthenticationService;
-import edu.ipp.isep.dei.dimei.retailproject.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
@@ -32,14 +25,9 @@ class AuthenticationControllerTests {
     AuthenticationController authenticationController;
     @Mock
     AuthenticationService authenticationService;
-    @Mock
-    UserService userService;
     RegisterDTO registerDTO;
     LoginDTO loginDTO;
-    User user;
-    Account account;
     AuthenticationResponse authenticationResponse;
-    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
@@ -55,25 +43,9 @@ class AuthenticationControllerTests {
                 .password("johndoe_password")
                 .build();
 
-        account = Account.builder()
-                .id(0)
-                .email("johndoe1234@gmail.com")
-                .password("johndoe_password")
-                .role(RoleEnum.USER)
-                .build();
-
-        user = User.builder()
-                .id(0)
-                .firstname("John")
-                .lastname("Doe")
-                .account(account)
-                .build();
-
         authenticationResponse = AuthenticationResponse.builder()
                 .token(JwtTokenDummy)
                 .build();
-
-        userDTO = new UserDTO(user);
     }
 
     @Test
@@ -134,36 +106,6 @@ class AuthenticationControllerTests {
         verify(authenticationService, atLeastOnce()).login((loginDTO));
         assertNotNull(authenticationResponseResponseEntity);
         assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
-    }
-
-    @Test
-    void test_GetUserId() throws NotFoundException {
-        // Define the behavior of the mock
-        when(userService.getUserId(JwtTokenDummy)).thenReturn(userDTO);
-
-        // Call the service method that uses the Repository
-        ResponseEntity<Object> result = authenticationController.getUserId(JwtTokenDummy);
-        ResponseEntity<Object> expected = ResponseEntity.ok(userDTO);
-
-        // Perform assertions
-        verify(userService, atLeastOnce()).getUserId(JwtTokenDummy);
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetUserIdFail() throws NotFoundException {
-        // Define the behavior of the mock
-        when(userService.getUserId(JwtTokenDummy)).thenThrow(new NotFoundException("User not found."));
-
-        // Call the service method that uses the Repository
-        ResponseEntity<Object> result = authenticationController.getUserId(JwtTokenDummy);
-
-        // Perform assertions
-        verify(userService, atLeastOnce()).getUserId(JwtTokenDummy);
-        assertNotNull(result);
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-        assertEquals("User not found.", result.getBody());
     }
 
 }

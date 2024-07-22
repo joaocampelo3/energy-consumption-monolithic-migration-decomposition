@@ -3,18 +3,18 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.LoginDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.services.AuthenticationService;
-import edu.ipp.isep.dei.dimei.retailproject.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final UserService userService;
 
     @PostMapping("/login")
     @Operation(
@@ -111,15 +110,6 @@ public class AuthenticationController {
     )
     public ResponseEntity<AuthenticationResponse> registerMerchant(@RequestBody RegisterDTO registerDTO) {
         return ResponseEntity.ok(authenticationService.registerMerchant(registerDTO));
-    }
-
-    @GetMapping("/userId")
-    public ResponseEntity<Object> getUserId(@RequestHeader("Authorization") String authorizationToken) {
-        try {
-            return ResponseEntity.ok(userService.getUserId(authorizationToken));
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 
 }

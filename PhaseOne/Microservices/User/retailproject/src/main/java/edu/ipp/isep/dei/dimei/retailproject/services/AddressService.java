@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AddressService {
+    private final UserService userService;
     private final AddressRepository addressRepository;
 
-    public Address createAddress(AddressDTO addressDTO, User user) throws NotFoundException {
+    public AddressDTO createAddress(String authorizationToken, AddressDTO addressDTO) throws NotFoundException {
+        User user = this.userService.getUserByToken(authorizationToken);
         Address address = addressDTO.dtoToEntity();
 
         if (!existsAddressByStreetAndZipCodeAndCityAndCountry(address, user.getId())) {
@@ -25,7 +27,7 @@ public class AddressService {
             address = getAddressByUser(address, user.getId());
         }
 
-        return address;
+        return new AddressDTO(address);
     }
 
     private boolean existsAddressByStreetAndZipCodeAndCityAndCountry(Address address, int userId) {
