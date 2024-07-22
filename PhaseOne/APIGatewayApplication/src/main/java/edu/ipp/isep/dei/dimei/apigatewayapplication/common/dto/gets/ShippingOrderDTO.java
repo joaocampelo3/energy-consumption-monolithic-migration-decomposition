@@ -14,7 +14,7 @@ public class ShippingOrderDTO {
     private int id;
     private Instant shippingOrderDate;
     private ShippingOrderStatusEnum shippingOrderStatus;
-    private AddressDTO addressDTO;
+    private int addressId;
     private int orderId;
     private int merchantOrderId;
     private String email;

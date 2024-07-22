@@ -11,5 +11,7 @@ public class MerchantDTO {
     private int id;
     private String name;
     private String email;
-    private AddressDTO address;
+    private int addressId;
+    private UserDTO userDTO;
+    private AddressDTO addressDTO;
 }

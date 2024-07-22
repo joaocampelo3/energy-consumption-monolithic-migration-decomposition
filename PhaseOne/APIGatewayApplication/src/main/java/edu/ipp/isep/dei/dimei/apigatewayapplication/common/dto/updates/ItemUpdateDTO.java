@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates;
 
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +13,5 @@ public class ItemUpdateDTO {
     private String sku;
     private double price;
     private int quantityInStock;
+    private UserDTO userDTO;
 }

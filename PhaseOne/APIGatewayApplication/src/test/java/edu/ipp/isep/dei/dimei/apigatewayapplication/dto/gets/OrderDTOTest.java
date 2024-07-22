@@ -4,12 +4,15 @@ package edu.ipp.isep.dei.dimei.apigatewayapplication.dto.gets;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.PaymentDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.PaymentStatusEnum;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class OrderDTOTest {
 
     final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
@@ -29,6 +33,7 @@ class OrderDTOTest {
     double totalPrice;
     PaymentDTO paymentDTO;
     OrderDTO orderDTOExpected;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
@@ -73,19 +78,22 @@ class OrderDTOTest {
                 .status(PaymentStatusEnum.PENDING)
                 .build();
 
-        orderDTOExpected = new OrderDTO(id, orderDate, orderStatus, customerId, email, orderItemsDTO, totalPrice, paymentDTO);
+        int userId = 1;
+
+        userDTO = new UserDTO(userId, "johndoe1234@gmail.com", RoleEnum.USER);
+
+        orderDTOExpected = new OrderDTO(id, orderDate, orderStatus, customerId, orderItemsDTO, totalPrice, paymentDTO);
     }
 
     @Test
     void test_createOrderDTO() {
-        OrderDTO orderDTO = new OrderDTO(id, orderDate, orderStatus, customerId, email, orderItemsDTO, totalPrice, paymentDTO);
+        OrderDTO orderDTO = new OrderDTO(id, orderDate, orderStatus, customerId, orderItemsDTO, totalPrice, paymentDTO);
 
         assertNotNull(orderDTO);
         assertEquals(id, orderDTO.getId());
         assertEquals(orderDate, orderDTO.getOrderDate());
         assertEquals(orderStatus, orderDTO.getOrderStatus());
         assertEquals(customerId, orderDTO.getCustomerId());
-        assertEquals(email, orderDTO.getEmail());
         assertEquals(orderItemsDTO, orderDTO.getOrderItems());
         assertEquals(paymentDTO, orderDTO.getPaymentDTO());
 
@@ -103,7 +111,6 @@ class OrderDTOTest {
                 .orderDate(orderDate)
                 .orderStatus(orderStatus)
                 .customerId(customerId)
-                .email(email)
                 .orderItems(orderItemsDTO)
                 .totalPrice(totalPrice)
                 .paymentDTO(paymentDTO)
@@ -114,7 +121,6 @@ class OrderDTOTest {
         assertEquals(orderDate, orderDTO.getOrderDate());
         assertEquals(orderStatus, orderDTO.getOrderStatus());
         assertEquals(customerId, orderDTO.getCustomerId());
-        assertEquals(email, orderDTO.getEmail());
         assertEquals(orderItemsDTO, orderDTO.getOrderItems());
         assertEquals(paymentDTO, orderDTO.getPaymentDTO());
 
@@ -170,7 +176,6 @@ class OrderDTOTest {
         result.setOrderDate(orderDate);
         result.setOrderStatus(orderStatus);
         result.setCustomerId(customerId);
-        result.setEmail(email);
         result.setOrderItems(orderItemsDTO);
         result.setTotalPrice(totalPrice);
         result.setPaymentDTO(paymentDTO);
@@ -180,7 +185,6 @@ class OrderDTOTest {
         assertEquals(orderDate, result.getOrderDate());
         assertEquals(orderStatus, result.getOrderStatus());
         assertEquals(customerId, result.getCustomerId());
-        assertEquals(email, result.getEmail());
         assertEquals(orderItemsDTO, result.getOrderItems());
         assertEquals(totalPrice, result.getTotalPrice());
         assertEquals(paymentDTO, result.getPaymentDTO());

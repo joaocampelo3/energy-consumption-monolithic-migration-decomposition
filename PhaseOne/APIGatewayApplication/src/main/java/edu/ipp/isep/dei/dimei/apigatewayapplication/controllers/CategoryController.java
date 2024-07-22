@@ -1,54 +1,92 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.controllers;
 
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.CategoryDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 import static edu.ipp.isep.dei.dimei.apigatewayapplication.common.ControllersGlobalVariables.CATEGORY_URL;
 
 @RestController
 @RequestMapping("/categories")
-public class CategoryController {
+public class CategoryController implements HttpHeaderBuilder {
 
     private final RestTemplate restTemplate;
+    private final UserController userController;
 
     @Autowired
-    public CategoryController(RestTemplate restTemplate) {
+    public CategoryController(RestTemplate restTemplate, UserController userController) {
         this.restTemplate = restTemplate;
+        this.userController = userController;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        return restTemplate.getForObject(CATEGORY_URL + "/all", ResponseEntity.class);
+    public ResponseEntity<Object> getAllCategories(@RequestHeader("Authorization") String authorizationToken) {
+        Object body = getUserDTO(authorizationToken);
+
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+            return restTemplate.exchange(CATEGORY_URL + "/all", HttpMethod.GET, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Object> getCategoryById(@PathVariable int id) {
-        return restTemplate.getForObject(CATEGORY_URL + "/" + id, ResponseEntity.class);
+    public ResponseEntity<Object> getCategoryById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+        Object body = getUserDTO(authorizationToken);
+
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+            return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.GET, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @PostMapping
-    public ResponseEntity<Object> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO);
-        return restTemplate.postForObject(CATEGORY_URL, request, ResponseEntity.class);
+    public ResponseEntity<Object> createCategory(@RequestHeader("Authorization") String authorizationToken, @RequestBody CategoryDTO categoryDTO) {
+        Object body = getUserDTO(authorizationToken);
+        if (body instanceof UserDTO userDTO && userDTO.equals(categoryDTO.getUserDTO())) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
+            return restTemplate.postForObject(CATEGORY_URL, request, ResponseEntity.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<Object> updateCategory(@PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
-        HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO);
-        return restTemplate.patchForObject(CATEGORY_URL + "/" + id, request, ResponseEntity.class);
+    public ResponseEntity<Object> updateCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
+        Object body = getUserDTO(authorizationToken);
+        if (body instanceof UserDTO userDTO && userDTO.equals(categoryDTO.getUserDTO())) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
+            return restTemplate.patchForObject(CATEGORY_URL + "/" + id, request, ResponseEntity.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<Object> deleteCategory(@PathVariable int id) {
-        return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.DELETE, null, Object.class);
+    public ResponseEntity<Object> deleteCategory(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
+        Object body = getUserDTO(authorizationToken);
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+            return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
+    }
+
+    private Object getUserDTO(String authorizationToken) {
+        return userController.getUserId(authorizationToken).getBody();
     }
 }

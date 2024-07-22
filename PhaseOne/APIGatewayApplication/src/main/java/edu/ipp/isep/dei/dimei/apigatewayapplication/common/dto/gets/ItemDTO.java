@@ -16,4 +16,5 @@ public class ItemDTO {
     private int quantityInStock;
     private CategoryDTO category;
     private MerchantDTO merchant;
+    private UserDTO userDTO;
 }

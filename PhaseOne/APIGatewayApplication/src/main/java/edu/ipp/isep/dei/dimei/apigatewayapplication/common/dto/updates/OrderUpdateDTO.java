@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates;
 
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.OrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,4 +16,5 @@ public class OrderUpdateDTO {
     private Instant orderDate;
     private OrderStatusEnum orderStatus;
     private String email;
+    private UserDTO userDTO;
 }

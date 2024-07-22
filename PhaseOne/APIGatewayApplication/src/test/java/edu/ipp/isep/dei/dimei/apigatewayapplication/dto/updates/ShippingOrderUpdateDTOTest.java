@@ -1,11 +1,14 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.dto.updates;
 
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates.ShippingOrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.ShippingOrderStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 
@@ -13,15 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ShippingOrderUpdateDTOTest {
     int id;
     Instant shippingOrderDate;
     ShippingOrderStatusEnum shippingOrderStatus;
-    AddressDTO addressDTO;
+    AddressDTO addressDTO1;
     int orderId;
     int merchantOrderId;
-    String email;
+    int userId;
     ShippingOrderUpdateDTO shippingUpgradeOrderDTO;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
@@ -29,32 +34,39 @@ class ShippingOrderUpdateDTOTest {
         Instant currentDate = Instant.now();
         shippingOrderDate = currentDate;
         shippingOrderStatus = ShippingOrderStatusEnum.PENDING;
-        addressDTO = AddressDTO.builder()
+        orderId = 1;
+        userId = 1;
+        merchantOrderId = 1;
+
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
+
+        addressDTO1 = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
                 .zipCode("10128")
                 .city("New York")
                 .country("USA")
                 .build();
-        orderId = 1;
-        merchantOrderId = 1;
-        email = "johndoe1234@gmail.com";
 
-        shippingUpgradeOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        shippingUpgradeOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
     }
 
     @Test
     void test_createShippingOrderUpdateDTO() {
-        ShippingOrderUpdateDTO shippingUpdOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        ShippingOrderUpdateDTO shippingUpdOrderDTO = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
 
         assertNotNull(shippingUpdOrderDTO);
         assertEquals(id, shippingUpdOrderDTO.getOrderId());
         assertEquals(shippingOrderDate, shippingUpdOrderDTO.getShippingOrderDate());
         assertEquals(shippingOrderStatus, shippingUpdOrderDTO.getShippingOrderStatus());
-        assertEquals(addressDTO, shippingUpdOrderDTO.getAddressDTO());
+        assertEquals(addressDTO1.getId(), shippingUpdOrderDTO.getAddressId());
         assertEquals(orderId, shippingUpdOrderDTO.getOrderId());
         assertEquals(merchantOrderId, shippingUpdOrderDTO.getMerchantOrderId());
-        assertEquals(email, shippingUpdOrderDTO.getEmail());
+        assertEquals(userId, shippingUpdOrderDTO.getUserId());
         assertEquals(shippingUpgradeOrderDTO.hashCode(), shippingUpdOrderDTO.hashCode());
     }
 
@@ -64,20 +76,22 @@ class ShippingOrderUpdateDTOTest {
                 .id(id)
                 .shippingOrderDate(shippingOrderDate)
                 .shippingOrderStatus(shippingOrderStatus)
-                .addressDTO(addressDTO)
+                .addressId(addressDTO1.getId())
                 .orderId(orderId)
                 .merchantOrderId(merchantOrderId)
-                .email(email)
+                .userId(userId)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(shippingUpdOrderDTO);
         assertEquals(id, shippingUpdOrderDTO.getOrderId());
         assertEquals(shippingOrderDate, shippingUpdOrderDTO.getShippingOrderDate());
         assertEquals(shippingOrderStatus, shippingUpdOrderDTO.getShippingOrderStatus());
-        assertEquals(addressDTO, shippingUpdOrderDTO.getAddressDTO());
+        assertEquals(addressDTO1.getId(), shippingUpdOrderDTO.getAddressId());
         assertEquals(orderId, shippingUpdOrderDTO.getOrderId());
         assertEquals(merchantOrderId, shippingUpdOrderDTO.getMerchantOrderId());
-        assertEquals(email, shippingUpdOrderDTO.getEmail());
+        assertEquals(userId, shippingUpdOrderDTO.getUserId());
+        assertEquals(shippingUpgradeOrderDTO, shippingUpdOrderDTO);
         assertEquals(shippingUpgradeOrderDTO.hashCode(), shippingUpdOrderDTO.hashCode());
     }
 
@@ -89,27 +103,28 @@ class ShippingOrderUpdateDTOTest {
 
     @Test
     void test_SetsShippingOrderUpdateDTO() {
-        ShippingOrderUpdateDTO expected = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO, orderId, merchantOrderId, email);
+        ShippingOrderUpdateDTO expected = new ShippingOrderUpdateDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO1.getId(), orderId, merchantOrderId, userId, userDTO);
         ShippingOrderUpdateDTO result = ShippingOrderUpdateDTO.builder().build();
 
         result.setId(id);
         result.setShippingOrderDate(shippingOrderDate);
         result.setShippingOrderStatus(shippingOrderStatus);
-        result.setAddressDTO(addressDTO);
+        result.setAddressId(addressDTO1.getId());
         result.setOrderId(orderId);
         result.setMerchantOrderId(merchantOrderId);
-        result.setEmail(email);
+        result.setUserId(userId);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals(shippingOrderDate, result.getShippingOrderDate());
         assertEquals(shippingOrderStatus, result.getShippingOrderStatus());
-        assertEquals(addressDTO, result.getAddressDTO());
+        assertEquals(addressDTO1.getId(), result.getAddressId());
         assertEquals(orderId, result.getOrderId());
         assertEquals(merchantOrderId, result.getMerchantOrderId());
-        assertEquals(email, result.getEmail());
-        assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(userId, result.getUserId());
         assertEquals(expected, result);
+        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected.toString(), result.toString());
     }
 }

@@ -2,7 +2,8 @@ package edu.ipp.isep.dei.dimei.apigatewayapplication.controllers;
 
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.creates.OrderCreateDTO;
-import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.OrderDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.AddressDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates.OrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -12,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
 import static edu.ipp.isep.dei.dimei.apigatewayapplication.common.ControllersGlobalVariables.ORDER_URL;
 
 @RestController
@@ -21,67 +20,125 @@ import static edu.ipp.isep.dei.dimei.apigatewayapplication.common.ControllersGlo
 public class OrderController implements HttpHeaderBuilder {
 
     private final RestTemplate restTemplate;
+    private final UserController userController;
+    private final AddressController addressController;
 
     @Autowired
-    public OrderController(RestTemplate restTemplate) {
+    public OrderController(RestTemplate restTemplate, UserController userController, AddressController addressController) {
         this.restTemplate = restTemplate;
+        this.userController = userController;
+        this.addressController = addressController;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return restTemplate.getForObject(ORDER_URL + "/all", ResponseEntity.class);
+    public ResponseEntity<Object> getAllOrders(@RequestHeader("Authorization") String authorizationToken) {
+        Object body = getUserDTO(authorizationToken);
+
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+            return restTemplate.exchange(ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @GetMapping
     public ResponseEntity<Object> getUserOrders(@RequestHeader("Authorization") String authorizationToken) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(headers);
+        Object body = getUserDTO(authorizationToken);
 
-        return restTemplate.exchange(ORDER_URL, HttpMethod.GET, requestEntity, Object.class);
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+
+            return restTemplate.exchange(ORDER_URL, HttpMethod.GET, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @PostMapping
     public ResponseEntity<Object> createOrder(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderCreateDTO orderDTO) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<OrderCreateDTO> requestEntity = new HttpEntity<>(orderDTO, headers);
+        Object userBody = getUserDTO(authorizationToken);
+        Object addressBody = createAddressDTO(authorizationToken, orderDTO.getAddress());
 
-        return restTemplate.exchange(ORDER_URL, HttpMethod.POST, requestEntity, Object.class);
+        if (userBody instanceof UserDTO userDTO && userDTO.equals(orderDTO.getUserDTO()) && addressBody instanceof AddressDTO addressDTO) {
+            orderDTO.setAddress(addressDTO);
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<OrderCreateDTO> request = new HttpEntity<>(orderDTO, headers);
+
+            return restTemplate.exchange(ORDER_URL, HttpMethod.POST, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) userBody;
+        }
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<Object> getUserOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<OrderCreateDTO> requestEntity = new HttpEntity<>(headers);
+    @GetMapping(path = "/{orderId}")
+    public ResponseEntity<Object> getUserOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId) {
+        Object body = getUserDTO(authorizationToken);
 
-        return restTemplate.exchange(ORDER_URL + "/" + id, HttpMethod.GET, requestEntity, Object.class);
+        if (body instanceof UserDTO userDTO) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+
+            return restTemplate.exchange(ORDER_URL + "/" + orderId, HttpMethod.GET, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @DeleteMapping(path = "/user/{userId}/order/{orderId}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable int userId, @PathVariable int orderId) {
+    public ResponseEntity<Object> deleteOrder(@RequestHeader("Authorization") String authorizationToken, @PathVariable int userId, @PathVariable int orderId) {
         return restTemplate.exchange(ORDER_URL + "/user/" + userId + "/order/" + orderId, HttpMethod.DELETE, null, Object.class);
     }
 
-    @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<Object> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<OrderUpdateDTO> requestEntity = new HttpEntity<>(orderUpdateDTO, headers);
+    @PatchMapping(path = "/{orderId}/cancel")
+    public ResponseEntity<Object> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+        Object body = getUserDTO(authorizationToken);
 
-        return restTemplate.exchange(ORDER_URL + "/" + id + "/cancel", HttpMethod.PATCH, requestEntity, Object.class);
+        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
+
+            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/cancel", HttpMethod.PATCH, request, Object.class);
+
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
-    @PatchMapping(path = "/{id}/reject")
-    public ResponseEntity<Object> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<OrderUpdateDTO> requestEntity = new HttpEntity<>(orderUpdateDTO, headers);
+    @PatchMapping(path = "/{orderId}/reject")
+    public ResponseEntity<Object> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+        Object body = getUserDTO(authorizationToken);
 
-        return restTemplate.exchange(ORDER_URL + "/" + id + "/reject", HttpMethod.PATCH, requestEntity, Object.class);
+        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
+            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/reject", HttpMethod.PATCH, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
-    @PatchMapping(path = "/{id}/approve")
-    public ResponseEntity<Object> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
-        HttpEntity<OrderUpdateDTO> requestEntity = new HttpEntity<>(orderUpdateDTO, headers);
+    @PatchMapping(path = "/{orderId}/approve")
+    public ResponseEntity<Object> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+        Object body = getUserDTO(authorizationToken);
 
-        return restTemplate.exchange(ORDER_URL + "/" + id + "/approve", HttpMethod.PATCH, requestEntity, Object.class);
+        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
+
+            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/approve", HttpMethod.PATCH, request, Object.class);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
+    }
+
+    private Object getUserDTO(String authorizationToken) {
+        return userController.getUserId(authorizationToken).getBody();
+    }
+
+    private Object createAddressDTO(String authorizationToken, AddressDTO addressDTO) {
+        return addressController.createAddress(authorizationToken, addressDTO).getBody();
     }
 }

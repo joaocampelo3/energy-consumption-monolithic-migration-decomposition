@@ -3,15 +3,19 @@ package edu.ipp.isep.dei.dimei.apigatewayapplication.dto.updates;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.MerchantDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates.ItemUpdateDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ItemUpdateDTOTest {
     int id;
     String itemName;
@@ -22,6 +26,7 @@ class ItemUpdateDTOTest {
     CategoryDTO category;
     MerchantDTO merchant;
     ItemUpdateDTO itemUpdateDTOExpected;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
@@ -32,6 +37,11 @@ class ItemUpdateDTOTest {
         price = 12.0;
         quantityInStock = 10;
 
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
         category = CategoryDTO.builder()
                 .id(1)
                 .name("Category 1")
@@ -49,20 +59,21 @@ class ItemUpdateDTOTest {
                 .id(1)
                 .name("Merchant 1")
                 .email("merchantnumber1@gmail.com")
-                .address(addressDTO)
+                .addressId(addressDTO.getId())
                 .build();
-        itemUpdateDTOExpected = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        itemUpdateDTOExpected = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
     }
 
     @Test
     void test_createItemUpdateDTO() {
-        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        ItemUpdateDTO itemUpdateDTO = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
 
         assertNotNull(itemUpdateDTO);
         assertEquals(id, itemUpdateDTO.getId());
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
+        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -73,6 +84,7 @@ class ItemUpdateDTOTest {
                 .sku(sku)
                 .price(price)
                 .quantityInStock(quantityInStock)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(itemUpdateDTO);
@@ -80,6 +92,7 @@ class ItemUpdateDTOTest {
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
+        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -91,7 +104,7 @@ class ItemUpdateDTOTest {
 
     @Test
     void test_SetsItemUpdateDTO() {
-        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock);
+        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock, null);
         ItemUpdateDTO result = ItemUpdateDTO.builder().build();
 
         result.setId(id);

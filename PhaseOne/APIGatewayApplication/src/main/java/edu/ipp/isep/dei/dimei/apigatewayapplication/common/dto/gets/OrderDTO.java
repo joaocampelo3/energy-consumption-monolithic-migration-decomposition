@@ -16,7 +16,6 @@ public class OrderDTO {
     private Instant orderDate;
     private OrderStatusEnum orderStatus;
     private int customerId;
-    private String email;
     private List<ItemQuantityDTO> orderItems;
     private double totalPrice;
     private PaymentDTO paymentDTO;

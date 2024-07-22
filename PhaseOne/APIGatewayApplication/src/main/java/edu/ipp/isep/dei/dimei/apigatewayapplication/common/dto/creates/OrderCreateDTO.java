@@ -3,6 +3,7 @@ package edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.creates;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.PaymentDTO;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.OrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,5 @@ public class OrderCreateDTO {
     private PaymentDTO payment;
     private int merchantId;
     private AddressDTO address;
+    private UserDTO userDTO;
 }

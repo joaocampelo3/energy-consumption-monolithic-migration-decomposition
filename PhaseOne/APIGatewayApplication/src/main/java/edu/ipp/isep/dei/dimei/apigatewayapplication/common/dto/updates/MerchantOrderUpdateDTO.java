@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates;
 
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.MerchantOrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +18,5 @@ public class MerchantOrderUpdateDTO {
     private String email;
     private int orderId;
     private int merchantId;
+    private UserDTO userDTO;
 }

@@ -1,10 +1,13 @@
 package edu.ipp.isep.dei.dimei.apigatewayapplication.dto.updates;
 
+import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.MerchantOrderStatusEnum;
+import edu.ipp.isep.dei.dimei.apigatewayapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 
@@ -12,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class MerchantOrderUpdateDTOTest {
     final MerchantOrderStatusEnum merchantOrderStatus = MerchantOrderStatusEnum.PENDING;
     int id;
@@ -21,21 +25,29 @@ class MerchantOrderUpdateDTOTest {
     int orderId;
     int merchantId;
     MerchantOrderUpdateDTO merchantOrderUpdateDTOExpected;
+    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
         id = 1;
-        merchantOrderDate = Instant.now();
+        Instant currentDate = Instant.now();
+        merchantOrderDate = currentDate;
         email = "merchantnumber1@gmail.com";
         userEmail = "johndoe1234@gmail.com";
         orderId = 1;
         merchantId = 1;
-        merchantOrderUpdateDTOExpected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        merchantOrderUpdateDTOExpected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
+
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.USER)
+                .build();
     }
 
     @Test
     void test_createMerchantOrderUpdateDTO() {
-        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        MerchantOrderUpdateDTO merchantDTO = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
 
         assertNotNull(merchantDTO);
         assertEquals(id, merchantDTO.getId());
@@ -76,7 +88,7 @@ class MerchantOrderUpdateDTOTest {
 
     @Test
     void test_SetsMerchantOrderUpdateDTO() {
-        MerchantOrderUpdateDTO expected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId);
+        MerchantOrderUpdateDTO expected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
         MerchantOrderUpdateDTO result = MerchantOrderUpdateDTO.builder().build();
 
         result.setId(id);
@@ -85,6 +97,7 @@ class MerchantOrderUpdateDTOTest {
         result.setEmail(email);
         result.setOrderId(orderId);
         result.setMerchantId(merchantId);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
@@ -93,8 +106,8 @@ class MerchantOrderUpdateDTOTest {
         assertEquals(email, result.getEmail());
         assertEquals(orderId, result.getOrderId());
         assertEquals(merchantId, result.getMerchantId());
-        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected, result);
+        assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected.toString(), result.toString());
     }
 }
