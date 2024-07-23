@@ -75,12 +75,12 @@ public class SecurityConfig {
                         .requestMatchers(DELETE, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Merchant Order Controller
                         .requestMatchers(GET, MERCHANT_ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(GET, MERCHANT_ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, MERCHANT_ORDERS_PATH).hasAnyAuthority(RoleEnum.MERCHANT.name())
                         .requestMatchers(GET, MERCHANT_ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
                         .requestMatchers(PATCH, MERCHANT_ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
                         // Order Controller
                         .requestMatchers(GET, ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(GET, ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(GET, ORDERS_PATH).hasAnyAuthority(RoleEnum.USER.name())
                         .requestMatchers(GET, ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
                         .requestMatchers(POST, ORDERS_PATH).hasAnyAuthority(RoleEnum.USER.name())
                         .requestMatchers(DELETE, ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
@@ -88,7 +88,7 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Shipping Order Controller
                         .requestMatchers(GET, SHIPPING_ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(GET, SHIPPING_ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+                        .requestMatchers(GET, SHIPPING_ORDERS_PATH).hasAnyAuthority(RoleEnum.USER.name())
                         .requestMatchers(GET, SHIPPING_ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
                         .requestMatchers(PATCH, SHIPPING_ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .anyRequest()
