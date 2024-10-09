@@ -70,12 +70,13 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, ITEMS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Merchants Controller
                         .requestMatchers(GET, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                        .requestMatchers(GET, MERCHANTS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(POST, MERCHANTS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(PATCH, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         .requestMatchers(DELETE, MERCHANTS_PATH + "/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                         // Merchant Order Controller
                         .requestMatchers(GET, MERCHANT_ORDERS_PATH + "/all").hasAnyAuthority(RoleEnum.ADMIN.name())
-                        .requestMatchers(GET, MERCHANT_ORDERS_PATH).hasAnyAuthority(RoleEnum.MERCHANT.name())
+                        .requestMatchers(GET, MERCHANT_ORDERS_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
                         .requestMatchers(GET, MERCHANT_ORDERS_PATH + ID_PATH).hasAnyAuthority(RoleEnum.ADMIN.name(), RoleEnum.MERCHANT.name())
                         .requestMatchers(PATCH, MERCHANT_ORDERS_PATH + "/**").hasAnyAuthority(RoleEnum.MERCHANT.name())
                         // Order Controller
