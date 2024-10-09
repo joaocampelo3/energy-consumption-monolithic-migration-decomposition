@@ -68,9 +68,15 @@ public class ItemService {
     }
 
     private Item getUserItemById(String authorizationToken, int id) throws NotFoundException {
-        Merchant merchant = getItemMerchantByUser(authorizationToken);
+        User user = getUser(authorizationToken);
 
-        return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        if (user.getAccount().getRole().equals(RoleEnum.ADMIN)) {
+            return this.itemRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        } else {
+            Merchant merchant = merchantService.getMerchantByUser(user);
+            return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        }
+
     }
 
     public ItemDTO createItem(String authorizationToken, ItemDTO itemDTO) throws NotFoundException, BadPayloadException, InvalidQuantityException {
@@ -95,14 +101,14 @@ public class ItemService {
         return new ItemDTO(item);
     }
 
-    public Item getItemBySku(String sku) throws NotFoundException {
-        return this.itemRepository.findBySku(sku).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
-    }
-
     private Merchant getItemMerchantByUser(String authorizationToken) throws NotFoundException {
-        User user = this.userService.getUserByToken(authorizationToken);
+        User user = getUser(authorizationToken);
 
         return this.merchantService.getMerchantByUser(user);
+    }
+
+    private User getUser(String authorizationToken) throws NotFoundException {
+        return this.userService.getUserByToken(authorizationToken);
     }
 
     public ItemDTO deleteItem(String authorizationToken, int id) throws NotFoundException {

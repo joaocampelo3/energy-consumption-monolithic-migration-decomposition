@@ -502,7 +502,6 @@ class ShippingOrderServiceTests {
     @Test
     void test_FullCancelShippingOrderByOrderByAdminFail() throws NotFoundException {
         // Define the behavior of the mock
-        int id = 1;
         user.getAccount().setRole(RoleEnum.ADMIN);
         item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
@@ -632,7 +631,6 @@ class ShippingOrderServiceTests {
     @Test
     void test_RejectShippingOrderByOrderWhereShippingOrderAlreadyReject() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
-        int id = 1;
         item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1.setStatus(ShippingOrderStatusEnum.REJECTED);
@@ -958,7 +956,7 @@ class ShippingOrderServiceTests {
     }
 
     @Test
-    void test_DeleteShippingOrderByOrderId() throws NotFoundException {
+    void test_DeleteShippingOrderByOrderId() {
         // Define the behavior of the mock
         int id = 1;
 
