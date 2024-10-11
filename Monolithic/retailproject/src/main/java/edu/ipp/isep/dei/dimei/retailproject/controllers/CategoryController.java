@@ -6,6 +6,7 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,13 +33,46 @@ public class CategoryController {
 
     @GetMapping("/all")
     @Cacheable
-    @Operation(description = "Get all categories", responses = {@ApiResponse(responseCode = "200", description = "Categories found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
+    @Operation(
+            description = "Get all categories",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Categories found.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"code\": 200,\"Status\": \"Ok\",\"Message\": \"[{\"id\": 1, \"name\": \"Category 1\", \"description\": \"Category 1 desc\"},{\"id\": 2, \"name\": \"Category 2\", \"description\": \"Category 2 desc\"}]}"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         return new ResponseEntity<>(this.categoryService.getAllCategories(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
     @Cacheable(key = "#id")
+    @Operation(
+            description = "Get category by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Category found.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"code\": 200,\"Status\": \"Ok\",\"Message\": \"{\"id\": 1, \"name\": \"Category 1\", \"description\": \"Category 1 desc\"}}"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
     public ResponseEntity<Object> getCategoryById(@PathVariable int id) {
         try {
             return new ResponseEntity<>(this.categoryService.getCategory(id), HttpStatus.OK);
@@ -54,10 +88,20 @@ public class CategoryController {
     @Operation(
             description = "Create a category",
             responses = {
-                    @ApiResponse
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Category created.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"code\": 201,\"Status\": \"Created\",\"Message\": \"{\"id\": 1, \"name\": \"Category 1\", \"description\": \"Category 1 desc\"}}"
+                                            )
+                                    }
+                            )
+                    )
             }
     )
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Category was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<Object> createCategory(@RequestBody CategoryDTO categoryDTO) {
         return new ResponseEntity<>(this.categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
     }
@@ -66,6 +110,23 @@ public class CategoryController {
     @Caching(
             evict = {@CacheEvict(allEntries = true),
                     @CacheEvict(key = "#id")
+            }
+    )
+    @Operation(
+            description = "Update a category",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "202",
+                            description = "Category updated.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"code\": 202,\"Status\": \"Accepted\",\"Message\": \"{\"id\": 1, \"name\": \"Category 1\", \"description\": \"Category 1 desc\"}}"
+                                            )
+                                    }
+                            )
+                    )
             }
     )
     public ResponseEntity<Object> updateCategory(@PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
@@ -82,6 +143,23 @@ public class CategoryController {
     @Caching(
             evict = {@CacheEvict(allEntries = true),
                     @CacheEvict(key = "#id")
+            }
+    )
+    @Operation(
+            description = "Delete a category",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Category deleted.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = "{\"code\": 200,\"Status\": \"Deleted\",\"Message\": \"{\"id\": 1, \"name\": \"Category 1\", \"description\": \"Category 1 desc\"}}"
+                                            )
+                                    }
+                            )
+                    )
             }
     )
     public ResponseEntity<Object> deleteCategory(@PathVariable int id) {
