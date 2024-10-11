@@ -153,12 +153,10 @@ class ItemServiceTests {
     }
 
     @Test
-    void test_GetAllItem() throws NotFoundException {
+    void test_GetAllItem() {
         // Define the behavior of the mock
         when(itemRepository.findAll())
                 .thenReturn(items);
-        when(itemRepository.findById(item1.getId()))
-                .thenReturn(Optional.ofNullable(item1));
 
         // Call the service method that uses the Repository
         List<ItemDTO> result = itemService.getAllItems();
@@ -166,7 +164,6 @@ class ItemServiceTests {
 
         // Perform assertions
         verify(itemRepository, atLeastOnce()).findAll();
-        verify(itemRepository, atLeastOnce()).findById(item1.getId());
         assertNotNull(result);
         assertEquals(expected, result);
     }

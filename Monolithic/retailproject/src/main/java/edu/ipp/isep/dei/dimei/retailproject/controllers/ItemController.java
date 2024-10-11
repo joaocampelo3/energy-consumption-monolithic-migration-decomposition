@@ -34,11 +34,7 @@ public class ItemController {
     @Cacheable
     @Operation(description = "Get all items service", responses = {@ApiResponse(responseCode = "200", description = "Items found."/*, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, examples = {@ExampleObject(value = "{\"code\": 200,\"Status\": Ok,\"Message\": \"Login successfully.\"}")})*/)})
     public ResponseEntity<Object> getAllItems() {
-        try {
-            return new ResponseEntity<>(itemService.getAllItems(), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(itemService.getAllItems(), HttpStatus.OK);
     }
 
     @GetMapping

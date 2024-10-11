@@ -132,7 +132,7 @@ class ItemControllerTests {
     }
 
     @Test
-    void test_GetAllItems() throws NotFoundException {
+    void test_GetAllItems() {
         // Define the behavior of the mock
         when(itemService.getAllItems()).thenReturn(items);
 
@@ -144,23 +144,6 @@ class ItemControllerTests {
         verify(itemService, atLeastOnce()).getAllItems();
         assertNotNull(itemResponseEntity);
         assertEquals(itemResponseEntityExpected, itemResponseEntity);
-    }
-
-    @Test
-    void test_GetAllItemsFail() throws NotFoundException {
-        // Define the behavior of the mock
-        when(itemService.getAllItems()).thenThrow(new NotFoundException(exceptionItemNotFound));
-
-        // Call the service method that uses the Repository
-        ResponseEntity<Object> result = itemController.getAllItems();
-        ResponseEntity<Object> expected = new ResponseEntity<>(exceptionItemNotFound, HttpStatus.NOT_FOUND);
-
-        // Perform assertions
-        verify(itemService, atLeastOnce()).getAllItems();
-        assertNotNull(result);
-        assertEquals(expected, result);
-        assertEquals(expected.getStatusCode(), result.getStatusCode());
-        assertEquals(expected.getBody(), result.getBody());
     }
 
     @Test

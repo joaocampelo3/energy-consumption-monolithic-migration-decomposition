@@ -29,17 +29,17 @@ public class ItemService {
     private final UserService userService;
     private final MerchantService merchantService;
 
-    public List<ItemDTO> getAllItems() throws NotFoundException {
+    public List<ItemDTO> getAllItems() {
         List<Item> items = new ArrayList<>();
-        List<ItemDTO> itemQuantities = new ArrayList<>();
+        List<ItemDTO> itemDTOS = new ArrayList<>();
 
         this.itemRepository.findAll().forEach(items::add);
 
         for (Item item : items) {
-            itemQuantities.add(new ItemDTO(getItemById(item.getId())));
+            itemDTOS.add(new ItemDTO(item));
         }
 
-        return itemQuantities;
+        return itemDTOS;
     }
 
     public List<ItemDTO> getUserItems(String authorizationToken) throws NotFoundException {
