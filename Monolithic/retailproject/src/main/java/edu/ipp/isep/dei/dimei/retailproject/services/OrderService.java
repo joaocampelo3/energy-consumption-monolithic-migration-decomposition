@@ -109,7 +109,7 @@ public class OrderService {
     }
 
     public OrderUpdateDTO fullCancelOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || OrderStatusEnum.CANCELLED.equals(orderUpdateDTO.getOrderStatus())) {
+        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.CANCELLED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -128,7 +128,7 @@ public class OrderService {
     }
 
     public OrderUpdateDTO rejectOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
-        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || OrderStatusEnum.REJECTED.equals(orderUpdateDTO.getOrderStatus())) {
+        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.REJECTED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
@@ -147,7 +147,7 @@ public class OrderService {
     }
 
     public OrderUpdateDTO approveOrder(String authorizationToken, int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
-        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || OrderStatusEnum.APPROVED.equals(orderUpdateDTO.getOrderStatus())) {
+        if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.APPROVED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
