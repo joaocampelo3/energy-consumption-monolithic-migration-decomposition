@@ -42,7 +42,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+									"raw": "{\r\n    \"firstname\": \"Admin\",\r\n    \"lastname\": \"OfEverything\",\r\n    \"email\": \"admin_email@gmail.com\",\r\n    \"password\": \"admin_password\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -93,7 +93,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+									"raw": "{\r\n    \"firstname\": \"Merchant\",\r\n    \"lastname\": \"Dummy\",\r\n    \"email\": \"merchant@gmail.com\",\r\n    \"password\": \"merchant_password\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -124,7 +124,8 @@
 											"const response = pm.response.json()\r",
 											"pm.collectionVariables.set(\"retail_project_token\", response.token)"
 										],
-										"type": "text/javascript"
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -175,7 +176,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin_email@gmail.com\",\r\n    \"password\": \"admin_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -215,7 +216,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"password\": \"merchant_number1_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"merchant@gmail.com\",\r\n    \"password\": \"merchant_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -255,7 +256,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"usernumber1@gmail.com\",\r\n    \"password\": \"user_number1_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -570,7 +571,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"itemName\": \"Item 1\",\r\n    \"sku\": \"ABC-12345-S-BL\",\r\n    \"itemDescription\": \"Item 1 description\",\r\n    \"price\": 12.0,\r\n    \"quantityInStock\": 10,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Category 1\",\r\n        \"description\": \"Category 1 description\"\r\n    },\r\n    \"merchant\": {\r\n        \"id\": 1,\r\n        \"name\": \"Merchant 1\",\r\n        \"email\": \"merchantnumber1@gmail.com\",\r\n        \"address\": {\r\n            \"id\": 1,\r\n            \"street\": \"5th Avenue\",\r\n            \"zipCode\": \"10128\",\r\n            \"city\": \"New York\",\r\n            \"country\": \"USA\"\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"itemName\": \"Item 1\",\r\n    \"sku\": \"ABC-12345-S-BL\",\r\n    \"itemDescription\": \"Item 1 description\",\r\n    \"price\": 12.0,\r\n    \"quantityInStock\": 10,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Category 1\",\r\n        \"description\": \"Category 1 description\"\r\n    },\r\n    \"merchant\": {\r\n        \"id\": 1,\r\n        \"name\": \"Merchant Dummy\",\r\n        \"email\": \"merchant@gmail.com\",\r\n        \"address\": {\r\n            \"id\": 1,\r\n            \"street\": \"5th Avenue\",\r\n            \"zipCode\": \"10128\",\r\n            \"city\": \"New York\",\r\n            \"country\": \"USA\"\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -799,7 +800,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Merchant 1\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"address\": {\r\n        \"street\": \"5th Avenue\",\r\n        \"zipCode\": \"10128\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"name\": \"Merchant XPTO\",\r\n    \"email\": \"merchantXPTO_email@gmail.com\",\r\n    \"address\": {\r\n        \"street\": \"5th Avenue\",\r\n        \"zipCode\": \"10128\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -835,7 +836,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Merchant 1\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"address\": {\r\n        \"id\": 1,\r\n        \"street\": \"5th Avenue\",\r\n        \"zipCode\": \"10128\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
+							"raw": "{\r\n\t\"id\": 9999,\r\n    \"name\": \"Merchant XPTO\",\r\n    \"email\": \"merchantXPTO@gmail.com\",\r\n    \"address\": {\r\n        \"street\": \"19th Avenue\",\r\n        \"zipCode\": \"49052\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -854,7 +855,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "",
+									"value": "1",
 									"description": "Merchant ID"
 								}
 							]
@@ -993,42 +994,6 @@
 					"response": []
 				},
 				{
-					"name": "Create Merchant Order",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{retail_project_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-14T12:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{environment}}/merchantorders",
-							"host": [
-								"{{environment}}"
-							],
-							"path": [
-								"merchantorders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Approve Merchant Order",
 					"request": {
 						"auth": {
@@ -1045,7 +1010,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"APPROVED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-10-09T00:00:00.000Z\",\r\n    \"merchantOrderStatus\": \"APPROVED\",\r\n    \"email\": \"merchant@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1090,7 +1055,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"CANCELLED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"merchantOrderStatus\": \"CANCELLED\",\r\n    \"email\": \"merchant@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1135,7 +1100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"REJECTED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"merchantOrderStatus\": \"REJECTED\",\r\n    \"email\": \"merchant@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1275,7 +1240,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"orderDate\": \"2024-03-20T13:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-20T13:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"orderDate\": \"2024-10-09T00:00:00.000Z\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 1,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-10-09T13:59:11.000Z\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1354,7 +1319,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"APPROVED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"orderStatus\": \"APPROVED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1399,7 +1364,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"CANCELLED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"orderStatus\": \"CANCELLED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1444,7 +1409,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"REJECTED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"orderStatus\": \"REJECTED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1584,7 +1549,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-14T12:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"orderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-14T12:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1620,7 +1585,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"APPROVED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"shippingOrderStatus\": \"APPROVED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1665,7 +1630,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"CANCELLED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"shippingOrderStatus\": \"CANCELLED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1710,7 +1675,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"REJECTED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"shippingOrderStatus\": \"REJECTED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1755,7 +1720,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"SHIPPED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"shippingOrderStatus\": \"SHIPPED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1800,7 +1765,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"DELIVERED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332Z\",\r\n    \"shippingOrderStatus\": \"DELIVERED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
