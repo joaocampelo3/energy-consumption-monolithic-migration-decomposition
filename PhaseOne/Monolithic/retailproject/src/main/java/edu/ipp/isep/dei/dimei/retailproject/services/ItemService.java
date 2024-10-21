@@ -28,17 +28,17 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final MerchantService merchantService;
 
-    public List<ItemDTO> getAllItems() throws NotFoundException {
+    public List<ItemDTO> getAllItems() {
         List<Item> items = new ArrayList<>();
-        List<ItemDTO> itemQuantities = new ArrayList<>();
+        List<ItemDTO> itemDTOS = new ArrayList<>();
 
         this.itemRepository.findAll().forEach(items::add);
 
         for (Item item : items) {
-            itemQuantities.add(new ItemDTO(getItemById(item.getId())));
+            itemDTOS.add(new ItemDTO(item));
         }
 
-        return itemQuantities;
+        return itemDTOS;
     }
 
     public List<ItemDTO> getUserItems(UserDTO userDTO) throws NotFoundException {
@@ -92,10 +92,6 @@ public class ItemService {
         item = this.itemRepository.save(item);
 
         return new ItemDTO(item);
-    }
-
-    public Item getItemBySku(String sku) throws NotFoundException {
-        return this.itemRepository.findBySku(sku).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
     }
 
     private Merchant getItemMerchantByUser(UserDTO userDTO) throws NotFoundException {

@@ -86,16 +86,16 @@ public class OrderController {
         return new ResponseEntity<>(orderDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/user/{userId}/order/{orderId}")
+    @DeleteMapping(path = "/user/{userId}/order/{id}")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
                     @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#orderId")
             }
     )
-    public ResponseEntity<Object> deleteOrder(@PathVariable int userId, @RequestBody UserDTO userDTO, @PathVariable int orderId) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable int userId, @RequestBody UserDTO userDTO, @PathVariable int id) {
         try {
-            return new ResponseEntity<>(this.orderService.deleteOrder(userId, userDTO, orderId), HttpStatus.OK);
+            return new ResponseEntity<>(this.orderService.deleteOrder(userId, userDTO, id), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

@@ -7,10 +7,12 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
 @Data
+@RequiredArgsConstructor
 public class ItemQuantityDTO {
     private int id;
     private int itemId;
@@ -41,9 +43,10 @@ public class ItemQuantityDTO {
     }
 
     public ItemQuantity dtoToEntity() throws InvalidQuantityException {
+        OrderQuantity quantity = new OrderQuantity(this.qty);
         return ItemQuantity.builder()
                 .id(this.id)
-                .quantityOrdered(new OrderQuantity(this.qty))
+                .quantityOrdered(quantity)
                 .item(dtoToItem())
                 .price(this.price)
                 .build();

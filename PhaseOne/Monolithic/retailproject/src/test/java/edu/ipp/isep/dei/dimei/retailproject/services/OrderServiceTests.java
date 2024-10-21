@@ -430,6 +430,7 @@ class OrderServiceTests {
         // Define the behavior of the mock
         item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         order1Updated.setStatus(OrderStatusEnum.CANCELLED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
         MerchantOrderUpdateDTO merchantOrderUpdateDTO = new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail());
         merchantOrderUpdateDTO.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
         ShippingOrderUpdateDTO shippingOrderUpdateDTO = new ShippingOrderUpdateDTO(shippingOrder1);
@@ -474,7 +475,7 @@ class OrderServiceTests {
     @Test
     void test_FullCancelOrderFailCancelledOrder() {
         // Define the behavior of the mock
-        orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
@@ -526,6 +527,7 @@ class OrderServiceTests {
     void test_RejectOrder() throws InvalidQuantityException, WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.REJECTED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
         when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
@@ -583,7 +585,7 @@ class OrderServiceTests {
     @Test
     void test_RejectOrderFailRejectedOrder() {
         // Define the behavior of the mock
-        orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
@@ -613,6 +615,7 @@ class OrderServiceTests {
     void test_ApproveOrder() throws WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.APPROVED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.APPROVED);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
         when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
@@ -648,7 +651,7 @@ class OrderServiceTests {
     @Test
     void test_ApproveOrderFailApprovedOrder() {
         // Define the behavior of the mock
-        orderUpdateDTO.setOrderStatus(OrderStatusEnum.APPROVED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
