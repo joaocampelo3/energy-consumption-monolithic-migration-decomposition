@@ -24,7 +24,7 @@ public class CaffeineConfig {
     private static final String CATEGORIES_CACHE = "categories";
     private static final String ITEMS_CACHE = "items";
     private static final String MERCHANTS_CACHE = "merchants";
-    private static final String MERCHANT_ORDERS_CACHE = "merchantOrders";
+    private static final String MERCHANT_ORDERS_CACHE = "merchantorders";
     private static final String ORDERS_CACHE = "orders";
     private static final String SHIPPING_ORDERS_CACHE = "shippingorders";
 
