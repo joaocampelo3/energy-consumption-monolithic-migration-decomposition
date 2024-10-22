@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: retailproject-container
-          image: monolithic-retailproject_service
+          image: retailproject-user_service
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
