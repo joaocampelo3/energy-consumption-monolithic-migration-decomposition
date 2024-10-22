@@ -6,9 +6,9 @@ services:
   #
   # SERVICES
   #
-  retailproject_service:
+  retailproject_user_service:
     build: retailproject
-    container_name: RetailProjectApp
+    container_name: UserMicroserviceApp
     ports:
       - 8080:8080
     expose:
