@@ -28,6 +28,7 @@
         <jacoco.version>0.8.11</jacoco.version>
         <springfox.version>2.3.0</springfox.version>
         <sonarqube.version>3.9.1.2184</sonarqube.version>
+        <eureka.version>4.1.3</eureka.version>
     </properties>
 
     <dependencies>
@@ -145,6 +146,13 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- Eureka Client -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>${eureka.version}</version>
         </dependency>
 
     </dependencies>

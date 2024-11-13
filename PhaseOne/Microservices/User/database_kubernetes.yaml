@@ -26,7 +26,8 @@ spec:
   ports:
     - protocol: TCP
       port: 3306
-      targetPort: 3307
+      targetPort: 3306
+      nodePort: 30004
 ---
 apiVersion: apps/v1
 kind: Deployment
