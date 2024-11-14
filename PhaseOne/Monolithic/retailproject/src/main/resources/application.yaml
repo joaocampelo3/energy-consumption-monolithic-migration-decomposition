@@ -1,8 +1,11 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: RetailProjectMonolith
   datasource:
-    url: jdbc:mysql://retaildatabase-service/dummy?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://retaildatabase-monolith-service/dummy?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

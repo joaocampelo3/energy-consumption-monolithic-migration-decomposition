@@ -6,7 +6,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retailproject-deployment
+  name: retailproject-user-deployment
   namespace: retailproject-namespace
 spec:
   selector:
@@ -19,8 +19,8 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-container
-          image: retailproject_user_service
+        - name: retailproject-user-container
+          image: user-retailproject_service
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: retailproject-service
+  name: retailproject-user-service
   namespace: retailproject-namespace
 spec:
   selector:
@@ -50,13 +50,13 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-service-hpa
+  name: retailproject-user-service-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retailproject
+    name: retailproject-user-deployment
   minReplicas: 1
   maxReplicas: 1
   metrics:

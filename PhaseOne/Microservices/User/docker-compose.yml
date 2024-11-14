@@ -6,7 +6,7 @@ services:
   #
   # SERVICES
   #
-  retailproject_user_service:
+  retailproject_service:
     build: retailproject
     container_name: UserMicroserviceApp
     ports:
