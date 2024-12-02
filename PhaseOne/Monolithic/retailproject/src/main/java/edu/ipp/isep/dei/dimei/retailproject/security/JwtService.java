@@ -3,11 +3,11 @@ package edu.ipp.isep.dei.dimei.retailproject.security;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
@@ -38,8 +38,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     private boolean isTokenExpired(String jwtToken) {
@@ -53,5 +52,16 @@ public class JwtService {
     public boolean isTokenValid(String jwtToken, UserDTO userDTO) {
         final String username = extractUsername(jwtToken);
         return (username.equals(userDTO.getEmail())) && !isTokenExpired(jwtToken);
+    }
+
+    public String extractRole(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("role", String.class); // Extract the role claim
     }
 }

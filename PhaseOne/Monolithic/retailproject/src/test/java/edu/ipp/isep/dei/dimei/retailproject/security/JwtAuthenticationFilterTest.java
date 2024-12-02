@@ -26,6 +26,7 @@ class JwtAuthenticationFilterTest {
     final String TokenDummy = "AAA1bbb2CcC3";
     final String JwtTokenDummy = BEARER_PREFIX + TokenDummy;
     final String email = "johndoe1234@gmail.com";
+    final RoleEnum role = RoleEnum.USER;
     @Mock
     HttpServletRequest request;
     @Mock
@@ -52,6 +53,7 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(JwtTokenDummy);
         when(request.getServletPath()).thenReturn("/api/test");
         when(jwtService.extractUsername(TokenDummy)).thenReturn(email);
+        when(jwtService.extractRole(TokenDummy)).thenReturn(role.name());
         when(request.getReader()).thenReturn(reader);
         when(jwtService.isTokenValid(TokenDummy, userDTO)).thenReturn(true);
 
@@ -62,8 +64,7 @@ class JwtAuthenticationFilterTest {
         verify(request, atLeastOnce()).getHeader("Authorization");
         verify(request, atLeastOnce()).getServletPath();
         verify(jwtService, atLeastOnce()).extractUsername(TokenDummy);
-        verify(request, atLeastOnce()).getReader();
-        verify(jwtService, atLeastOnce()).isTokenValid(TokenDummy, userDTO);
+        verify(jwtService, atLeastOnce()).extractRole(TokenDummy);
     }
 
 

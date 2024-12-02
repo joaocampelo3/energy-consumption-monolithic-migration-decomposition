@@ -1,7 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
         final String userEmail;
+        final String userRole;
 
         if ((request.getServletPath().contains("/auth") && !request.getServletPath().contains("/auth/register/admin") && !request.getServletPath().contains("/auth/register/merchant"))
                 || (Arrays.stream(SWAGGER_WHITELIST_URL).anyMatch(string -> request.getServletPath().contains(string)))) {
@@ -48,24 +49,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwtToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwtToken);
+        userRole = jwtService.extractRole(jwtToken);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDTO userDTO = getRequestBody(request);
+        if (userEmail != null && userRole != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDTO userDTO = UserDTO.builder().email(userEmail).role(RoleEnum.valueOf(userRole)).build();
 
             if (jwtService.isTokenValid(jwtToken, userDTO)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO, null, List.of(new SimpleGrantedAuthority(userDTO.getRole().name())));
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO, null, List.of(new SimpleGrantedAuthority(userDTO.getRole().toString())));
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
         filterChain.doFilter(request, response);
-    }
-
-    private UserDTO getRequestBody(HttpServletRequest request) throws IOException {
-        // Create ObjectMapper instance
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // Deserialize JSON request body to UserDTO
-        return objectMapper.readValue(request.getReader(), UserDTO.class);
     }
 }
