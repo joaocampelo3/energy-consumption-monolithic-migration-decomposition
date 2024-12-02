@@ -24,7 +24,7 @@ public class RetailprojectApplication {
     }
 
     @Bean
-    public CommandLineRunner demoData(AccountRepository accountRepository, UserRepository userRepository, AddressRepository addressRepository){
+    public CommandLineRunner demoData(AccountRepository accountRepository, UserRepository userRepository, AddressRepository addressRepository) {
         return args -> {
             Account account1 = new Account("admin_email@gmail.com", "$2a$10$CoZ5c8.S3Iht/V3SRCOnP.dH.trp/rvmjtloGXlmDcdCDrNP51Qg2", RoleEnum.ADMIN);
             Account account2 = new Account("johndoe1234@gmail.com", "$2a$10$J7jrwtYh2UAoOjNgsrZTEOKCqnn3UdT5Prj7cL08bDLT3pJOvVdYe", RoleEnum.USER);

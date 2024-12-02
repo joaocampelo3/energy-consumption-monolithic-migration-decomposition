@@ -6,6 +6,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.UserRepository;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -134,7 +134,7 @@ class AuthenticationServiceTests {
     }
 
     @Test
-    void test_login() {
+    void test_login() throws NotFoundException {
         // Define the behavior of the mock
         when(authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -159,6 +159,32 @@ class AuthenticationServiceTests {
         verify(jwtService, atLeastOnce()).generateToken(user.getAccount());
         assertNotNull(result);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void test_loginFail() {
+        // Define the behavior of the mock
+        when(authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(),
+                        loginDTO.getPassword()
+                )
+        )).thenReturn(any());
+
+        NotFoundException result = assertThrows(NotFoundException.class, () -> {
+            authenticationService.login(loginDTO);
+        });
+
+        // Perform assertions
+        verify(authenticationManager, atLeastOnce()).authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(),
+                        loginDTO.getPassword()
+                )
+        );
+
+        assertNotNull(result);
+        assertEquals("User or Password not correct", result.getMessage());
     }
 
 }
