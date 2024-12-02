@@ -32,7 +32,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(ITEM_URL + "/all", HttpMethod.GET, request, Object.class);
         } else {
@@ -45,7 +45,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(ITEM_URL, HttpMethod.GET, request, Object.class);
@@ -59,7 +59,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(ITEM_URL + "/" + id, HttpMethod.GET, request, Object.class);
@@ -73,7 +73,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(itemDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemDTO> requestEntity = new HttpEntity<>(itemDTO, headers);
 
             return restTemplate.postForObject(ITEM_URL, requestEntity, ResponseEntity.class);
@@ -87,7 +87,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(ITEM_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
@@ -101,7 +101,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
 
             return restTemplate.exchange(ITEM_URL + "/" + id + "/addStock", HttpMethod.PATCH, requestEntity, Object.class);
@@ -115,7 +115,7 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
             return restTemplate.exchange(ITEM_URL + "/" + id + "/removeStock", HttpMethod.PATCH, requestEntity, Object.class);
         } else {

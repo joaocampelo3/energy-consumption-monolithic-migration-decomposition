@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonPropertyOrder({"userId", "email"})
 public class UserDTO {
     @JsonProperty("userId")

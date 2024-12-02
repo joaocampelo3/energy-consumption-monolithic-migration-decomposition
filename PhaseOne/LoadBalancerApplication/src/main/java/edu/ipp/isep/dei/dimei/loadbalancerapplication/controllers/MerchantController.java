@@ -34,7 +34,7 @@ public class MerchantController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(MERCHANT_URL + "/all", HttpMethod.GET, request, Object.class);
         } else {
@@ -47,7 +47,7 @@ public class MerchantController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.GET, request, Object.class);
         } else {
@@ -62,7 +62,7 @@ public class MerchantController implements HttpHeaderBuilder {
 
         if (userBody instanceof UserDTO userDTO && userDTO.equals(merchantDTO.getUserDTO()) && addressBody instanceof AddressDTO addressDTO) {
             merchantDTO.setAddressDTO(addressDTO);
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
             return restTemplate.postForObject(MERCHANT_URL, request, ResponseEntity.class);
         } else {
@@ -77,7 +77,7 @@ public class MerchantController implements HttpHeaderBuilder {
 
         if (body instanceof UserDTO userDTO && userDTO.equals(merchantDTO.getUserDTO()) && addressBody instanceof AddressDTO addressDTO) {
             merchantDTO.setAddressDTO(addressDTO);
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
             return restTemplate.patchForObject(MERCHANT_URL + "/" + merchantId, request, ResponseEntity.class);
         } else {
@@ -90,7 +90,7 @@ public class MerchantController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(MERCHANT_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
         } else {

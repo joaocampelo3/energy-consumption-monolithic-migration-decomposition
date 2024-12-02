@@ -26,7 +26,7 @@ public class AddressController implements HttpHeaderBuilder {
 
     @PostMapping
     public ResponseEntity<Object> createAddress(@RequestHeader("Authorization") String authorizationToken, @RequestBody AddressDTO addressDTO) {
-        HttpHeaders headers = buildHttpHeader(authorizationToken);
+        HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
         HttpEntity<AddressDTO> requestEntity = new HttpEntity<>(addressDTO, headers);
 
         return restTemplate.exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class);

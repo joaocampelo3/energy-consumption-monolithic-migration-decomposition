@@ -2,7 +2,7 @@ package edu.ipp.isep.dei.dimei.loadbalancerapplication.common;
 
 public class ControllersGlobalVariables {
     public static final String MONOLITH_URL = "http://RETAILPROJECTMONOLITH";
-    public static final String USERS_URL = "http://USERMICROSERVICEAPP/auth";
+    public static final String USERS_URL = "http://USERMICROSERVICEAPP";
     public static final String CATEGORY_URL = MONOLITH_URL + "/categories";
     public static final String ITEM_URL = MONOLITH_URL + "/items";
     public static final String MERCHANT_URL = MONOLITH_URL + "/merchants";

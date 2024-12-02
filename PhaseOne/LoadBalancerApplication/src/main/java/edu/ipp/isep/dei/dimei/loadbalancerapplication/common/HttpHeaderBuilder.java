@@ -7,8 +7,14 @@ public interface HttpHeaderBuilder {
 
     default HttpHeaders buildHttpHeader(String authorizationToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authorizationToken);
+
+        return headers;
+    }
+
+    default HttpHeaders buildHttpHeaderWithMediaType(String authorizationToken) {
+        HttpHeaders headers = buildHttpHeader(authorizationToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         return headers;
     }

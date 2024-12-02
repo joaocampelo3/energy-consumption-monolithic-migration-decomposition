@@ -31,7 +31,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(MERCHANT_ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
         } else {
@@ -44,7 +44,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(MERCHANT_ORDER_URL, HttpMethod.GET, request, Object.class);
@@ -58,7 +58,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(MERCHANT_ORDER_URL + "/" + merchantOrderId, HttpMethod.GET, request, Object.class);
@@ -72,7 +72,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(merchantOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantOrderUpdateDTO> request = new HttpEntity<>(merchantOrderUpdateDTO, headers);
 
             return restTemplate.exchange(MERCHANT_ORDER_URL + "/" + merchantOrderId + "/cancel", HttpMethod.PATCH, request, Object.class);
@@ -86,7 +86,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(merchantOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantOrderUpdateDTO> request = new HttpEntity<>(merchantOrderUpdateDTO, headers);
 
             return restTemplate.exchange(MERCHANT_ORDER_URL + "/" + merchantOrderId + "/reject", HttpMethod.PATCH, request, Object.class);
@@ -100,7 +100,7 @@ public class MerchantOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(merchantOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantOrderUpdateDTO> request = new HttpEntity<>(merchantOrderUpdateDTO, headers);
 
             return restTemplate.exchange(MERCHANT_ORDER_URL + "/" + merchantOrderId + "/approve", HttpMethod.PATCH, request, Object.class);

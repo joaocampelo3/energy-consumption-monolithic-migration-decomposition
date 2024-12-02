@@ -31,7 +31,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
         } else {
@@ -44,7 +44,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL, HttpMethod.GET, request, Object.class);
@@ -58,7 +58,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId, HttpMethod.GET, request, Object.class);
@@ -73,7 +73,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/cancel", HttpMethod.PATCH, request, Object.class);
@@ -87,7 +87,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/reject", HttpMethod.PATCH, request, Object.class);
@@ -101,7 +101,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/approve", HttpMethod.PATCH, request, Object.class);
@@ -115,7 +115,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/ship", HttpMethod.PATCH, request, Object.class);
@@ -129,7 +129,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken);
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
 
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/delivered", HttpMethod.PATCH, request, Object.class);
