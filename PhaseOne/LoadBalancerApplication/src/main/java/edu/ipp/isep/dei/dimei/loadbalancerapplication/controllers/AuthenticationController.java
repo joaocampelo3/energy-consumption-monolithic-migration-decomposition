@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.LoginDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.RegisterDTO;
@@ -8,12 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
@@ -21,7 +20,7 @@ import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersG
 
 @RestController
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController implements HttpHeaderBuilder {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final RestTemplate restTemplate;
@@ -51,23 +50,25 @@ public class AuthenticationController {
         logger("The register() started...", null);
         HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO);
         logger("The Authentication register request:\n {}", request);
-        return restTemplate.postForObject(USERS_URL + "/auth/register", request, ResponseEntity.class);
+        return restTemplate.exchange(USERS_URL + "/auth/register", HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
     }
 
     @PostMapping("/register/admin")
-    public ResponseEntity<AuthenticationResponse> registerAdmin(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<AuthenticationResponse> registerAdmin(@RequestHeader("Authorization") String authorizationToken, @RequestBody RegisterDTO registerDTO) {
         logger("The registerAdmin() started...", null);
-        HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO);
+        HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken.replace("Bearer ", ""));
+        HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO, headers);
         logger("The Authentication register admin request:\n {}", request);
-        return restTemplate.postForObject(USERS_URL + "/auth/register/admin", request, ResponseEntity.class);
+        return restTemplate.exchange(USERS_URL + "/auth/register/admin", HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
     }
 
     @PostMapping("/register/merchant")
-    public ResponseEntity<AuthenticationResponse> registerMerchant(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<AuthenticationResponse> registerMerchant(@RequestHeader("Authorization") String authorizationToken, @RequestBody RegisterDTO registerDTO) {
         logger("The registerMerchant() started...", null);
-        HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO);
+        HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken.replace("Bearer ", ""));
+        HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO, headers);
         logger("The Authentication register merchant request:\n {}", request);
-        return restTemplate.postForObject(USERS_URL + "/auth/register/merchant", request, ResponseEntity.class);
+        return restTemplate.exchange(USERS_URL + "/auth/register/merchant", HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
     }
 
     private void logger(String message, Object object) {
