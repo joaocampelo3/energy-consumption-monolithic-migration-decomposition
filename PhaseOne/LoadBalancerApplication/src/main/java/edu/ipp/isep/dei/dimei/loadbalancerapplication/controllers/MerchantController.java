@@ -1,16 +1,17 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.MerchantDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.MERCHANT_URL;
 
@@ -60,11 +61,11 @@ public class MerchantController implements HttpHeaderBuilder {
         Object userBody = getUserDTO(authorizationToken);
         Object addressBody = createAddressDTO(authorizationToken, merchantDTO.getAddressDTO());
 
-        if (userBody instanceof UserDTO userDTO && userDTO.equals(merchantDTO.getUserDTO()) && addressBody instanceof AddressDTO addressDTO) {
+        if (userBody instanceof UserDTO userDTO && addressBody instanceof AddressDTO addressDTO) {
             merchantDTO.setAddressDTO(addressDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
-            return restTemplate.postForObject(MERCHANT_URL, request, ResponseEntity.class);
+            return restTemplate.exchange(MERCHANT_URL, HttpMethod.POST, request, Object.class);
         } else {
             return (ResponseEntity<Object>) userBody;
         }
@@ -79,7 +80,8 @@ public class MerchantController implements HttpHeaderBuilder {
             merchantDTO.setAddressDTO(addressDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
-            return restTemplate.patchForObject(MERCHANT_URL + "/" + merchantId, request, ResponseEntity.class);
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+            return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -99,10 +101,28 @@ public class MerchantController implements HttpHeaderBuilder {
     }
 
     private Object getUserDTO(String authorizationToken) {
-        return userController.getUserId(authorizationToken).getBody();
+        ResponseEntity<Object> objectResponseEntity = userController.getUserId(authorizationToken);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
+        } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return objectResponseEntity.getBody();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected response type");
     }
 
     private Object createAddressDTO(String authorizationToken, AddressDTO addressDTO) {
-        return addressController.createAddress(authorizationToken, addressDTO).getBody();
+        ResponseEntity<Object> objectResponseEntity =  addressController.createAddress(authorizationToken, addressDTO);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), AddressDTO.class);
+        }
+
+        return objectResponseEntity.getBody();
     }
 }

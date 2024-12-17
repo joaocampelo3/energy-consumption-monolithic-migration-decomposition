@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +37,7 @@ public class CategoryController implements HttpHeaderBuilder {
         Object object = getUserDTO(authorizationToken);
 
         if (object instanceof UserDTO) {
-            HttpHeaders headers = buildHttpHeader(authorizationToken.replace("Bearer ", ""));
+            HttpHeaders headers = buildHttpHeader(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(headers);
             logger("The Categories getall request:\n {}", request);
             return restTemplate.exchange(CATEGORY_URL + "/all", HttpMethod.GET, request, new ParameterizedTypeReference<>() {
@@ -70,11 +71,11 @@ public class CategoryController implements HttpHeaderBuilder {
 
         logger("The authorization result:\n {}", body);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(categoryDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
             logger("The Categories creation request:\n {}", request);
-            return restTemplate.postForObject(CATEGORY_URL, request, ResponseEntity.class);
+            return restTemplate.exchange(CATEGORY_URL, HttpMethod.POST, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -88,11 +89,13 @@ public class CategoryController implements HttpHeaderBuilder {
         logger("The authorization result:\n {}", body);
 
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(categoryDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = CATEGORY_URL + "/{id}";
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
             logger("The Categories update request:\n {}", request);
-            return restTemplate.patchForObject(CATEGORY_URL + "/" + id, request, ResponseEntity.class);
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, id);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -122,11 +125,8 @@ public class CategoryController implements HttpHeaderBuilder {
 
         if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
             ObjectMapper mapper = new ObjectMapper();
-            UserDTO userDTO = mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
 
-            logger("UserDTO identified: {}", userDTO);
-
-            return userDTO;
+            return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
         } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger("String response body identified: {}", objectResponseEntity.getBody());
 

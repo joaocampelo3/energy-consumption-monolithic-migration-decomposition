@@ -3,9 +3,11 @@ package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class AddressDTO {
     private int id;

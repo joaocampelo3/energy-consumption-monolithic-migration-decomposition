@@ -1,15 +1,16 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.ShippingOrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.SHIPPING_ORDER_URL;
 
@@ -75,7 +76,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/cancel", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -89,7 +90,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/reject", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -103,7 +104,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/approve", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -117,7 +118,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/ship", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -131,7 +132,7 @@ public class ShippingOrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(shippingOrderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ShippingOrderUpdateDTO> request = new HttpEntity<>(shippingOrderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(SHIPPING_ORDER_URL + "/" + shippingOrderId + "/delivered", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -139,6 +140,16 @@ public class ShippingOrderController implements HttpHeaderBuilder {
     }
 
     private Object getUserDTO(String authorizationToken) {
-        return userController.getUserId(authorizationToken).getBody();
+        ResponseEntity<Object> objectResponseEntity = userController.getUserId(authorizationToken);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
+        } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return objectResponseEntity.getBody();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected response type");
     }
 }

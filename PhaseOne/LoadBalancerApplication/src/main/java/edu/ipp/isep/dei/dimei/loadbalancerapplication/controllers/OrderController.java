@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -99,7 +100,7 @@ public class OrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(ORDER_URL + "/" + orderId + "/cancel", HttpMethod.PATCH, request, Object.class);
 
         } else {
@@ -114,6 +115,7 @@ public class OrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(ORDER_URL + "/" + orderId + "/reject", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -127,7 +129,7 @@ public class OrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(ORDER_URL + "/" + orderId + "/approve", HttpMethod.PATCH, request, Object.class);
         } else {
             return (ResponseEntity<Object>) body;

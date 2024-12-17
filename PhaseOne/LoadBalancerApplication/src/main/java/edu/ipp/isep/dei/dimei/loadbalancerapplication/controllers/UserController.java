@@ -24,7 +24,7 @@ import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersG
 public class UserController implements HttpHeaderBuilder {
 
     private final RestTemplate restTemplate;
-    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(RestTemplate restTemplate) {

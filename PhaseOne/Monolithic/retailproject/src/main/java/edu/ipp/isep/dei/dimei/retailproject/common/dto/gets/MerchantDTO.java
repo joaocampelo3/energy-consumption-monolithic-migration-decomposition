@@ -1,5 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ public class MerchantDTO {
     private String email;
     private int addressId;
     private UserDTO userDTO;
+    @JsonProperty("address")
     private AddressDTO addressDTO;
 
     public MerchantDTO(Merchant merchant) {

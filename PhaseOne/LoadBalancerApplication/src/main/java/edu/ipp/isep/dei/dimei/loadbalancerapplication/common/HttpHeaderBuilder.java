@@ -7,7 +7,7 @@ public interface HttpHeaderBuilder {
 
     default HttpHeaders buildHttpHeader(String authorizationToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authorizationToken);
+        headers.setBearerAuth(authorizationToken.replaceAll("Bearer ", ""));
 
         return headers;
     }

@@ -1,16 +1,17 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.ItemUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.ITEM_URL;
 
@@ -76,7 +77,7 @@ public class ItemController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemDTO> requestEntity = new HttpEntity<>(itemDTO, headers);
 
-            return restTemplate.postForObject(ITEM_URL, requestEntity, ResponseEntity.class);
+            return restTemplate.exchange(ITEM_URL, HttpMethod.POST, requestEntity, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -103,7 +104,7 @@ public class ItemController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
-
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(ITEM_URL + "/" + id + "/addStock", HttpMethod.PATCH, requestEntity, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -117,6 +118,7 @@ public class ItemController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             return restTemplate.exchange(ITEM_URL + "/" + id + "/removeStock", HttpMethod.PATCH, requestEntity, Object.class);
         } else {
             return (ResponseEntity<Object>) body;
@@ -124,7 +126,17 @@ public class ItemController implements HttpHeaderBuilder {
     }
 
     private Object getUserDTO(String authorizationToken) {
-        return userController.getUserId(authorizationToken).getBody();
+        ResponseEntity<Object> objectResponseEntity = userController.getUserId(authorizationToken);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
+        } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return objectResponseEntity.getBody();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected response type");
     }
 
 }
