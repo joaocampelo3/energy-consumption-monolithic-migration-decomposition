@@ -51,9 +51,7 @@ public class OrderController {
 
     @PostMapping
     @Caching(
-            evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO")
-            }
+            evict = {@CacheEvict(allEntries = true)}
     )
     @Operation(
             description = "Create an order",
@@ -86,16 +84,15 @@ public class OrderController {
         return new ResponseEntity<>(orderDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/user/{userId}/order/{id}")
+    @DeleteMapping(path = "/user/{userId}/order/{orderId}")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#orderId")
             }
     )
-    public ResponseEntity<Object> deleteOrder(@PathVariable int userId, @RequestBody UserDTO userDTO, @PathVariable int id) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable int userId, @PathVariable int orderId) {
         try {
-            return new ResponseEntity<>(this.orderService.deleteOrder(userId, userDTO, id), HttpStatus.OK);
+            return new ResponseEntity<>(this.orderService.deleteOrder(userId, orderId), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -103,7 +100,6 @@ public class OrderController {
 
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#orderId")
             }
     )
@@ -121,7 +117,6 @@ public class OrderController {
     @PatchMapping(path = "/{orderId}/reject")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#orderId")
             }
     )
@@ -138,7 +133,6 @@ public class OrderController {
     @PatchMapping(path = "/{orderId}/approve")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#orderId")
             }
     )

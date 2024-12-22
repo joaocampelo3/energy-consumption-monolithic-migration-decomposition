@@ -67,9 +67,13 @@ public class ItemService {
     }
 
     private Item getUserItemById(UserDTO userDTO, int id) throws NotFoundException {
-        Merchant merchant = getItemMerchantByUser(userDTO);
+        if (RoleEnum.MERCHANT.compareTo(userDTO.getRole()) == 0) {
+            Merchant merchant = getItemMerchantByUser(userDTO);
 
-        return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+            return this.itemRepository.findById(id).filter(item -> item.getMerchant().equals(merchant)).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        } else {
+            return getItemById(id);
+        }
     }
 
     public ItemDTO createItem(ItemDTO itemDTO) throws NotFoundException, BadPayloadException, InvalidQuantityException {

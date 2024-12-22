@@ -61,8 +61,7 @@ public class ItemController {
 
     @PostMapping
     @Caching(
-            evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO")
+            evict = {@CacheEvict(allEntries = true)
             }
     )
     @Operation(
@@ -101,7 +100,6 @@ public class ItemController {
     @PatchMapping(path = "/{itemId}/addStock")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#itemId")
             }
     )
@@ -118,7 +116,6 @@ public class ItemController {
     @PatchMapping(path = "/{id}/removeStock")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#id")
             }
     )

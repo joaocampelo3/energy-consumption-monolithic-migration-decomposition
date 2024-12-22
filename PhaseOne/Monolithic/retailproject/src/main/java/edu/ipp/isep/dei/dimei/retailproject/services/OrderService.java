@@ -94,10 +94,10 @@ public class OrderService {
         return new OrderDTO(order);
     }
 
-    public OrderDTO deleteOrder(int id, UserDTO userDTO, int orderId) throws NotFoundException {
+    public OrderDTO deleteOrder(int id, int orderId) throws NotFoundException {
 
         Order order = this.orderRepository.findById(orderId)
-                .filter(o -> o.getUserId() == userDTO.getUserId() && userDTO.getUserId() == id)
+                .filter(o -> o.getUserId() == id)
                 .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         this.shippingOrderService.deleteShippingOrderByOrderId(order.getId());

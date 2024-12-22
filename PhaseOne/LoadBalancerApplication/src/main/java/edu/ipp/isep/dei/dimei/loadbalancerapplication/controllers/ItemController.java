@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 
+import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.CATEGORY_URL;
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.ITEM_URL;
 
 @RestController
@@ -60,10 +61,11 @@ public class ItemController implements HttpHeaderBuilder {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
+            String url = ITEM_URL + "/{itemId}";
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-
-            return restTemplate.exchange(ITEM_URL + "/" + id, HttpMethod.GET, request, Object.class);
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+            return restTemplate.exchange(url, HttpMethod.GET, request, Object.class, id);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -73,8 +75,9 @@ public class ItemController implements HttpHeaderBuilder {
     public ResponseEntity<Object> createItem(@RequestHeader("Authorization") String authorizationToken, @RequestBody ItemDTO itemDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(itemDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
+            itemDTO.setUserDTO(userDTO);
             HttpEntity<ItemDTO> requestEntity = new HttpEntity<>(itemDTO, headers);
 
             return restTemplate.exchange(ITEM_URL, HttpMethod.POST, requestEntity, Object.class);
@@ -101,11 +104,13 @@ public class ItemController implements HttpHeaderBuilder {
     public ResponseEntity<Object> addItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = ITEM_URL + "/{id}/addStock";
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
+            itemUpdateDTO.setUserDTO(userDTO);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(ITEM_URL + "/" + id + "/addStock", HttpMethod.PATCH, requestEntity, Object.class);
+            return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -115,11 +120,13 @@ public class ItemController implements HttpHeaderBuilder {
     public ResponseEntity<Object> removeItemStock(@RequestHeader("Authorization") String authorizationToken, @PathVariable int id, @RequestBody ItemUpdateDTO itemUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(itemUpdateDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = ITEM_URL + "/{id}/removeStock";
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
+            itemUpdateDTO.setUserDTO(userDTO);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(ITEM_URL + "/" + id + "/removeStock", HttpMethod.PATCH, requestEntity, Object.class);
+            return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
         } else {
             return (ResponseEntity<Object>) body;
         }

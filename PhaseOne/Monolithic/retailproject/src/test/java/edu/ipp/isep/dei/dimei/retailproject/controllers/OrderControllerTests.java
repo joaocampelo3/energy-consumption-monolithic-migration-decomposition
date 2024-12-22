@@ -296,14 +296,14 @@ class OrderControllerTests {
         // Define the behavior of the mock
         int id = 1;
         int userId = 1;
-        when(orderService.deleteOrder(userId, userDTO, id)).thenReturn(orderDTO);
+        when(orderService.deleteOrder(userId, id)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> orderResponseEntity = orderController.deleteOrder(userId, userDTO, id);
+        ResponseEntity<Object> orderResponseEntity = orderController.deleteOrder(userId, id);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = ResponseEntity.ok(orderDTO);
 
         // Perform assertions
-        verify(orderService, atMostOnce()).deleteOrder(userId, userDTO, id);
+        verify(orderService, atMostOnce()).deleteOrder(userId, id);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
     }
@@ -313,14 +313,14 @@ class OrderControllerTests {
         // Define the behavior of the mock
         int id = 1;
         int userId = 1;
-        when(orderService.deleteOrder(userId, userDTO, id)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+        when(orderService.deleteOrder(userId, id)).thenThrow(new NotFoundException(exceptionOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = orderController.deleteOrder(userId, userDTO, id);
+        ResponseEntity<Object> result = orderController.deleteOrder(userId, id);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).deleteOrder(userId, userDTO, id);
+        verify(orderService, atLeastOnce()).deleteOrder(userId, id);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());

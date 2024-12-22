@@ -61,7 +61,6 @@ public class ShippingOrderController {
     @PatchMapping(path = "/{shippingOrderId}/cancel")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#shippingOrderId")
             }
     )
@@ -78,7 +77,6 @@ public class ShippingOrderController {
     @PatchMapping(path = "/{shippingOrderId}/reject")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#shippingOrderId")
             }
     )
@@ -95,7 +93,6 @@ public class ShippingOrderController {
     @PatchMapping(path = "/{shippingOrderId}/approve")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#shippingOrderId")
             }
     )
@@ -112,7 +109,6 @@ public class ShippingOrderController {
     @PatchMapping(path = "/{shippingOrderId}/ship")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#shippingOrderId")
             }
     )
@@ -129,7 +125,6 @@ public class ShippingOrderController {
     @PatchMapping(path = "/{shippingOrderId}/delivered")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#shippingOrderId")
             }
     )

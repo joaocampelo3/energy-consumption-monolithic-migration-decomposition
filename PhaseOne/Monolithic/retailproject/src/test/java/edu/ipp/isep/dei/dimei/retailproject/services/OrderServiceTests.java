@@ -416,7 +416,7 @@ class OrderServiceTests {
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.deleteOrder(userDTO.getUserId(), userDTO, order1.getId());
+        OrderDTO result = orderService.deleteOrder(userDTO.getUserId(), order1.getId());
         OrderDTO expected = orderDTO1;
 
         // Perform assertions

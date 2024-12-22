@@ -5,11 +5,13 @@ import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentStatus
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class PaymentDTO {
     private int id;

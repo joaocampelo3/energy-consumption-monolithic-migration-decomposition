@@ -1,18 +1,20 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.OrderUpdateDTO;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.ORDER_URL;
 
@@ -63,12 +65,15 @@ public class OrderController implements HttpHeaderBuilder {
         Object userBody = getUserDTO(authorizationToken);
         Object addressBody = createAddressDTO(authorizationToken, orderDTO.getAddress());
 
-        if (userBody instanceof UserDTO userDTO && userDTO.equals(orderDTO.getUserDTO()) && addressBody instanceof AddressDTO addressDTO) {
+        if (userBody instanceof UserDTO userDTO && addressBody instanceof AddressDTO addressDTO) {
+            orderDTO.setUserDTO(userDTO);
             orderDTO.setAddress(addressDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderCreateDTO> request = new HttpEntity<>(orderDTO, headers);
 
             return restTemplate.exchange(ORDER_URL, HttpMethod.POST, request, Object.class);
+        } else if (!(addressBody instanceof AddressDTO addressDTO)) {
+            return (ResponseEntity<Object>) addressBody;
         } else {
             return (ResponseEntity<Object>) userBody;
         }
@@ -90,18 +95,30 @@ public class OrderController implements HttpHeaderBuilder {
 
     @DeleteMapping(path = "/user/{userId}/order/{orderId}")
     public ResponseEntity<Object> deleteOrder(@RequestHeader("Authorization") String authorizationToken, @PathVariable int userId, @PathVariable int orderId) {
-        return restTemplate.exchange(ORDER_URL + "/user/" + userId + "/order/" + orderId, HttpMethod.DELETE, null, Object.class);
+        Object body = getUserDTO(authorizationToken);
+
+        if (body instanceof UserDTO userDTO) {
+            String url = ORDER_URL + "/user/{userId}/order/{orderId}";
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+            HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
+            HttpEntity<UserDTO> requestEntity = new HttpEntity<>(userDTO, headers);
+            return restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Object.class, userId, orderId);
+        } else {
+            return (ResponseEntity<Object>) body;
+        }
     }
 
     @PatchMapping(path = "/{orderId}/cancel")
     public ResponseEntity<Object> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = ORDER_URL + "/{orderId}/cancel";
+            orderUpdateDTO.setUserDTO(userDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/cancel", HttpMethod.PATCH, request, Object.class);
+            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
 
         } else {
             return (ResponseEntity<Object>) body;
@@ -112,11 +129,13 @@ public class OrderController implements HttpHeaderBuilder {
     public ResponseEntity<Object> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = ORDER_URL + "/{orderId}/reject";
+            orderUpdateDTO.setUserDTO(userDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/reject", HttpMethod.PATCH, request, Object.class);
+            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -126,21 +145,41 @@ public class OrderController implements HttpHeaderBuilder {
     public ResponseEntity<Object> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO && userDTO.equals(orderUpdateDTO.getUserDTO())) {
+        if (body instanceof UserDTO userDTO) {
+            String url = ORDER_URL + "/{orderId}/approve";
+            orderUpdateDTO.setUserDTO(userDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(ORDER_URL + "/" + orderId + "/approve", HttpMethod.PATCH, request, Object.class);
+            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
         } else {
             return (ResponseEntity<Object>) body;
         }
     }
 
     private Object getUserDTO(String authorizationToken) {
-        return userController.getUserId(authorizationToken).getBody();
+        ResponseEntity<Object> objectResponseEntity = userController.getUserId(authorizationToken);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
+        } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return objectResponseEntity.getBody();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected response type");
     }
 
     private Object createAddressDTO(String authorizationToken, AddressDTO addressDTO) {
-        return addressController.createAddress(authorizationToken, addressDTO).getBody();
+        ResponseEntity<Object> objectResponseEntity = addressController.createAddress(authorizationToken, addressDTO);
+
+        if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.convertValue(objectResponseEntity.getBody(), AddressDTO.class);
+        }
+
+        return objectResponseEntity.getBody();
     }
 }

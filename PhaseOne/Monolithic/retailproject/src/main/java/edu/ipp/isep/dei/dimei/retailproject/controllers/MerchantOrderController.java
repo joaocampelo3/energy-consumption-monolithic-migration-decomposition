@@ -63,7 +63,6 @@ public class MerchantOrderController {
     @PatchMapping(path = "/{merchantOrderId}/cancel")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#merchantOrderId")
             }
     )
@@ -80,7 +79,6 @@ public class MerchantOrderController {
     @PatchMapping(path = "/{id}/reject")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#useDTO"),
                     @CacheEvict(key = "#id")
             }
     )
@@ -98,7 +96,6 @@ public class MerchantOrderController {
     @PatchMapping(path = "/{merchantOrderId}/approve")
     @Caching(
             evict = {@CacheEvict(allEntries = true),
-                    @CacheEvict(key = "#userDTO"),
                     @CacheEvict(key = "#merchantOrderId")
             }
     )
