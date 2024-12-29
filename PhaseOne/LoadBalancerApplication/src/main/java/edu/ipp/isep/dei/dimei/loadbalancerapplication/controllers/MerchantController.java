@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
@@ -37,7 +38,11 @@ public class MerchantController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(MERCHANT_URL + "/all", HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(MERCHANT_URL + "/all", HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -50,7 +55,11 @@ public class MerchantController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -65,7 +74,11 @@ public class MerchantController implements HttpHeaderBuilder {
             merchantDTO.setAddressDTO(addressDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
-            return restTemplate.exchange(MERCHANT_URL, HttpMethod.POST, request, Object.class);
+            try {
+                return restTemplate.exchange(MERCHANT_URL, HttpMethod.POST, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) userBody;
         }
@@ -81,7 +94,12 @@ public class MerchantController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.PATCH, request, Object.class);
+            try {
+
+                return restTemplate.exchange(MERCHANT_URL + "/" + merchantId, HttpMethod.PATCH, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -94,7 +112,11 @@ public class MerchantController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(MERCHANT_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            try {
+                return restTemplate.exchange(MERCHANT_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -108,14 +130,14 @@ public class MerchantController implements HttpHeaderBuilder {
 
             return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
         } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
-            return objectResponseEntity.getBody();
+            return objectResponseEntity;
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexpected response type");
     }
 
     private Object createAddressDTO(String authorizationToken, AddressDTO addressDTO) {
-        ResponseEntity<Object> objectResponseEntity =  addressController.createAddress(authorizationToken, addressDTO);
+        ResponseEntity<Object> objectResponseEntity = addressController.createAddress(authorizationToken, addressDTO);
 
         if (objectResponseEntity.getStatusCode() == HttpStatus.OK && objectResponseEntity.getBody() instanceof LinkedHashMap) {
             ObjectMapper mapper = new ObjectMapper();
@@ -123,6 +145,6 @@ public class MerchantController implements HttpHeaderBuilder {
             return mapper.convertValue(objectResponseEntity.getBody(), AddressDTO.class);
         }
 
-        return objectResponseEntity.getBody();
+        return objectResponseEntity;
     }
 }

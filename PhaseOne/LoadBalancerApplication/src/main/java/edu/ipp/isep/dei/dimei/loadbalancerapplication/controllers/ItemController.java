@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 
-import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.CATEGORY_URL;
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.ITEM_URL;
 
 @RestController
@@ -36,7 +36,11 @@ public class ItemController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(ITEM_URL + "/all", HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(ITEM_URL + "/all", HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -49,8 +53,11 @@ public class ItemController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-
-            return restTemplate.exchange(ITEM_URL, HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(ITEM_URL, HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -65,7 +72,11 @@ public class ItemController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.GET, request, Object.class, id);
+            try {
+                return restTemplate.exchange(url, HttpMethod.GET, request, Object.class, id);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -79,8 +90,11 @@ public class ItemController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             itemDTO.setUserDTO(userDTO);
             HttpEntity<ItemDTO> requestEntity = new HttpEntity<>(itemDTO, headers);
-
-            return restTemplate.exchange(ITEM_URL, HttpMethod.POST, requestEntity, Object.class);
+            try {
+                return restTemplate.exchange(ITEM_URL, HttpMethod.POST, requestEntity, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -94,7 +108,11 @@ public class ItemController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-            return restTemplate.exchange(ITEM_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            try {
+                return restTemplate.exchange(ITEM_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -110,7 +128,11 @@ public class ItemController implements HttpHeaderBuilder {
             itemUpdateDTO.setUserDTO(userDTO);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -126,7 +148,11 @@ public class ItemController implements HttpHeaderBuilder {
             itemUpdateDTO.setUserDTO(userDTO);
             HttpEntity<ItemUpdateDTO> requestEntity = new HttpEntity<>(itemUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Object.class, id);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -140,7 +166,7 @@ public class ItemController implements HttpHeaderBuilder {
 
             return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
         } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
-            return objectResponseEntity.getBody();
+            return objectResponseEntity;
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexpected response type");

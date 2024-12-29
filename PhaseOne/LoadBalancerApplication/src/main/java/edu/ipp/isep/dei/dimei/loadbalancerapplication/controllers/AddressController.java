@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
@@ -28,8 +29,11 @@ public class AddressController implements HttpHeaderBuilder {
     public ResponseEntity<Object> createAddress(@RequestHeader("Authorization") String authorizationToken, @RequestBody AddressDTO addressDTO) {
         HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
         HttpEntity<AddressDTO> requestEntity = new HttpEntity<>(addressDTO, headers);
-
-        return restTemplate.exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class);
+        try {
+            return restTemplate.exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class);
+        } catch (HttpClientErrorException e) {
+            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+        }
     }
 
 }

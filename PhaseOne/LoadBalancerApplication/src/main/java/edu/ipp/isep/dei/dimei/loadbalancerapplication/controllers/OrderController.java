@@ -5,13 +5,12 @@ import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.OrderUpdateDTO;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
@@ -40,7 +39,11 @@ public class OrderController implements HttpHeaderBuilder {
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -54,7 +57,11 @@ public class OrderController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-            return restTemplate.exchange(ORDER_URL, HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(ORDER_URL, HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -71,30 +78,39 @@ public class OrderController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderCreateDTO> request = new HttpEntity<>(orderDTO, headers);
 
-            return restTemplate.exchange(ORDER_URL, HttpMethod.POST, request, Object.class);
-        } else if (!(addressBody instanceof AddressDTO addressDTO)) {
-            return (ResponseEntity<Object>) addressBody;
+            try {
+                return restTemplate.exchange(ORDER_URL, HttpMethod.POST, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) userBody;
         }
     }
 
+
     @GetMapping(path = "/{orderId}")
-    public ResponseEntity<Object> getUserOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId) {
+    public ResponseEntity<Object> getUserOrderById(@RequestHeader("Authorization") String authorizationToken,
+                                                   @PathVariable int orderId) {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-            return restTemplate.exchange(ORDER_URL + "/" + orderId, HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(ORDER_URL + "/" + orderId, HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
     }
 
     @DeleteMapping(path = "/user/{userId}/order/{orderId}")
-    public ResponseEntity<Object> deleteOrder(@RequestHeader("Authorization") String authorizationToken, @PathVariable int userId, @PathVariable int orderId) {
+    public ResponseEntity<Object> deleteOrder(@RequestHeader("Authorization") String authorizationToken,
+                                              @PathVariable int userId, @PathVariable int orderId) {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
@@ -102,14 +118,19 @@ public class OrderController implements HttpHeaderBuilder {
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> requestEntity = new HttpEntity<>(userDTO, headers);
-            return restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Object.class, userId, orderId);
+            try {
+                return restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Object.class, userId, orderId);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
     }
 
     @PatchMapping(path = "/{orderId}/cancel")
-    public ResponseEntity<Object> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<Object> fullCancelOrderById(@RequestHeader("Authorization") String authorizationToken,
+                                                      @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
@@ -118,15 +139,19 @@ public class OrderController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
-
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
     }
 
     @PatchMapping(path = "/{orderId}/reject")
-    public ResponseEntity<Object> rejectOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<Object> rejectOrderById(@RequestHeader("Authorization") String authorizationToken,
+                                                  @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
@@ -135,14 +160,19 @@ public class OrderController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
     }
 
     @PatchMapping(path = "/{orderId}/approve")
-    public ResponseEntity<Object> approveOrderById(@RequestHeader("Authorization") String authorizationToken, @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<Object> approveOrderById(@RequestHeader("Authorization") String authorizationToken,
+                                                   @PathVariable int orderId, @RequestBody OrderUpdateDTO orderUpdateDTO) {
         Object body = getUserDTO(authorizationToken);
 
         if (body instanceof UserDTO userDTO) {
@@ -151,7 +181,11 @@ public class OrderController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<OrderUpdateDTO> request = new HttpEntity<>(orderUpdateDTO, headers);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, orderId);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -165,7 +199,7 @@ public class OrderController implements HttpHeaderBuilder {
 
             return mapper.convertValue(objectResponseEntity.getBody(), UserDTO.class);
         } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
-            return objectResponseEntity.getBody();
+            return objectResponseEntity;
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexpected response type");
@@ -180,6 +214,6 @@ public class OrderController implements HttpHeaderBuilder {
             return mapper.convertValue(objectResponseEntity.getBody(), AddressDTO.class);
         }
 
-        return objectResponseEntity.getBody();
+        return objectResponseEntity;
     }
 }

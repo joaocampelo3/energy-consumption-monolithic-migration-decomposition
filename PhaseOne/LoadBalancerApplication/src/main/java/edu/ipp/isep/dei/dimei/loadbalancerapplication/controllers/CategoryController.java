@@ -11,6 +11,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
@@ -40,8 +41,11 @@ public class CategoryController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeader(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(headers);
             logger("The Categories getall request:\n {}", request);
-            return restTemplate.exchange(CATEGORY_URL + "/all", HttpMethod.GET, request, new ParameterizedTypeReference<>() {
-            });
+            try {
+                return restTemplate.exchange(CATEGORY_URL + "/all", HttpMethod.GET, request, new ParameterizedTypeReference<>() {});
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) object;
         }
@@ -58,7 +62,11 @@ public class CategoryController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             logger("The Categories getbyid request:\n {}", request);
-            return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.GET, request, Object.class);
+            try {
+                return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.GET, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -75,7 +83,11 @@ public class CategoryController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
             logger("The Categories creation request:\n {}", request);
-            return restTemplate.exchange(CATEGORY_URL, HttpMethod.POST, request, Object.class);
+            try {
+                return restTemplate.exchange(CATEGORY_URL, HttpMethod.POST, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -95,7 +107,11 @@ public class CategoryController implements HttpHeaderBuilder {
             HttpEntity<CategoryDTO> request = new HttpEntity<>(categoryDTO, headers);
             logger("The Categories update request:\n {}", request);
             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-            return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, id);
+            try {
+                return restTemplate.exchange(url, HttpMethod.PATCH, request, Object.class, id);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -114,7 +130,11 @@ public class CategoryController implements HttpHeaderBuilder {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             logger("The Categories delete request:\n {}", request);
-            return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            try {
+                return restTemplate.exchange(CATEGORY_URL + "/" + id, HttpMethod.DELETE, request, Object.class);
+            } catch (HttpClientErrorException e) {
+                return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            }
         } else {
             return (ResponseEntity<Object>) body;
         }
@@ -130,7 +150,7 @@ public class CategoryController implements HttpHeaderBuilder {
         } else if (objectResponseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED || objectResponseEntity.getStatusCode() == HttpStatus.FORBIDDEN || objectResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger("String response body identified: {}", objectResponseEntity.getBody());
 
-            return objectResponseEntity.getBody();
+            return objectResponseEntity;
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexpected response type");

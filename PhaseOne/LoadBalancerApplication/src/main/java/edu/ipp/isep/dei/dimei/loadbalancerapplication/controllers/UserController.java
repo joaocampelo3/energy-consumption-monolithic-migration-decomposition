@@ -45,7 +45,7 @@ public class UserController implements HttpHeaderBuilder {
             });
         } catch (HttpClientErrorException e) {
             logger.error("HTTP error occurred: Status - {}, Body - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw e;
+            return new ResponseEntity<>(e.getResponseBodyAsString(), e.getStatusCode());
         } catch (Exception e) {
             logger.error("Unexpected error: {}", e.getMessage(), e);
             throw e;
