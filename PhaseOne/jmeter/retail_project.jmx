@@ -11,7 +11,7 @@
           </elementProp>
           <elementProp name="port" elementType="Argument">
             <stringProp name="Argument.name">port</stringProp>
-            <stringProp name="Argument.value">30006</stringProp>
+            <stringProp name="Argument.value">8081</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="admin_jwt_token" elementType="Argument">
@@ -31,6 +31,8 @@
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group">
@@ -294,7 +296,7 @@ log.info(&quot;User Auth Token: &quot; + vars.get(&quot;user_jwt_token&quot;))</
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login as Merchant Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login as Merchant Request" enabled="true">
           <stringProp name="HTTPSampler.domain">${host}</stringProp>
           <stringProp name="HTTPSampler.port">${port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -318,7 +320,7 @@ log.info(&quot;User Auth Token: &quot; + vars.get(&quot;user_jwt_token&quot;))</
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -355,7 +357,7 @@ log.info(&quot;User Auth Token: &quot; + vars.get(&quot;user_jwt_token&quot;))</
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report">
+          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -410,7 +412,7 @@ log.info(&quot;Merchant Auth Token: &quot; + vars.get(&quot;merchant_jwt_token&q
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -448,7 +450,7 @@ log.info(&quot;Merchant Auth Token: &quot; + vars.get(&quot;merchant_jwt_token&q
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="AuthenticationController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="AuthenticationController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -957,7 +959,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="CategoryController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="CategoryController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -1422,7 +1424,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -1488,7 +1490,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
 	&quot;name&quot;: &quot;Merchant ${counter}&quot;,&#xd;
 	&quot;email&quot;: &quot;merchant${counter}_email@gmail.com&quot;,&#xd;
 	&quot;address&quot;: {&#xd;
-		&quot;street&quot;: &quot;5th Avenue&quot;,&#xd;
+		&quot;street&quot;: &quot;5th Avenue, ${counter}&quot;,&#xd;
 		&quot;zipCode&quot;: &quot;10128&quot;,&#xd;
 		&quot;city&quot;: &quot;New York&quot;,&#xd;
 		&quot;country&quot;: &quot;USA&quot;&#xd;
@@ -1899,7 +1901,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ItemController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ItemController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -2543,7 +2545,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -2621,7 +2623,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
     },&#xd;
     &quot;merchantId&quot;: 1,&#xd;
     &quot;address&quot;: {&#xd;
-        &quot;street&quot;: &quot;Different street&quot;,&#xd;
+        &quot;street&quot;: &quot;Different Street&quot;,&#xd;
         &quot;zipCode&quot;: &quot;1234&quot;,&#xd;
         &quot;city&quot;: &quot;Lisbon&quot;,&#xd;
         &quot;country&quot;: &quot;Portugal&quot;&#xd;
@@ -3184,7 +3186,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantOrderController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantOrderController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -3801,7 +3803,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ShippingOrderController Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ShippingOrderController Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -4747,7 +4749,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Reject Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Reject Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">25</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -4950,7 +4952,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Cancel Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Cancel Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">25</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -5135,7 +5137,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Delete Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OrderController Delete Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -5320,7 +5322,7 @@ log.info(&quot;OrderController Delete Thread Group - Merchant Auth Token: ${__P(
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ItemController Delete Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ItemController Delete Thread Group">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -5505,7 +5507,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantController Delete Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="MerchantController Delete Thread Group" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -5681,7 +5683,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="CategoryController Delete Thread Group" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="CategoryController Delete Thread Group">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">0</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -21332,7 +21334,7 @@ log.info(&quot;Merchant Auth Token: ${__P(merchant_jwt_token)}&quot;)</stringPro
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
