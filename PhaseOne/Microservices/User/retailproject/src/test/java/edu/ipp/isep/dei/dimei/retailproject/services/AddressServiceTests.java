@@ -23,8 +23,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AddressServiceTests {
-    final static String exceptionNotFound = "User not found.";
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     AddressService addressService;
     @Mock
@@ -67,17 +66,17 @@ class AddressServiceTests {
     @Test
     void test_CreateAddress() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(addressRepository.existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId()))
                 .thenReturn(false);
         when(addressRepository.save(address1)).thenReturn(address1);
 
         // Call the service method that uses the Repository
-        AddressDTO result = addressService.createAddress(JwtTokenDummy, addressDTO1);
+        AddressDTO result = addressService.createAddress(jwtTokenDummy, addressDTO1);
         AddressDTO expected = addressDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(addressRepository, atLeastOnce()).existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId());
         verify(addressRepository, atLeastOnce()).save(address1);
         assertNotNull(result);
@@ -87,18 +86,18 @@ class AddressServiceTests {
     @Test
     void test_CreateExistingAddress() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(addressRepository.existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId()))
                 .thenReturn(true);
         when(addressRepository.findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry()))
                 .thenReturn(Optional.ofNullable(address1));
 
         // Call the service method that uses the Repository
-        AddressDTO result = addressService.createAddress(JwtTokenDummy, addressDTO1);
+        AddressDTO result = addressService.createAddress(jwtTokenDummy, addressDTO1);
         AddressDTO expected = addressDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(addressRepository, atLeastOnce()).existsAddressByStreetAndZipCodeAndCityAndCountryAndUserId(addressDTO1.getStreet(), addressDTO1.getZipCode(), addressDTO1.getCity(), addressDTO1.getCountry(), user.getId());
         verify(addressRepository, atLeastOnce()).findAddressByStreetAndZipCodeAndCityAndCountry(address1.getStreet(), address1.getZipCode(), address1.getCity(), address1.getCountry());
         assertNotNull(result);

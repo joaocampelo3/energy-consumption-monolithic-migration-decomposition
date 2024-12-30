@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserControllerTests {
 
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     UserController userController;
     @Mock
@@ -54,14 +54,14 @@ class UserControllerTests {
     @Test
     void test_GetUserId() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserId(JwtTokenDummy)).thenReturn(userDTO);
+        when(userService.getUserId(jwtTokenDummy)).thenReturn(userDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = userController.getUserId(JwtTokenDummy);
+        ResponseEntity<Object> result = userController.getUserId(jwtTokenDummy);
         ResponseEntity<Object> expected = ResponseEntity.ok(userDTO);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserId(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserId(jwtTokenDummy);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -69,13 +69,13 @@ class UserControllerTests {
     @Test
     void test_GetUserIdFail() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserId(JwtTokenDummy)).thenThrow(new NotFoundException("User not found."));
+        when(userService.getUserId(jwtTokenDummy)).thenThrow(new NotFoundException("User not found."));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = userController.getUserId(JwtTokenDummy);
+        ResponseEntity<Object> result = userController.getUserId(jwtTokenDummy);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserId(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserId(jwtTokenDummy);
         assertNotNull(result);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("User not found.", result.getBody());

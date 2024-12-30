@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     AuthenticationService authenticationService;
     @Mock
@@ -85,11 +85,11 @@ class AuthenticationServiceTests {
         // Define the behavior of the mock
         account.setRole(RoleEnum.ADMIN);
         when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(JwtTokenDummy);
+        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.registerAdmin(registerDTO);
-        AuthenticationResponse expected = new AuthenticationResponse(JwtTokenDummy);
+        AuthenticationResponse expected = new AuthenticationResponse(jwtTokenDummy);
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
@@ -103,11 +103,11 @@ class AuthenticationServiceTests {
         // Define the behavior of the mock
         account.setRole(RoleEnum.MERCHANT);
         when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(JwtTokenDummy);
+        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.registerMerchant(registerDTO);
-        AuthenticationResponse expected = new AuthenticationResponse(JwtTokenDummy);
+        AuthenticationResponse expected = new AuthenticationResponse(jwtTokenDummy);
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
@@ -120,11 +120,11 @@ class AuthenticationServiceTests {
     void test_register() {
         // Define the behavior of the mock
         when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(JwtTokenDummy);
+        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.register(registerDTO);
-        AuthenticationResponse expected = new AuthenticationResponse(JwtTokenDummy);
+        AuthenticationResponse expected = new AuthenticationResponse(jwtTokenDummy);
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
@@ -143,11 +143,11 @@ class AuthenticationServiceTests {
                 )
         )).thenReturn(any());
         when(userRepository.findByAccountEmail(loginDTO.getEmail())).thenReturn(Optional.ofNullable(user));
-        when(jwtService.generateToken(user.getAccount())).thenReturn(JwtTokenDummy);
+        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.login(loginDTO);
-        AuthenticationResponse expected = new AuthenticationResponse(JwtTokenDummy);
+        AuthenticationResponse expected = new AuthenticationResponse(jwtTokenDummy);
 
         // Perform assertions
         verify(authenticationManager, atLeastOnce()).authenticate(

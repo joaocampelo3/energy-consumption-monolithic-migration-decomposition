@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTests {
-    final static String exceptionNotFound = "User not found.";
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    static final String EXCEPTION_NOT_FOUND = "User not found.";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     UserService userService;
     @Mock
@@ -82,7 +82,7 @@ class UserServiceTests {
         when(userRepository.findByAccountEmail(email)).thenReturn(Optional.ofNullable(user));
 
         // Call the service method that uses the Repository
-        User result = userService.getUserByToken(JwtTokenDummy);
+        User result = userService.getUserByToken(jwtTokenDummy);
         User expected = userExpected;
 
         // Perform assertions
@@ -100,7 +100,7 @@ class UserServiceTests {
         when(jwtService.extractClaims(anyString(), any())).thenReturn(email);
 
         // Call the service method that uses the Repository
-        String result = userService.getEmailFromAuthorizationString(JwtTokenDummy);
+        String result = userService.getEmailFromAuthorizationString(jwtTokenDummy);
         String expected = email;
 
         // Perform assertions
@@ -135,7 +135,7 @@ class UserServiceTests {
         });
 
         assertNotNull(result);
-        assertEquals(exceptionNotFound, result.getMessage());
+        assertEquals(EXCEPTION_NOT_FOUND, result.getMessage());
     }
 
     @Test
@@ -145,7 +145,7 @@ class UserServiceTests {
         when(userRepository.findByAccountEmail(email)).thenReturn(Optional.ofNullable(user));
 
         // Call the service method that uses the Repository
-        UserDTO result = userService.getUserId(JwtTokenDummy);
+        UserDTO result = userService.getUserId(jwtTokenDummy);
         UserDTO expected = userDTOExpected;
 
         // Perform assertions

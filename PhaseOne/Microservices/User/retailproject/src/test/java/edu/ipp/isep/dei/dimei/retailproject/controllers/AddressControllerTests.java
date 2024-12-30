@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AddressControllerTests {
 
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     AddressController addressController;
     @Mock
@@ -41,14 +41,14 @@ class AddressControllerTests {
     @Test
     void test_GetUserId() throws NotFoundException {
         // Define the behavior of the mock
-        when(addressService.createAddress(JwtTokenDummy, addressDTO)).thenReturn(addressDTO);
+        when(addressService.createAddress(jwtTokenDummy, addressDTO)).thenReturn(addressDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = addressController.createAddress(JwtTokenDummy, addressDTO);
+        ResponseEntity<Object> result = addressController.createAddress(jwtTokenDummy, addressDTO);
         ResponseEntity<Object> expected = ResponseEntity.ok(addressDTO);
 
         // Perform assertions
-        verify(addressService, atLeastOnce()).createAddress(JwtTokenDummy, addressDTO);
+        verify(addressService, atLeastOnce()).createAddress(jwtTokenDummy, addressDTO);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -56,13 +56,13 @@ class AddressControllerTests {
     @Test
     void test_GetUserIdFail() throws NotFoundException {
         // Define the behavior of the mock
-        when(addressService.createAddress(JwtTokenDummy, addressDTO)).thenThrow(new NotFoundException("User not found."));
+        when(addressService.createAddress(jwtTokenDummy, addressDTO)).thenThrow(new NotFoundException("User not found."));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = addressController.createAddress(JwtTokenDummy, addressDTO);
+        ResponseEntity<Object> result = addressController.createAddress(jwtTokenDummy, addressDTO);
 
         // Perform assertions
-        verify(addressService, atLeastOnce()).createAddress(JwtTokenDummy, addressDTO);
+        verify(addressService, atLeastOnce()).createAddress(jwtTokenDummy, addressDTO);
         assertNotNull(result);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertEquals("User not found.", result.getBody());
