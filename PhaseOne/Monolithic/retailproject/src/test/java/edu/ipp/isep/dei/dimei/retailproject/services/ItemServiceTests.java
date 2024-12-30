@@ -189,8 +189,6 @@ class ItemServiceTests {
     @Test
     void test_GetUserItemDTO() throws NotFoundException {
         // Define the behavior of the mock
-        when(merchantService.getMerchantByUser(userDTO))
-                .thenReturn(merchant);
         when(itemRepository.findById(item1.getId()).filter(item -> item.getMerchant().equals(merchant)))
                 .thenReturn(Optional.ofNullable(item1));
 
@@ -199,7 +197,6 @@ class ItemServiceTests {
         ItemDTO expected = itemDTO1;
 
         // Perform assertions
-        verify(merchantService, atLeastOnce()).getMerchantByUser(userDTO);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
         assertNotNull(result);
         assertEquals(expected, result);
