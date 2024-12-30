@@ -70,7 +70,7 @@ public class MerchantController implements HttpHeaderBuilder {
         Object userBody = getUserDTO(authorizationToken);
         Object addressBody = createAddressDTO(authorizationToken, merchantDTO.getAddressDTO());
 
-        if (userBody instanceof UserDTO userDTO && addressBody instanceof AddressDTO addressDTO) {
+        if (userBody instanceof UserDTO && addressBody instanceof AddressDTO addressDTO) {
             merchantDTO.setAddressDTO(addressDTO);
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
             HttpEntity<MerchantDTO> request = new HttpEntity<>(merchantDTO, headers);

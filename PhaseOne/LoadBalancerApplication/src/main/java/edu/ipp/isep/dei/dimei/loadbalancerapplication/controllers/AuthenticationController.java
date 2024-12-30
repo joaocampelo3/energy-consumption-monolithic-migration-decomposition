@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.LoginDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.RegisterDTO;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersG
 @RequestMapping("/auth")
 public class AuthenticationController implements HttpHeaderBuilder {
 
-    private static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final RestTemplate restTemplate;
 
     @Autowired
@@ -85,7 +84,8 @@ public class AuthenticationController implements HttpHeaderBuilder {
         HttpEntity<RegisterDTO> request = new HttpEntity<>(registerDTO, headers);
         logger("The Authentication register merchant request:\n {}", request);
         try {
-            return restTemplate.exchange(USERS_URL + "/auth/register/merchant", HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
+            return restTemplate.exchange(USERS_URL + "/auth/register/merchant", HttpMethod.POST, request, new ParameterizedTypeReference<>() {
+            });
         } catch (HttpClientErrorException e) {
             return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
         }

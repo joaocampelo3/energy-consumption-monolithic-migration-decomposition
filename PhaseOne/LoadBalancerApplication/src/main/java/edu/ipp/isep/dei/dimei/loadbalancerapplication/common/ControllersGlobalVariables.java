@@ -9,4 +9,7 @@ public class ControllersGlobalVariables {
     public static final String MERCHANT_ORDER_URL = MONOLITH_URL + "/merchantorders";
     public static final String ORDER_URL = MONOLITH_URL + "/orders";
     public static final String SHIPPING_ORDER_URL = MONOLITH_URL + "/shippingorders";
+
+    private ControllersGlobalVariables() {
+    }
 }

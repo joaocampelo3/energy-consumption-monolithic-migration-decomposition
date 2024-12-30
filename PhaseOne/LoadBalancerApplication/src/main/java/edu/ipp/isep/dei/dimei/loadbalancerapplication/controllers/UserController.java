@@ -1,8 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.HttpHeaderBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -24,7 +22,6 @@ import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersG
 public class UserController implements HttpHeaderBuilder {
 
     private final RestTemplate restTemplate;
-    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(RestTemplate restTemplate) {
@@ -33,27 +30,15 @@ public class UserController implements HttpHeaderBuilder {
 
     @GetMapping
     public ResponseEntity<Object> getUserId(@RequestHeader("Authorization") String authorizationToken) {
-        logger("The getUserId() started...", null);
-
         HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken.replace("Bearer ", ""));
-        logger("The headers:\n {}", headers);
         HttpEntity<HttpHeaders> request = new HttpEntity<>(headers);
-        logger("The User getUserId request:\n {}", request);
 
         try {
             return restTemplate.exchange(USERS_URL + "/users", HttpMethod.GET, request, new ParameterizedTypeReference<>() {
             });
         } catch (HttpClientErrorException e) {
-            logger.error("HTTP error occurred: Status - {}, Body - {}", e.getStatusCode(), e.getResponseBodyAsString());
             return new ResponseEntity<>(e.getResponseBodyAsString(), e.getStatusCode());
-        } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage(), e);
-            throw e;
         }
-    }
-
-    private void logger(String message, Object object) {
-        logger.info(message, object);
     }
 
 }

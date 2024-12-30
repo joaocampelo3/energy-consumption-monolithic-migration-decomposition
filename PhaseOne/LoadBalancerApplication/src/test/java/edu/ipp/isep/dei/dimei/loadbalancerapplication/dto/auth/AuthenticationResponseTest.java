@@ -12,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class AuthenticationResponseTest {
-    static final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    static String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
 
     @Test
     void test_createAuthenticationResponse() {
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse(JwtTokenDummy);
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwtTokenDummy);
 
         assertNotNull(authenticationResponse);
-        assertEquals(JwtTokenDummy, authenticationResponse.getToken());
+        assertEquals(jwtTokenDummy, authenticationResponse.getToken());
 
     }
 
@@ -33,8 +33,8 @@ class AuthenticationResponseTest {
     @Test
     void test_getterAndSetter() {
         AuthenticationResponse response = new AuthenticationResponse();
-        response.setToken(JwtTokenDummy);
-        assertEquals(JwtTokenDummy, response.getToken());
+        response.setToken(jwtTokenDummy);
+        assertEquals(jwtTokenDummy, response.getToken());
     }
 
 }
