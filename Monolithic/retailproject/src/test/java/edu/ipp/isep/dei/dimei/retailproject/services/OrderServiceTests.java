@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     OrderService orderService;
     @Mock
@@ -354,15 +354,15 @@ class OrderServiceTests {
     @Test
     void test_GetUserOrders() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findByUser(user)).thenReturn(orders);
 
         // Call the service method that uses the Repository
-        List<OrderDTO> result = orderService.getUserOrders(JwtTokenDummy);
+        List<OrderDTO> result = orderService.getUserOrders(jwtTokenDummy);
         List<OrderDTO> expected = orderDTOS;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findByUser(user);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -373,26 +373,26 @@ class OrderServiceTests {
         // Define the behavior of the mock
         itemUpdateDTO1.setQuantityInStock(itemUpdateDTO1.getQuantityInStock() - 1);
         itemUpdated.getQuantityInStock().setQuantity((itemUpdated.getQuantityInStock().getQuantity() - 1));
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(itemService.getItemDTO(itemQuantityDTO1.getId())).thenReturn(itemDTO1);
         when(addressService.createAddress(orderCreateDTO.getAddress(), user)).thenReturn(shippingAddress);
         when(paymentService.createPayment(orderCreateDTO.getPayment())).thenReturn(payment);
         when(itemQuantityService.createItemQuantity(itemQuantityDTO1)).thenReturn(itemQuantity1);
-        when(itemService.removeItemStock(JwtTokenDummy, itemQuantityDTO1.getItemId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()))).thenReturn(itemDTO1Updated);
+        when(itemService.removeItemStock(jwtTokenDummy, itemQuantityDTO1.getItemId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()))).thenReturn(itemDTO1Updated);
         when(orderRepository.save(newOrder1)).thenReturn(order1);
         when(merchantOrderService.createMerchantOrder(user, order1, orderCreateDTO.getMerchantId())).thenReturn(merchantOrder1);
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.createOrder(JwtTokenDummy, orderCreateDTO);
+        OrderDTO result = orderService.createOrder(jwtTokenDummy, orderCreateDTO);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemService, atLeastOnce()).getItemDTO(itemQuantityDTO1.getId());
         verify(addressService, atLeastOnce()).createAddress(orderCreateDTO.getAddress(), user);
         verify(paymentService, atLeastOnce()).createPayment(orderCreateDTO.getPayment());
         verify(itemQuantityService, atLeastOnce()).createItemQuantity(itemQuantityDTO1);
-        verify(itemService, atLeastOnce()).removeItemStock(JwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()));
+        verify(itemService, atLeastOnce()).removeItemStock(jwtTokenDummy, itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty()));
         verify(orderRepository, atLeastOnce()).save(newOrder1);
         verify(merchantOrderService, atLeastOnce()).createMerchantOrder(user, order1, orderCreateDTO.getMerchantId());
         assertNotNull(result);
@@ -403,15 +403,15 @@ class OrderServiceTests {
     void test_GetUserOrder() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(id)).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.getUserOrder(JwtTokenDummy, id);
+        OrderDTO result = orderService.getUserOrder(jwtTokenDummy, id);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(id);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -421,15 +421,15 @@ class OrderServiceTests {
     void test_GetUserOrderByAdmin() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(adminUser);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(adminUser);
         when(orderRepository.findById(id)).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.getUserOrder(JwtTokenDummy, id);
+        OrderDTO result = orderService.getUserOrder(jwtTokenDummy, id);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(id);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -439,15 +439,15 @@ class OrderServiceTests {
     void test_GetUserOrderByMerchant() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(merchantUser);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(merchantUser);
         when(orderRepository.findById(id)).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.getUserOrder(JwtTokenDummy, id);
+        OrderDTO result = orderService.getUserOrder(jwtTokenDummy, id);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(id);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -479,24 +479,24 @@ class OrderServiceTests {
         ShippingOrderUpdateDTO shippingOrderUpdateDTO = new ShippingOrderUpdateDTO(shippingOrder1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
 
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
-        when(merchantOrderService.fullCancelMerchantOrderByOrder(JwtTokenDummy, order1Updated)).thenReturn(merchantOrderUpdateDTO);
-        doReturn(shippingOrderUpdateDTO).when(shippingOrderService).fullCancelShippingOrderByOrder(JwtTokenDummy, order1Updated);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.fullCancelMerchantOrderByOrder(jwtTokenDummy, order1Updated)).thenReturn(merchantOrderUpdateDTO);
+        doReturn(shippingOrderUpdateDTO).when(shippingOrderService).fullCancelShippingOrderByOrder(jwtTokenDummy, order1Updated);
         when(orderRepository.save(order1Updated)).thenReturn(order1Updated);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.fullCancelOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
-        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByOrder(JwtTokenDummy, order1Updated);
-        verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByOrder(JwtTokenDummy, order1Updated);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByOrder(jwtTokenDummy, order1Updated);
+        verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByOrder(jwtTokenDummy, order1Updated);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1Updated);
         assertNotNull(result);
@@ -510,7 +510,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.fullCancelOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -524,7 +524,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.fullCancelOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         });
 
         // Perform assertions
@@ -539,7 +539,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.fullCancelOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -550,21 +550,21 @@ class OrderServiceTests {
     void test_FullCancelOrderByOrderId() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.CANCELLED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(JwtTokenDummy, orderUpdateDTO.getId());
+        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(jwtTokenDummy, orderUpdateDTO.getId());
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -575,21 +575,21 @@ class OrderServiceTests {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.REJECTED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.rejectOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -599,21 +599,21 @@ class OrderServiceTests {
     void test_RejectOrderByOrderId() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.REJECTED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrderByOrderId(JwtTokenDummy, orderUpdateDTO.getId());
+        OrderUpdateDTO result = orderService.rejectOrderByOrderId(jwtTokenDummy, orderUpdateDTO.getId());
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -626,7 +626,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.rejectOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -640,7 +640,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.rejectOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         });
 
         // Perform assertions
@@ -655,7 +655,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.rejectOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -667,21 +667,21 @@ class OrderServiceTests {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.APPROVED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.APPROVED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
         when(orderRepository.save(order1Updated)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.approveOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.approveOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated);
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1Updated);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -694,7 +694,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.approveOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.approveOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -708,7 +708,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.approveOrder(JwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.approveOrder(jwtTokenDummy, orderUpdateDTO.getId(), orderUpdateDTO);
         });
 
         // Perform assertions
@@ -723,7 +723,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(JwtTokenDummy, id, orderUpdateDTO);
+            orderService.rejectOrder(jwtTokenDummy, id, orderUpdateDTO);
         });
 
         // Perform assertions
@@ -737,19 +737,19 @@ class OrderServiceTests {
         order1Updated.setStatus(OrderStatusEnum.APPROVED);
         merchantOrderDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.APPROVED);
         shippingOrderDTO1.setShippingOrderStatus(ShippingOrderStatusEnum.SHIPPED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
 
         // Call the service method that uses the Repository
-        assertDoesNotThrow(() -> orderService.shipOrder(JwtTokenDummy, orderUpdateDTO.getId()));
+        assertDoesNotThrow(() -> orderService.shipOrder(jwtTokenDummy, orderUpdateDTO.getId()));
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
     }
 
     @Test
@@ -759,19 +759,19 @@ class OrderServiceTests {
         order1Updated.setStatus(OrderStatusEnum.SHIPPED);
         merchantOrderDTO1.setMerchantOrderStatus(MerchantOrderStatusEnum.SHIPPED);
         shippingOrderDTO1.setShippingOrderStatus(ShippingOrderStatusEnum.DELIVERED);
-        when(userService.getUserByToken(JwtTokenDummy)).thenReturn(user);
+        when(userService.getUserByToken(jwtTokenDummy)).thenReturn(user);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUser().getId() == user.getId())).thenReturn(Optional.ofNullable(order1));
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
-        when(shippingOrderService.getUserShippingOrder(JwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(jwtTokenDummy, order1.getId())).thenReturn(shippingOrderDTO1);
 
         // Call the service method that uses the Repository
-        assertDoesNotThrow(() -> orderService.deliverOrder(JwtTokenDummy, orderUpdateDTO.getId()));
+        assertDoesNotThrow(() -> orderService.deliverOrder(jwtTokenDummy, orderUpdateDTO.getId()));
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, order1.getId());
-        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(JwtTokenDummy, order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(jwtTokenDummy, order1.getId());
     }
 
 }

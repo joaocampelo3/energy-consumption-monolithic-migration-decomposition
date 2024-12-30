@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ActiveProfiles("test")
 class JwtAuthenticationFilterTest {
-    final String TokenDummy = "AAA1bbb2CcC3";
-    final String JwtTokenDummy = BEARER_PREFIX + TokenDummy;
+    final String tokenDummy = "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + tokenDummy;
     final String email = "johndoe1234@gmail.com";
     final String password = "johndoe_password";
     @Mock
@@ -48,18 +48,18 @@ class JwtAuthenticationFilterTest {
     @Test
     void test_doFilterInternal_ValidToken() throws ServletException, IOException {
         // Mock request header and path
-        when(request.getHeader("Authorization")).thenReturn(JwtTokenDummy);
+        when(request.getHeader("Authorization")).thenReturn(jwtTokenDummy);
         when(request.getServletPath()).thenReturn("/api/test");
-        when(jwtService.extractUsername(TokenDummy)).thenReturn(email);
-        when(jwtService.isTokenValid(TokenDummy, userDetails)).thenReturn(true);
+        when(jwtService.extractUsername(tokenDummy)).thenReturn(email);
+        when(jwtService.isTokenValid(tokenDummy, userDetails)).thenReturn(true);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
 
         // Call the method under test
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         // Verify
-        verify(jwtService, atLeastOnce()).extractUsername(TokenDummy);
-        verify(jwtService, atLeastOnce()).isTokenValid(TokenDummy, userDetails);
+        verify(jwtService, atLeastOnce()).extractUsername(tokenDummy);
+        verify(jwtService, atLeastOnce()).isTokenValid(tokenDummy, userDetails);
         verify(userDetailsService, atLeastOnce()).loadUserByUsername(email);
         verify(filterChain, atLeastOnce()).doFilter(request, response);
     }

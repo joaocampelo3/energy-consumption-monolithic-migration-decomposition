@@ -79,7 +79,7 @@ class OrderUpdateDTOTest {
 
         Payment payment = Payment.builder()
                 .id(1)
-                .amount(price1+price2)
+                .amount(price1 + price2)
                 .paymentDateTime(currentDate)
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)

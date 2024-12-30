@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTests {
 
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     AuthenticationController authenticationController;
     @Mock
@@ -75,7 +75,7 @@ class AuthenticationControllerTests {
                 .build();
 
         authenticationResponse = AuthenticationResponse.builder()
-                .token(JwtTokenDummy)
+                .token(jwtTokenDummy)
                 .build();
     }
 
