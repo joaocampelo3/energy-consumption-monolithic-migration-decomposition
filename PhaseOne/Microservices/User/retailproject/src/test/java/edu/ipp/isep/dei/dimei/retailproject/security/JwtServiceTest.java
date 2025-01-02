@@ -67,4 +67,14 @@ class JwtServiceTest {
         assertTrue(isValid);
     }
 
+    @Test
+    void test_extractRole() {
+        // Call the service method
+        String token = jwtService.generateToken(account);
+        String role = jwtService.extractRole(token);
+
+        // Perform assertions
+        assertEquals(RoleEnum.USER.name(), role);
+    }
+
 }
