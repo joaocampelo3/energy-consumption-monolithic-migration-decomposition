@@ -3,8 +3,7 @@ package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.gets;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.ShippingOrderStatusEnum;
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,7 +43,7 @@ class ShippingOrderDTOTest {
         merchantOrderId = 1;
         email = "johndoe1234@gmail.com";
 
-        userDTO = new UserDTO(1, "johndoe1234@gmail.com", RoleEnum.USER);
+        userDTO = new UserDTO(1, email, RoleEnum.USER);
 
         shippingOrderDTOExpected = new ShippingOrderDTO(id, shippingOrderDate, shippingOrderStatus, addressDTO.getId(), orderId, merchantOrderId, email);
     }

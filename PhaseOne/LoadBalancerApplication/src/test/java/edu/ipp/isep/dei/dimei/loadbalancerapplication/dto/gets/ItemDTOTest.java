@@ -1,9 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.gets;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.CategoryDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ItemDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.MerchantDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,13 +37,21 @@ class ItemDTOTest {
                 .name("Category 1")
                 .description("Category 1 description")
                 .build();
+        AddressDTO addressDTO = AddressDTO.builder()
+                .id(1)
+                .street("5th Avenue")
+                .zipCode("10128")
+                .city("New York")
+                .country("USA")
+                .build();
+
         merchant = MerchantDTO.builder()
                 .id(1)
                 .name("Merchant 1")
                 .email("merchantnumber1@gmail.com")
-                .addressId(1)
+                .addressDTO(addressDTO)
                 .build();
-        userDTO = new UserDTO(1, "johndoe1234@gmail.com", RoleEnum.USER);
+        userDTO = new UserDTO(1, "admin@email.com", RoleEnum.ADMIN);
         itemDTOExpected = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant, userDTO);
     }
 
@@ -63,19 +68,9 @@ class ItemDTOTest {
         assertEquals(quantityInStock, itemDTO.getQuantityInStock());
         assertEquals(category, itemDTO.getCategory());
         assertEquals(merchant, itemDTO.getMerchant());
+        assertEquals(userDTO, itemDTO.getUserDTO());
         assertEquals(itemDTOExpected.hashCode(), itemDTO.hashCode());
         assertEquals(itemDTOExpected, itemDTO);
-    }
-
-    @Test
-    void test_createItemDTO2() {
-        ItemDTO itemDTO = new ItemDTO(id, itemName, sku, itemDescription, price, quantityInStock, category, merchant, userDTO);
-
-        assertNotNull(itemDTO);
-        assertEquals(category, itemDTO.getCategory());
-        assertEquals(merchant, itemDTO.getMerchant());
-        assertEquals(itemDTOExpected, itemDTO);
-        assertEquals(itemDTOExpected.hashCode(), itemDTO.hashCode());
     }
 
     @Test
@@ -89,8 +84,8 @@ class ItemDTOTest {
                 .quantityInStock(quantityInStock)
                 .category(category)
                 .merchant(merchant)
+                .userDTO(userDTO)
                 .build();
-        itemDTOExpected.setUserDTO(null);
 
         assertNotNull(itemDTO);
         assertEquals(id, itemDTO.getId());
@@ -101,6 +96,7 @@ class ItemDTOTest {
         assertEquals(quantityInStock, itemDTO.getQuantityInStock());
         assertEquals(category, itemDTO.getCategory());
         assertEquals(merchant, itemDTO.getMerchant());
+        assertEquals(userDTO, itemDTO.getUserDTO());
         assertEquals(itemDTOExpected.hashCode(), itemDTO.hashCode());
     }
 
@@ -113,7 +109,6 @@ class ItemDTOTest {
     @Test
     void test_SetsItemDTO() {
         ItemDTO result = ItemDTO.builder().build();
-        itemDTOExpected.setUserDTO(null);
 
         result.setId(id);
         result.setItemName(itemName);
@@ -123,6 +118,7 @@ class ItemDTOTest {
         result.setQuantityInStock(quantityInStock);
         result.setCategory(category);
         result.setMerchant(merchant);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
@@ -133,6 +129,7 @@ class ItemDTOTest {
         assertEquals(quantityInStock, result.getQuantityInStock());
         assertEquals(category, result.getCategory());
         assertEquals(merchant, result.getMerchant());
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(itemDTOExpected.hashCode(), result.hashCode());
         assertEquals(itemDTOExpected, result);
         assertEquals(itemDTOExpected.toString(), result.toString());

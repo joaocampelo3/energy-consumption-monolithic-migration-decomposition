@@ -25,11 +25,7 @@ class CategoryDTOTest {
         id = 1;
         name = "Category 1";
         description = "Category 1 description";
-        userDTO = UserDTO.builder()
-                .userId(1)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
+        userDTO = new UserDTO(1, "admin@email.com", RoleEnum.ADMIN);
         categoryDTOExpected = new CategoryDTO(id, name, description, userDTO);
     }
 
@@ -58,6 +54,7 @@ class CategoryDTOTest {
         assertEquals(id, categoryDTO.getId());
         assertEquals(name, categoryDTO.getName());
         assertEquals(description, categoryDTO.getDescription());
+        assertEquals(userDTO, categoryDTO.getUserDTO());
         assertEquals(categoryDTOExpected.hashCode(), categoryDTO.hashCode());
     }
 
@@ -81,8 +78,8 @@ class CategoryDTOTest {
         assertEquals(name, result.getName());
         assertEquals(description, result.getDescription());
         assertEquals(userDTO, result.getUserDTO());
-        assertEquals(categoryDTOExpected, result);
         assertEquals(categoryDTOExpected.hashCode(), result.hashCode());
+        assertEquals(categoryDTOExpected, result);
         assertEquals(categoryDTOExpected.toString(), result.toString());
     }
 

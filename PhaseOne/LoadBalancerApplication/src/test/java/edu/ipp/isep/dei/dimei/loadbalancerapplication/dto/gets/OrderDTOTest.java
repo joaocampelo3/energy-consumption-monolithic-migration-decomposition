@@ -4,11 +4,9 @@ package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.gets;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.PaymentDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentStatusEnum;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +31,6 @@ class OrderDTOTest {
     double totalPrice;
     PaymentDTO paymentDTO;
     OrderDTO orderDTOExpected;
-    UserDTO userDTO;
 
     @BeforeEach
     void beforeEach() {
@@ -77,10 +74,6 @@ class OrderDTOTest {
                 .paymentMethod(PaymentMethodEnum.CARD)
                 .status(PaymentStatusEnum.PENDING)
                 .build();
-
-        int userId = 1;
-
-        userDTO = new UserDTO(userId, "johndoe1234@gmail.com", RoleEnum.USER);
 
         orderDTOExpected = new OrderDTO(id, orderDate, orderStatus, customerId, orderItemsDTO, totalPrice, paymentDTO);
     }

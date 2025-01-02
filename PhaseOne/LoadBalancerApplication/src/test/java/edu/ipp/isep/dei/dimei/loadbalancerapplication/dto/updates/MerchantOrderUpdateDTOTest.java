@@ -24,8 +24,8 @@ class MerchantOrderUpdateDTOTest {
     String userEmail;
     int orderId;
     int merchantId;
-    MerchantOrderUpdateDTO merchantOrderUpdateDTOExpected;
     UserDTO userDTO;
+    MerchantOrderUpdateDTO merchantOrderUpdateDTOExpected;
 
     @BeforeEach
     void beforeEach() {
@@ -36,13 +36,8 @@ class MerchantOrderUpdateDTOTest {
         userEmail = "johndoe1234@gmail.com";
         orderId = 1;
         merchantId = 1;
+        userDTO = new UserDTO(1, email, RoleEnum.MERCHANT);
         merchantOrderUpdateDTOExpected = new MerchantOrderUpdateDTO(id, merchantOrderDate, merchantOrderStatus, email, orderId, merchantId, userDTO);
-
-        userDTO = UserDTO.builder()
-                .userId(1)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
     }
 
     @Test
@@ -56,6 +51,7 @@ class MerchantOrderUpdateDTOTest {
         assertEquals(email, merchantDTO.getEmail());
         assertEquals(orderId, merchantDTO.getOrderId());
         assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertEquals(userDTO, merchantDTO.getUserDTO());
         assertEquals(merchantOrderUpdateDTOExpected.hashCode(), merchantOrderUpdateDTOExpected.hashCode());
     }
 
@@ -68,6 +64,7 @@ class MerchantOrderUpdateDTOTest {
                 .email(email)
                 .orderId(orderId)
                 .merchantId(merchantId)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(merchantDTO);
@@ -77,6 +74,7 @@ class MerchantOrderUpdateDTOTest {
         assertEquals(email, merchantDTO.getEmail());
         assertEquals(orderId, merchantDTO.getOrderId());
         assertEquals(merchantId, merchantDTO.getMerchantId());
+        assertEquals(userDTO, merchantDTO.getUserDTO());
         assertEquals(merchantOrderUpdateDTOExpected.hashCode(), merchantOrderUpdateDTOExpected.hashCode());
     }
 
@@ -106,8 +104,9 @@ class MerchantOrderUpdateDTOTest {
         assertEquals(email, result.getEmail());
         assertEquals(orderId, result.getOrderId());
         assertEquals(merchantId, result.getMerchantId());
-        assertEquals(expected, result);
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
         assertEquals(expected.toString(), result.toString());
     }
 }

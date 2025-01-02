@@ -9,6 +9,7 @@ import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.OrderStatusEn
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
+import org.apache.catalina.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +47,12 @@ class OrderCreateDTOTest {
         orderDate = Instant.now();
         customerId = 1;
         email = "merchant_email@gmail.com";
-        userDTO = new UserDTO(1, "johndoe1234@gmail.com", RoleEnum.USER);
+        userDTO = UserDTO.builder()
+                .userId(1)
+                .email("johndoe1234@gmail.com")
+                .role(RoleEnum.ADMIN)
+                .build();
+
         itemQuantityDTO1 = ItemQuantityDTO.builder()
                 .id(1)
                 .itemId(1)
@@ -101,8 +107,6 @@ class OrderCreateDTOTest {
         assertEquals(paymentDTO, orderCreateDTO.getPayment());
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
-        assertEquals(userDTO, orderCreateDTO.getUserDTO());
-        assertEquals(orderCreateDTOExpected, orderCreateDTO);
         assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
     }
 
@@ -118,8 +122,8 @@ class OrderCreateDTOTest {
                 .totalPrice(totalPrice)
                 .payment(paymentDTO)
                 .merchantId(merchantId)
-                .userDTO(userDTO)
                 .address(addressDTO)
+                .userDTO(userDTO)
                 .build();
 
         assertNotNull(orderCreateDTO);
@@ -134,8 +138,8 @@ class OrderCreateDTOTest {
         assertEquals(merchantId, orderCreateDTO.getMerchantId());
         assertEquals(addressDTO, orderCreateDTO.getAddress());
         assertEquals(userDTO, orderCreateDTO.getUserDTO());
-        assertEquals(orderCreateDTOExpected, orderCreateDTO);
         assertEquals(orderCreateDTOExpected.hashCode(), orderCreateDTO.hashCode());
+        assertEquals(orderCreateDTOExpected, orderCreateDTO);
     }
 
     @Test

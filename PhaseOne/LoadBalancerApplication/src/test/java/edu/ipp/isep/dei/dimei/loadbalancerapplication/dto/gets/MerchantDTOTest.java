@@ -18,23 +18,15 @@ class MerchantDTOTest {
     int id;
     String name;
     String email;
-    int addressId;
-    MerchantDTO merchantDTOExpected;
-    UserDTO userDTO;
     AddressDTO addressDTO;
+    UserDTO userDTO;
+    MerchantDTO merchantDTOExpected;
 
     @BeforeEach
     void beforeEach() {
         id = 1;
         name = "Merchant 1";
         email = "merchantnumber1@gmail.com";
-        addressId = 1;
-        userDTO = UserDTO.builder()
-                .userId(2)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
-
         addressDTO = AddressDTO.builder()
                 .id(1)
                 .street("5th Avenue")
@@ -42,20 +34,21 @@ class MerchantDTOTest {
                 .city("New York")
                 .country("USA")
                 .build();
-
-        merchantDTOExpected = new MerchantDTO(id, name, email, addressId, userDTO, addressDTO);
-        merchantDTOExpected.setUserDTO(userDTO);
+        userDTO = new UserDTO(1, "admin@email.com", RoleEnum.ADMIN);
+        merchantDTOExpected = new MerchantDTO(id, name, email, addressDTO.getId(), userDTO, addressDTO);
     }
 
     @Test
     void test_createMerchantDTO() {
-        MerchantDTO merchantDTO = new MerchantDTO(id, name, email, addressId, userDTO, addressDTO);
+        MerchantDTO merchantDTO = new MerchantDTO(id, name, email, addressDTO.getId(), userDTO, addressDTO);
 
         assertNotNull(merchantDTO);
         assertEquals(id, merchantDTO.getId());
         assertEquals(name, merchantDTO.getName());
         assertEquals(email, merchantDTO.getEmail());
-        assertEquals(addressId, merchantDTO.getAddressId());
+        assertEquals(addressDTO.getId(), merchantDTO.getAddressId());
+        assertEquals(userDTO, merchantDTO.getUserDTO());
+        assertEquals(addressDTO, merchantDTO.getAddressDTO());
         assertEquals(merchantDTOExpected.hashCode(), merchantDTO.hashCode());
     }
 
@@ -65,7 +58,7 @@ class MerchantDTOTest {
                 .id(id)
                 .name(name)
                 .email(email)
-                .addressId(addressId)
+                .addressId(addressDTO.getId())
                 .userDTO(userDTO)
                 .addressDTO(addressDTO)
                 .build();
@@ -74,8 +67,9 @@ class MerchantDTOTest {
         assertEquals(id, merchantDTO.getId());
         assertEquals(name, merchantDTO.getName());
         assertEquals(email, merchantDTO.getEmail());
-        assertEquals(addressId, merchantDTO.getAddressId());
-        assertEquals(merchantDTOExpected, merchantDTO);
+        assertEquals(addressDTO.getId(), merchantDTO.getAddressId());
+        assertEquals(userDTO, merchantDTO.getUserDTO());
+        assertEquals(addressDTO, merchantDTO.getAddressDTO());
         assertEquals(merchantDTOExpected.hashCode(), merchantDTO.hashCode());
     }
 
@@ -92,7 +86,7 @@ class MerchantDTOTest {
         result.setId(id);
         result.setName(name);
         result.setEmail(email);
-        result.setAddressId(addressId);
+        result.setAddressId(addressDTO.getId());
         result.setUserDTO(userDTO);
         result.setAddressDTO(addressDTO);
 
@@ -100,9 +94,11 @@ class MerchantDTOTest {
         assertEquals(id, result.getId());
         assertEquals(name, result.getName());
         assertEquals(email, result.getEmail());
-        assertEquals(addressId, result.getAddressId());
-        assertEquals(merchantDTOExpected, result);
+        assertEquals(addressDTO.getId(), result.getAddressId());
+        assertEquals(userDTO, result.getUserDTO());
+        assertEquals(addressDTO, result.getAddressDTO());
         assertEquals(merchantDTOExpected.hashCode(), result.hashCode());
+        assertEquals(merchantDTOExpected, result);
         assertEquals(merchantDTOExpected.toString(), result.toString());
     }
 }

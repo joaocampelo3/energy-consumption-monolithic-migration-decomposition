@@ -25,8 +25,8 @@ class ItemUpdateDTOTest {
     int quantityInStock;
     CategoryDTO category;
     MerchantDTO merchant;
-    ItemUpdateDTO itemUpdateDTOExpected;
     UserDTO userDTO;
+    ItemUpdateDTO itemUpdateDTOExpected;
 
     @BeforeEach
     void beforeEach() {
@@ -37,11 +37,6 @@ class ItemUpdateDTOTest {
         price = 12.0;
         quantityInStock = 10;
 
-        userDTO = UserDTO.builder()
-                .userId(1)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
         category = CategoryDTO.builder()
                 .id(1)
                 .name("Category 1")
@@ -59,8 +54,11 @@ class ItemUpdateDTOTest {
                 .id(1)
                 .name("Merchant 1")
                 .email("merchantnumber1@gmail.com")
-                .addressId(addressDTO.getId())
+                .addressDTO(addressDTO)
                 .build();
+
+        userDTO = new UserDTO(1, "merchantnumber1@gmail.com", RoleEnum.MERCHANT);
+
         itemUpdateDTOExpected = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
     }
 
@@ -73,7 +71,7 @@ class ItemUpdateDTOTest {
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
-        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
+        assertEquals(userDTO, itemUpdateDTO.getUserDTO());
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -92,7 +90,7 @@ class ItemUpdateDTOTest {
         assertEquals(sku, itemUpdateDTO.getSku());
         assertEquals(price, itemUpdateDTO.getPrice());
         assertEquals(quantityInStock, itemUpdateDTO.getQuantityInStock());
-        assertEquals(itemUpdateDTOExpected, itemUpdateDTO);
+        assertEquals(userDTO, itemUpdateDTO.getUserDTO());
         assertEquals(itemUpdateDTOExpected.hashCode(), itemUpdateDTO.hashCode());
     }
 
@@ -104,19 +102,21 @@ class ItemUpdateDTOTest {
 
     @Test
     void test_SetsItemUpdateDTO() {
-        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock, null);
+        ItemUpdateDTO expected = new ItemUpdateDTO(id, sku, price, quantityInStock, userDTO);
         ItemUpdateDTO result = ItemUpdateDTO.builder().build();
 
         result.setId(id);
         result.setSku(sku);
         result.setPrice(price);
         result.setQuantityInStock(quantityInStock);
+        result.setUserDTO(userDTO);
 
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals(sku, result.getSku());
         assertEquals(price, result.getPrice());
         assertEquals(quantityInStock, result.getQuantityInStock());
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(expected.hashCode(), result.hashCode());
         assertEquals(expected, result);
         assertEquals(expected.toString(), result.toString());

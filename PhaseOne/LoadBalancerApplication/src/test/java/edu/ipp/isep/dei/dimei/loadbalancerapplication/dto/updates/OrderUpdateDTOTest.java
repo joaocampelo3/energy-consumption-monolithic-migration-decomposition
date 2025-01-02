@@ -22,8 +22,8 @@ class OrderUpdateDTOTest {
     int id;
     Instant orderDate;
     String email;
-    OrderUpdateDTO orderUpdateDTOExpected;
     UserDTO userDTO;
+    OrderUpdateDTO orderUpdateDTOExpected;
 
     @BeforeEach
     void beforeEach() {
@@ -31,12 +31,7 @@ class OrderUpdateDTOTest {
         id = 1;
         orderDate = currentDate;
         email = "johndoe1234@gmail.com";
-
-        userDTO = UserDTO.builder()
-                .userId(1)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
+        userDTO = new UserDTO(1, email, RoleEnum.USER);
 
         orderUpdateDTOExpected = new OrderUpdateDTO(id, orderDate, orderStatus, email, userDTO);
     }
@@ -50,6 +45,7 @@ class OrderUpdateDTOTest {
         assertEquals(orderDate, orderUpdateDTO.getOrderDate());
         assertEquals(orderStatus, orderUpdateDTO.getOrderStatus());
         assertEquals(email, orderUpdateDTO.getEmail());
+        assertEquals(userDTO, orderUpdateDTO.getUserDTO());
 
         assertEquals(orderUpdateDTOExpected.hashCode(), orderUpdateDTO.hashCode());
     }
@@ -70,7 +66,7 @@ class OrderUpdateDTOTest {
         assertEquals(orderStatus, orderUpdateDTO.getOrderStatus());
         assertEquals(email, orderUpdateDTO.getEmail());
         assertEquals(userDTO, orderUpdateDTO.getUserDTO());
-        assertEquals(orderUpdateDTOExpected, orderUpdateDTO);
+
         assertEquals(orderUpdateDTOExpected.hashCode(), orderUpdateDTO.hashCode());
     }
 
@@ -96,8 +92,9 @@ class OrderUpdateDTOTest {
         assertEquals(orderDate, result.getOrderDate());
         assertEquals(orderStatus, result.getOrderStatus());
         assertEquals(email, result.getEmail());
-        assertEquals(expected, result);
+        assertEquals(userDTO, result.getUserDTO());
         assertEquals(expected.hashCode(), result.hashCode());
+        assertEquals(expected, result);
         assertEquals(expected.toString(), result.toString());
     }
 }
