@@ -1,4 +1,4 @@
-package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.gets;
+package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.RegisterDTO;
 import org.junit.jupiter.api.BeforeEach;

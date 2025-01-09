@@ -1,4 +1,4 @@
-package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.creates;
+package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;

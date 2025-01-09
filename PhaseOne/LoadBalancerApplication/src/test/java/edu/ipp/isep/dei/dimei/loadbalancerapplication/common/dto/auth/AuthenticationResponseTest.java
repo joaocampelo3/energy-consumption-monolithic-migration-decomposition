@@ -1,4 +1,4 @@
-package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.auth;
+package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth.AuthenticationResponse;
 import org.junit.jupiter.api.Test;

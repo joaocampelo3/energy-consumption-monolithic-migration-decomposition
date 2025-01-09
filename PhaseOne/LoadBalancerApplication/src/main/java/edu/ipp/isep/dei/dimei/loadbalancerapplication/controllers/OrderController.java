@@ -36,9 +36,9 @@ public class OrderController implements HttpHeaderBuilder {
     public ResponseEntity<Object> getAllOrders(@RequestHeader("Authorization") String authorizationToken) {
         Object body = getUserDTO(authorizationToken);
 
-        if (body instanceof UserDTO userDTO) {
+        if (body instanceof UserDTO) {
             HttpHeaders headers = buildHttpHeaderWithMediaType(authorizationToken);
-            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
+            HttpEntity<UserDTO> request = new HttpEntity<>(headers);
             try {
                 return restTemplate.exchange(ORDER_URL + "/all", HttpMethod.GET, request, Object.class);
             } catch (HttpClientErrorException e) {

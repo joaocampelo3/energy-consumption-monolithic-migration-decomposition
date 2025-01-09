@@ -1,4 +1,4 @@
-package edu.ipp.isep.dei.dimei.loadbalancerapplication.dto.updates;
+package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
