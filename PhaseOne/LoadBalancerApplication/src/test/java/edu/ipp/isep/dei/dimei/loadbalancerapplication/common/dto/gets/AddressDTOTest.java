@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,7 +62,7 @@ class AddressDTOTest {
 
     @Test
     void test_createAddressDTONoArgsConstructor() {
-        AddressDTO addressDTO = AddressDTO.builder().build();
+        AddressDTO addressDTO = new AddressDTO();
         assertNotNull(addressDTO);
     }
 
