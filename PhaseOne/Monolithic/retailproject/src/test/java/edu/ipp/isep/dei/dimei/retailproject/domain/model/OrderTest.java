@@ -32,6 +32,7 @@ class OrderTest {
     Payment payment;
     Merchant merchant;
     Order orderExpected;
+    Order orderExpected2;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -102,6 +103,14 @@ class OrderTest {
                 .itemQuantities(itemQuantities)
                 .payment(payment)
                 .build();
+
+        orderExpected2 = Order.builder()
+                .orderDate(orderDate)
+                .status(status)
+                .userId(userDTO.getUserId())
+                .itemQuantities(itemQuantities)
+                .payment(payment)
+                .build();
     }
 
     @Test
@@ -121,7 +130,7 @@ class OrderTest {
 
     @Test
     void test_createOrder2() {
-        Order order = new Order(id, orderDate, status, userDTO.getUserId(), itemQuantities, payment);
+        Order order = new Order(orderDate, status, userDTO.getUserId(), itemQuantities, payment);
 
         assertNotNull(order);
         assertEquals(orderDate, order.getOrderDate());
@@ -129,8 +138,8 @@ class OrderTest {
         assertEquals(userDTO.getUserId(), order.getUserId());
         assertEquals(itemQuantities, order.getItemQuantities());
         assertEquals(payment, order.getPayment());
-        assertEquals(orderExpected, order);
-        assertEquals(orderExpected.hashCode(), order.hashCode());
+        assertEquals(orderExpected2, order);
+        assertEquals(orderExpected2.hashCode(), order.hashCode());
     }
 
     @Test

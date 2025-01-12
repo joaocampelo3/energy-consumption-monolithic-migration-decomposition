@@ -51,7 +51,7 @@ class UserDTOTest {
 
     @Test
     void test_createUserDTONoArgsConstructor() {
-        UserDTO userDTO = UserDTO.builder().build();
+        UserDTO userDTO = new UserDTO();
         assertNotNull(userDTO);
     }
 

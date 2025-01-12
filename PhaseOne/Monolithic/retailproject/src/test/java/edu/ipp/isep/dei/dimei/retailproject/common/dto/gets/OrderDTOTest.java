@@ -216,15 +216,63 @@ class OrderDTOTest {
     }
 
     @Test
+    void test_isPendingOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.PENDING);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isPending());
+    }
+
+    @Test
+    void test_isPendingOrderDTOFail() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.APPROVED);
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isPending());
+    }
+
+    @Test
+    void test_isApprovedOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.APPROVED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isApproved());
+    }
+
+    @Test
+    void test_isApprovedOrderDTOFail() {
+        assertNotNull(orderDTOExpected);
+        assertFalse(orderDTOExpected.isApproved());
+    }
+
+    @Test
+    void test_isRejectedOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.REJECTED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isRejected());
+    }
+
+    @Test
     void test_isRejectedOrderDTOFail() {
         assertNotNull(orderDTOExpected);
         assertFalse(orderDTOExpected.isRejected());
     }
 
     @Test
+    void test_isCancelledOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.CANCELLED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isCancelled());
+    }
+
+    @Test
     void test_isCancelledOrderDTOFail() {
         assertNotNull(orderDTOExpected);
         assertFalse(orderDTOExpected.isCancelled());
+    }
+
+    @Test
+    void test_isShippedOrderDTO() {
+        orderDTOExpected.setOrderStatus(OrderStatusEnum.SHIPPED);
+        assertNotNull(orderDTOExpected);
+        assertTrue(orderDTOExpected.isShipped());
     }
 
     @Test

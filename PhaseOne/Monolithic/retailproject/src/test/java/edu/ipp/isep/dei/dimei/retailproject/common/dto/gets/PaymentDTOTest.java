@@ -88,7 +88,7 @@ class PaymentDTOTest {
 
     @Test
     void test_createPaymentDTONoArgsConstructor() {
-        PaymentDTO paymentDTO = PaymentDTO.builder().build();
+        PaymentDTO paymentDTO = new PaymentDTO();
         assertNotNull(paymentDTO);
     }
 
