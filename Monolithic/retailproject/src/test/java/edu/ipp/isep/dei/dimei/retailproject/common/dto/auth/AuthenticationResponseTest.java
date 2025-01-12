@@ -30,6 +30,16 @@ class AuthenticationResponseTest {
     }
 
     @Test
+    void test_buildAuthenticationResponse() {
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .token(jwtTokenDummy)
+                .build();
+
+        assertNotNull(authenticationResponse);
+        assertEquals(jwtTokenDummy, authenticationResponse.getToken());
+    }
+
+    @Test
     void test_getterAndSetter() {
         AuthenticationResponse response = new AuthenticationResponse();
         response.setToken(jwtTokenDummy);
