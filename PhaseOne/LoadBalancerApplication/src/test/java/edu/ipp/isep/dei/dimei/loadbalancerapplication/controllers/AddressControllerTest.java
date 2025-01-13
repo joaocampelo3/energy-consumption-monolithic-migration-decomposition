@@ -1,15 +1,12 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
-import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpMethod.POST;
-
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -17,27 +14,37 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddressControllerTest {
+import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
+import static edu.ipp.isep.dei.dimei.loadbalancerapplication.security.common.SecurityGlobalVariables.BEARER_PREFIX;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpMethod.POST;
 
+@ExtendWith(MockitoExtension.class)
+class AddressControllerTest {
+    String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    AddressDTO addressDTO;
+    HttpHeaders headers;
+    HttpEntity<AddressDTO> requestEntity;
     @Mock
     private RestTemplate restTemplate;
-
     @InjectMocks
     private AddressController addressController;
 
-    public AddressControllerTest() {
-        MockitoAnnotations.openMocks(this);
+    @BeforeEach
+    void beforeEach() {
+        addressDTO = new AddressDTO(1, "Street 1", "1234", "City 1", "Country1");
+
+        headers = new HttpHeaders();
+        headers.set("Authorization", jwtTokenDummy);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        requestEntity = new HttpEntity<>(addressDTO, headers);
     }
 
     @Test
     void createAddress_success() {
-        // Arrange
-        String authorizationToken = "Bearer testToken";
-        AddressDTO addressDTO = new AddressDTO(1, "Street 1", "1234", "City 1", "Country1"); // Populate with necessary fields if needed
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authorizationToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         // Mocked response object
         Map<String, Object> mockResponse = new HashMap<>();
         mockResponse.put("id", 1);
@@ -47,11 +54,11 @@ public class AddressControllerTest {
         mockResponse.put("country", "Country1");
 
         ResponseEntity<Object> mockResponseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
-        when(restTemplate.exchange(eq(USERS_URL + "/addresses"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Object.class))).thenReturn(mockResponseEntity);
+        when(restTemplate.exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class)).thenReturn(mockResponseEntity);
 
-        ResponseEntity<Object> response = addressController.createAddress(authorizationToken, addressDTO);
+        ResponseEntity<Object> response = addressController.createAddress(jwtTokenDummy, addressDTO);
 
-        verify(restTemplate, times(1)).exchange( eq(USERS_URL + "/addresses"), eq(HttpMethod.POST), any(HttpEntity.class),  eq(Object.class));
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockResponse, response.getBody());
@@ -60,19 +67,12 @@ public class AddressControllerTest {
     @Test
     void createAddress_clientError() {
         // Arrange
-        String authorizationToken = "Bearer testToken";
-        AddressDTO addressDTO = new AddressDTO(1, "Street 1", "1234", "City 1", "Country1"); // Populate with necessary fields if needed
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authorizationToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<AddressDTO> requestEntity = new HttpEntity<>(addressDTO, headers);
-
         HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request");
 
-        when(restTemplate.exchange(eq(USERS_URL + "/addresses"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Object.class))).thenThrow(exception);
+        when(restTemplate.exchange(USERS_URL + "/addresses", HttpMethod.POST, requestEntity, Object.class)).thenThrow(exception);
 
         // Act
-        ResponseEntity<Object> response = addressController.createAddress(authorizationToken, addressDTO);
+        ResponseEntity<Object> response = addressController.createAddress(jwtTokenDummy, addressDTO);
 
         // Assert
         verify(restTemplate, times(1)).exchange(USERS_URL + "/addresses", POST, requestEntity, Object.class);
