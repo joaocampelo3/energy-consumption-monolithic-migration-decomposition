@@ -83,6 +83,8 @@ public class OrderController implements HttpHeaderBuilder {
             } catch (HttpClientErrorException e) {
                 return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
             }
+        } else if (userBody instanceof UserDTO) {
+            return (ResponseEntity<Object>) addressBody;
         } else {
             return (ResponseEntity<Object>) userBody;
         }
