@@ -4,7 +4,6 @@ import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.MerchantDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

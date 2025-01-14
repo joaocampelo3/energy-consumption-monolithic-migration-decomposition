@@ -1,15 +1,13 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.auth.AuthenticationResponse;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.security.common.SecurityGlobalVariables.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -30,7 +28,6 @@ class AuthenticationResponseTest {
         assertEquals(expected.getToken(), authenticationResponse.getToken());
         assertEquals(expected, authenticationResponse);
         assertEquals(expected.toString(), authenticationResponse.toString());
-        assertTrue(expected.equals(authenticationResponse));
         assertEquals(expected.hashCode(), authenticationResponse.hashCode());
 
     }

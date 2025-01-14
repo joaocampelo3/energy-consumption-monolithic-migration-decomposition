@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.PaymentDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentStatusEnum;
 import org.junit.jupiter.api.BeforeEach;

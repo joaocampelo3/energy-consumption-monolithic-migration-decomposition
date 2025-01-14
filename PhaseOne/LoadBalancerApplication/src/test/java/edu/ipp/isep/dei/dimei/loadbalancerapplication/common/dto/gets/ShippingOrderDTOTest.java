@@ -1,9 +1,7 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ShippingOrderDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.*;
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
+import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.ShippingOrderStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

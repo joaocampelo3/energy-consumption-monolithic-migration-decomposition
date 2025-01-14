@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ItemQuantityDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

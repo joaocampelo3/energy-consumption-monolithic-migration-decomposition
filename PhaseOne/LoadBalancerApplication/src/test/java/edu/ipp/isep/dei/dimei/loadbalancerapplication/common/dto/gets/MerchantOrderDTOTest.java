@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets;
 
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.MerchantOrderStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

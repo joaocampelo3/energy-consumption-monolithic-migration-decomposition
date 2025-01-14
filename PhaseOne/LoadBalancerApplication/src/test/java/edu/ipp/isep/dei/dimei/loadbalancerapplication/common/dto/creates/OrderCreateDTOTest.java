@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates;
 
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.PaymentDTO;
@@ -9,7 +8,6 @@ import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.OrderStatusEn
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentMethodEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
-import org.apache.catalina.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
