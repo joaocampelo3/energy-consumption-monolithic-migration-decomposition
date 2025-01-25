@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
@@ -65,7 +66,7 @@ class UserControllerTest {
     }
 
     @Test
-    void test_loginFail() {
+    void test_loginFail1() {
         mockResponseEntity = new ResponseEntity<>("User or Password not correct", HttpStatus.NOT_FOUND);
 
         when(restTemplate.exchange(USERS_URL + "/users", HttpMethod.GET, userRequestEntity, responseType)).thenReturn(mockResponseEntity);
@@ -76,5 +77,16 @@ class UserControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User or Password not correct", response.getBody());
+    }
+
+    @Test
+    void test_loginFail2() {
+        when(restTemplate.exchange(USERS_URL + "/users", HttpMethod.GET, userRequestEntity, responseType)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception message"));
+
+        ResponseEntity<Object> response = userController.getUserId(jwtTokenDummy);
+
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/users", HttpMethod.GET, userRequestEntity, responseType);
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
