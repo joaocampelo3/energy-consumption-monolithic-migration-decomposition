@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     @InjectMocks
     ItemService itemService;
     @Mock
@@ -171,7 +171,7 @@ class ItemServiceTests {
     @Test
     void test_GetUserItems() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(user);
         when(merchantService.getMerchantByUser(user))
                 .thenReturn(merchant);
@@ -179,11 +179,11 @@ class ItemServiceTests {
                 .thenReturn(items);
 
         // Call the service method that uses the Repository
-        List<ItemDTO> result = itemService.getUserItems(JwtTokenDummy);
+        List<ItemDTO> result = itemService.getUserItems(jwtTokenDummy);
         List<ItemDTO> expected = itemDTOs;
 
         // Perform assertions
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(merchantService, atLeastOnce()).getMerchantByUser(user);
         verify(itemRepository, atLeastOnce()).findAllByMerchantId(merchant.getId());
         assertNotNull(result);
@@ -209,7 +209,7 @@ class ItemServiceTests {
     @Test
     void test_GetUserItemDTO() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(user);
         when(merchantService.getMerchantByUser(user))
                 .thenReturn(merchant);
@@ -217,12 +217,12 @@ class ItemServiceTests {
                 .thenReturn(Optional.ofNullable(item1));
 
         // Call the service method that uses the Repository
-        ItemDTO result = itemService.getUserItemDTO(JwtTokenDummy, item1.getId());
+        ItemDTO result = itemService.getUserItemDTO(jwtTokenDummy, item1.getId());
         ItemDTO expected = itemDTO1;
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(user);
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
         assertNotNull(result);
         assertEquals(expected, result);
@@ -246,19 +246,19 @@ class ItemServiceTests {
     @Test
     void test_CreateItem() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(merchantUser);
         when(merchantService.getMerchantByUser(merchantUser))
                 .thenReturn(merchant);
         when(itemRepository.save(newItem1)).thenReturn(item1);
 
         // Call the service method that uses the Repository
-        ItemDTO result = itemService.createItem(JwtTokenDummy, itemDTO1);
+        ItemDTO result = itemService.createItem(jwtTokenDummy, itemDTO1);
         ItemDTO expected = itemDTO1;
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(merchantUser);
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemRepository, atLeastOnce()).save(newItem1);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -267,7 +267,7 @@ class ItemServiceTests {
     @Test
     void test_DeleteItem() throws NotFoundException {
         // Define the behavior of the mock
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(merchantUser);
         when(merchantService.getMerchantByUser(merchantUser))
                 .thenReturn(merchant);
@@ -275,12 +275,12 @@ class ItemServiceTests {
                 .thenReturn(Optional.ofNullable(item1));
 
         // Call the service method that uses the Repository
-        ItemDTO result = itemService.deleteItem(JwtTokenDummy, item1.getId());
+        ItemDTO result = itemService.deleteItem(jwtTokenDummy, item1.getId());
         ItemDTO expected = itemDTO1;
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(merchantUser);
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
         assertNotNull(result);
         assertEquals(expected, result);
@@ -292,7 +292,7 @@ class ItemServiceTests {
         item1Updated.getQuantityInStock().setQuantity(item1Updated.getQuantityInStock().getQuantity() + 1);
         itemDTO1Updated.setQuantityInStock(itemDTO1.getQuantityInStock() + 1);
         itemUpdateDTO1.setQuantityInStock(itemDTO1.getQuantityInStock() + 1);
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(merchantUser);
         when(merchantService.getMerchantByUser(merchantUser))
                 .thenReturn(merchant);
@@ -301,12 +301,12 @@ class ItemServiceTests {
         when(itemRepository.save(item1Updated)).thenReturn(item1Updated);
 
         // Call the service method that uses the Repository
-        ItemDTO result = itemService.addItemStock(JwtTokenDummy, item1.getId(), itemUpdateDTO1);
+        ItemDTO result = itemService.addItemStock(jwtTokenDummy, item1.getId(), itemUpdateDTO1);
         ItemDTO expected = itemDTO1Updated;
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(merchantUser);
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
         verify(itemRepository, atLeastOnce()).save(item1Updated);
         assertNotNull(result);
@@ -319,7 +319,7 @@ class ItemServiceTests {
         item1Updated.getQuantityInStock().setQuantity(item1Updated.getQuantityInStock().getQuantity() - 1);
         itemDTO1Updated.setQuantityInStock(itemDTO1.getQuantityInStock() - 1);
         itemUpdateDTO1.setQuantityInStock(itemDTO1.getQuantityInStock() - 1);
-        when(userService.getUserByToken(JwtTokenDummy))
+        when(userService.getUserByToken(jwtTokenDummy))
                 .thenReturn(merchantUser);
         when(merchantService.getMerchantByUser(merchantUser))
                 .thenReturn(merchant);
@@ -328,12 +328,12 @@ class ItemServiceTests {
         when(itemRepository.save(item1Updated)).thenReturn(item1Updated);
 
         // Call the service method that uses the Repository
-        ItemDTO result = itemService.removeItemStock(JwtTokenDummy, item1.getId(), itemUpdateDTO1);
+        ItemDTO result = itemService.removeItemStock(jwtTokenDummy, item1.getId(), itemUpdateDTO1);
         ItemDTO expected = itemDTO1Updated;
 
         // Perform assertions
         verify(merchantService, atLeastOnce()).getMerchantByUser(merchantUser);
-        verify(userService, atLeastOnce()).getUserByToken(JwtTokenDummy);
+        verify(userService, atLeastOnce()).getUserByToken(jwtTokenDummy);
         verify(itemRepository, atLeastOnce()).findById(item1.getId());
         verify(itemRepository, atLeastOnce()).save(item1Updated);
         assertNotNull(result);

@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: LoadBalancerApplication
+
+# Eureka Discovery Service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://retailproject-apigateway-service:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true

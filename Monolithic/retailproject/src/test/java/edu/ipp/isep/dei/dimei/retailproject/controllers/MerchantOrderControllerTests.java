@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MerchantOrderControllerTests {
-    final String JwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
+    final String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
     final String exceptionMerchantOrderNotFound = "Merchant Order not found.";
     final String exceptionMerchantOrderBadPayload = "Wrong merchant order payload.";
     @InjectMocks
@@ -73,14 +73,14 @@ class MerchantOrderControllerTests {
     @Test
     void test_GetUserMerchantOrders() throws NotFoundException {
         // Define the behavior of the mock
-        when(merchantOrderService.getUserMerchantOrders(JwtTokenDummy)).thenReturn(merchantOrderDTOS);
+        when(merchantOrderService.getUserMerchantOrders(jwtTokenDummy)).thenReturn(merchantOrderDTOS);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrders(JwtTokenDummy);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrders(jwtTokenDummy);
         ResponseEntity<List<MerchantOrderDTO>> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTOS);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(JwtTokenDummy);
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(jwtTokenDummy);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
     }
@@ -88,14 +88,14 @@ class MerchantOrderControllerTests {
     @Test
     void test_GetUserMerchantOrdersFail() throws NotFoundException {
         // Define the behavior of the mock
-        when(merchantOrderService.getUserMerchantOrders(JwtTokenDummy)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
+        when(merchantOrderService.getUserMerchantOrders(jwtTokenDummy)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.getUserMerchantOrders(JwtTokenDummy);
+        ResponseEntity<Object> result = merchantOrderController.getUserMerchantOrders(jwtTokenDummy);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(JwtTokenDummy);
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrders(jwtTokenDummy);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -106,14 +106,14 @@ class MerchantOrderControllerTests {
     void test_GetMerchantOrderById() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, id)).thenReturn(merchantOrderDTO1);
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, id)).thenReturn(merchantOrderDTO1);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.getUserMerchantOrderById(jwtTokenDummy, id);
         ResponseEntity<MerchantOrderDTO> merchantOrderResponseEntityExpected = ResponseEntity.ok(merchantOrderDTO1);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, id);
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, id);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
     }
@@ -122,14 +122,14 @@ class MerchantOrderControllerTests {
     void test_GetMerchantOrderByIdFail() throws NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        when(merchantOrderService.getUserMerchantOrder(JwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
+        when(merchantOrderService.getUserMerchantOrder(jwtTokenDummy, id)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.getUserMerchantOrderById(JwtTokenDummy, id);
+        ResponseEntity<Object> result = merchantOrderController.getUserMerchantOrderById(jwtTokenDummy, id);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(JwtTokenDummy, id);
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(jwtTokenDummy, id);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -142,14 +142,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
 
-        when(merchantOrderService.fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
+        when(merchantOrderService.fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.fullCancelMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.fullCancelMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
-        verify(merchantOrderService, atMostOnce()).fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atMostOnce()).fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
     }
@@ -160,14 +160,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
 
-        when(merchantOrderService.fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
+        when(merchantOrderService.fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.fullCancelMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.fullCancelMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -180,14 +180,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
 
-        when(merchantOrderService.fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
+        when(merchantOrderService.fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.fullCancelMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.fullCancelMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderBadPayload, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -200,14 +200,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.REJECTED);
 
-        when(merchantOrderService.rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
+        when(merchantOrderService.rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.rejectMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.rejectMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
     }
@@ -218,14 +218,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.REJECTED);
 
-        when(merchantOrderService.rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
+        when(merchantOrderService.rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.rejectMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.rejectMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -238,14 +238,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.REJECTED);
 
-        when(merchantOrderService.rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
+        when(merchantOrderService.rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.rejectMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.rejectMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderBadPayload, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).rejectMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -259,14 +259,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.APPROVED);
 
-        when(merchantOrderService.approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
+        when(merchantOrderService.approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenReturn(merchantOrderDTOExpected);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.approveMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> merchantOrderResponseEntity = merchantOrderController.approveMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<MerchantOrderUpdateDTO> merchantOrderResponseEntityExpected = new ResponseEntity<>(merchantOrderDTOExpected, HttpStatus.ACCEPTED);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(merchantOrderResponseEntity);
         assertEquals(merchantOrderResponseEntityExpected, merchantOrderResponseEntity);
     }
@@ -277,14 +277,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.APPROVED);
 
-        when(merchantOrderService.approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
+        when(merchantOrderService.approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new NotFoundException(exceptionMerchantOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.approveMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.approveMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -297,14 +297,14 @@ class MerchantOrderControllerTests {
         int id = 1;
         merchantOrderDTOExpected.setMerchantOrderStatus(MerchantOrderStatusEnum.APPROVED);
 
-        when(merchantOrderService.approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
+        when(merchantOrderService.approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO)).thenThrow(new BadPayloadException(exceptionMerchantOrderBadPayload));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = merchantOrderController.approveMerchantOrderById(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        ResponseEntity<Object> result = merchantOrderController.approveMerchantOrderById(jwtTokenDummy, id, merchantOrderUpdateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionMerchantOrderBadPayload, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(JwtTokenDummy, id, merchantOrderUpdateDTO);
+        verify(merchantOrderService, atLeastOnce()).approveMerchantOrder(jwtTokenDummy, id, merchantOrderUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());

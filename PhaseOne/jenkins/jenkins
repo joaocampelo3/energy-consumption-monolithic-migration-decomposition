@@ -1,0 +1,105 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "Maven 3.9.6"
+        jdk 'Amazon Corretto JDK 17'
+    }
+    environment {
+        WORK_DIR="/home/jenkins"
+        REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
+        BUILD_DIR="$REMOTE_DIR/Monolithic/retailproject"
+        MONOLITH_DIR="$REMOTE_DIR/Monolithic"
+        MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
+        GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
+        // MONITORING VARIABLES
+        MONITORING_DIR="$WORK_DIR/Monitoring"
+        // PROMETHEUS VARIABLES
+        PROMETHEUS_PROJ_PATH="$MONITORING_DIR/kube-prometheus"
+        PROMETHEUS_GITHUB_REPO="https://github.com/prometheus-operator/kube-prometheus"
+        // KEPLER VARIABLES
+        KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
+        KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
+    }
+
+    stages {
+        stage('Remove Directories') {
+            steps {
+                parallel(
+                    dimei: {
+                        sh 'rm -rf $REMOTE_DIR'
+                    },
+                    monitoring: {
+                        sh 'rm -rf $MONITORING_DIR'
+                    }
+                )
+            }
+        }
+        
+        stage('Git Clone') {
+            steps {
+                parallel(
+                    dimei: {
+                        // Clone GitHub repository
+                        sh 'rm -rf $REMOTE_DIR'
+                        sh 'git clone $GITHUB_REPO $REMOTE_DIR && chmod 777 -R $REMOTE_DIR'
+                    },
+                    prometheus: {
+                        // Clone Prometheus GitHub repository
+                        sh 'git clone --depth 1 $PROMETHEUS_GITHUB_REPO $PROMETHEUS_PROJ_PATH && chmod 777 -R $PROMETHEUS_PROJ_PATH'
+                    },
+                    kepler: {
+                        // Clone Kepler GitHub repository
+                        sh 'git clone --depth 1 $KEPLER_GITHUB_REPO $KEPLER_PROJ_PATH && chmod 777 -R $KEPLER_PROJ_PATH'
+                    }
+                )
+            }
+        }
+
+        stage('Create Kind Cluster'){
+            steps {
+                sh 'cd $MONITORING_CONFIG_DIR && ./kind_config.sh'
+            }
+        }
+
+        stage('Prometheus Setup') {
+            steps {
+                sh 'cp $MONITORING_CONFIG_DIR/prometheus_config.sh $PROMETHEUS_PROJ_PATH'
+                sh 'cd $PROMETHEUS_PROJ_PATH && ./prometheus_config.sh'
+            }
+        }
+
+        stage('Kepler Setup') {
+            steps {
+                sh 'cp $MONITORING_CONFIG_DIR/kepler_config.sh $KEPLER_PROJ_PATH'
+                sh 'cd $KEPLER_PROJ_PATH && ./kepler_config.sh'
+            }
+        }
+        
+        stage('Cleanup') {
+            steps {
+                sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the GitHub repository
+                sh 'cd $BUILD_DIR && mvn clean install -U'
+            }
+            post {
+                success {
+                    dir("${BUILD_DIR}") {
+                        jacoco()
+                    }
+                }
+            }
+        }
+        
+        stage('Startup') {
+            steps {
+                sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+            }
+        }
+    }
+}

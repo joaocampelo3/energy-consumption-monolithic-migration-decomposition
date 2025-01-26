@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: UserMicroserviceApp
+  datasource:
+    url: jdbc:mysql://retaildatabase-user-service/dummy?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+  cache:
+    cache-names: categories, items, merchants, merchantorders, orders, shippingorders
+
+# swagger-ui custom path
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# jwt token
+jwt:
+  # Generate a random Jwt secret key
+  secret: 0AC5BB0DBDF1E1BF769B63E687E4E603333FAD8BF7F5C24933633E90028EF5EF
+  token:
+    # Expires after 24h (1000*60*24)
+    expirationTimeSecs: 1440000
+
+cache:
+  caffeine:
+    time-to-live: 15
+    initialCapacity: 100
+    maximumSize: 500
+
+# Eureka Discovery Service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://retailproject-apigateway-service:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
