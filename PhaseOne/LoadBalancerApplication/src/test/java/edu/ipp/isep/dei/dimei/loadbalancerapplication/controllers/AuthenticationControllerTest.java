@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.USERS_URL;
@@ -69,7 +70,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void test_loginFail() {
+    void test_loginFail1() {
         mockResponseEntity = new ResponseEntity<>("User or Password not correct", HttpStatus.NOT_FOUND);
 
         when(restTemplate.exchange(USERS_URL + "/auth" + "/login", HttpMethod.POST, loginRequestEntity, responseType)).thenReturn(mockResponseEntity);
@@ -80,6 +81,18 @@ class AuthenticationControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User or Password not correct", response.getBody());
+    }
+
+    @Test
+    void test_loginFail2() {
+        when(restTemplate.exchange(USERS_URL + "/auth" + "/login", HttpMethod.POST, loginRequestEntity, responseType)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception message"));
+
+        ResponseEntity<Object> response = authenticationController.login(loginDTO);
+
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/auth" + "/login", HttpMethod.POST, loginRequestEntity, responseType);
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("500 Exception message", response.getBody());
     }
 
     @Test
@@ -97,7 +110,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void test_registerFail() {
+    void test_registerFail1() {
         mockResponseEntity = new ResponseEntity<>("User or Password not correct", HttpStatus.NOT_FOUND);
 
         when(restTemplate.exchange(USERS_URL + "/auth" + "/register", HttpMethod.POST, registerRequestEntity, responseType)).thenReturn(mockResponseEntity);
@@ -108,6 +121,18 @@ class AuthenticationControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User or Password not correct", response.getBody());
+    }
+
+    @Test
+    void test_registerFail2() {
+        when(restTemplate.exchange(USERS_URL + "/auth" + "/register", HttpMethod.POST, registerRequestEntity, responseType)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception message"));
+
+        ResponseEntity<Object> response = authenticationController.register(registerDTO);
+
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/auth" + "/register", HttpMethod.POST, registerRequestEntity, responseType);
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("500 Exception message", response.getBody());
     }
 
     @Test
@@ -126,7 +151,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void test_registerAdminFail() {
+    void test_registerAdminFail1() {
         mockResponseEntity = new ResponseEntity<>("User or Password not correct", HttpStatus.NOT_FOUND);
         registerRequestEntity = new HttpEntity<>(registerDTO, headers);
 
@@ -138,6 +163,20 @@ class AuthenticationControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User or Password not correct", response.getBody());
+    }
+
+    @Test
+    void test_registerAdminFail2() {
+        registerRequestEntity = new HttpEntity<>(registerDTO, headers);
+
+        when(restTemplate.exchange(USERS_URL + "/auth" + "/register/admin", HttpMethod.POST, registerRequestEntity, responseType)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception message"));
+
+        ResponseEntity<Object> response = authenticationController.registerAdmin(jwtTokenDummy, registerDTO);
+
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/auth" + "/register/admin", HttpMethod.POST, registerRequestEntity, responseType);
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("500 Exception message", response.getBody());
     }
 
     @Test
@@ -156,7 +195,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void test_registerMerchantFail() {
+    void test_registerMerchantFail1() {
         mockResponseEntity = new ResponseEntity<>("User or Password not correct", HttpStatus.NOT_FOUND);
         registerRequestEntity = new HttpEntity<>(registerDTO, headers);
 
@@ -168,5 +207,19 @@ class AuthenticationControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User or Password not correct", response.getBody());
+    }
+
+    @Test
+    void test_registerMerchantFail2() {
+        registerRequestEntity = new HttpEntity<>(registerDTO, headers);
+
+        when(restTemplate.exchange(USERS_URL + "/auth" + "/register/merchant", HttpMethod.POST, registerRequestEntity, responseType)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Exception message"));
+
+        ResponseEntity<Object> response = authenticationController.registerMerchant(jwtTokenDummy, registerDTO);
+
+        verify(restTemplate, times(1)).exchange(USERS_URL + "/auth" + "/register/merchant", HttpMethod.POST, registerRequestEntity, responseType);
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("500 Exception message", response.getBody());
     }
 }
