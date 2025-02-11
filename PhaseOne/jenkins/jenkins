@@ -6,13 +6,24 @@ pipeline {
         jdk 'Amazon Corretto JDK 17'
     }
     environment {
+        PHASE_NUMBER = "PhaseOne"
         WORK_DIR="/home/jenkins"
         REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
-        BUILD_DIR="$REMOTE_DIR/Monolithic/retailproject"
-        MONOLITH_DIR="$REMOTE_DIR/Monolithic"
-        MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
         GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
+        // MONOLITH
+        BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic/retailproject"
+        MONOLITH_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic"
+        // API GATEWAY
+        API_GATEWAY_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
+        API_GATEWAY_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
+        // LOAD BALANCER
+        LOAD_BALANCER_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
+        LOAD_BALANCER_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
+        // USER MICROSERVICE
+        USER_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User/retailproject"
+        USER_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User"
         // MONITORING VARIABLES
+        MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
         MONITORING_DIR="$WORK_DIR/Monitoring"
         // PROMETHEUS VARIABLES
         PROMETHEUS_PROJ_PATH="$MONITORING_DIR/kube-prometheus"
@@ -20,9 +31,27 @@ pipeline {
         // KEPLER VARIABLES
         KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
         KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
+        //GOLANG_HOME
+        GOLANG_HOME = '/usr/local/go/bin'
+        PATH = "${GOLANG_HOME}:${env.PATH}"
     }
 
     stages {
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "USER = $USER"
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    echo "REMOTE_DIR = ${REMOTE_DIR}"
+                    echo "BUILD_DIR = ${BUILD_DIR}"
+                    echo "GITHUB_REPO = ${GITHUB_REPO}"
+                    echo "JAVA_HOME = ${JAVA_HOME}"
+                    echo "GOLANG_HOME = ${GOLANG_HOME}"
+                ''' 
+            }
+        }
+
         stage('Remove Directories') {
             steps {
                 parallel(
@@ -33,6 +62,15 @@ pipeline {
                         sh 'rm -rf $MONITORING_DIR'
                     }
                 )
+            }
+        }
+        
+        stage('Go Test') {
+            steps {
+                sh '''
+                cd $WORK_DIR
+                go version
+                '''
             }
         }
         
@@ -77,28 +115,112 @@ pipeline {
         }
         
         stage('Cleanup') {
-            steps {
-                sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+            parallel {
+                stage('Cleanup Monolith') {
+                    steps {
+                        sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup API Gateway') {
+                    steps {
+                        sh 'cd $API_GATEWAY_DIR && kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Load Balancer') {
+                    steps {
+                        sh 'cd $LOAD_BALANCER_DIR && kubectl delete -f ./retailproject_loadbalancer_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup User Microservice') {
+                    steps {
+                        sh 'cd $USER_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
             }
+            
         }
         
-        stage('Build') {
-            steps {
-                // Build the GitHub repository
-                sh 'cd $BUILD_DIR && mvn clean install -U'
-            }
-            post {
-                success {
-                    dir("${BUILD_DIR}") {
-                        jacoco()
+        stage('Build Monolith') {
+            parallel {
+                stage('Build Monolith') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build API Gateway') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $API_GATEWAY_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${API_GATEWAY_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Load Balancer') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $LOAD_BALANCER_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${LOAD_BALANCER_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build User Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $USER_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${USER_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
                     }
                 }
             }
         }
         
-        stage('Startup') {
+        stage('Startup API Gateway') {
             steps {
-                sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+                sh 'chmod 777 $API_GATEWAY_DIR -R && cd $API_GATEWAY_DIR && ./build.sh'
+            }
+        }
+        
+        stage('Startup Load Balancer') {
+            steps {
+                sh 'chmod 777 $LOAD_BALANCER_DIR -R && cd $LOAD_BALANCER_DIR && ./build.sh'
+            }
+        }
+        
+        stage('Startup Services') {
+            parallel {
+                 stage('Startup Monolith') {
+                    steps {
+                        sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup User Microservice') {
+                    steps {
+                        sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
             }
         }
     }
