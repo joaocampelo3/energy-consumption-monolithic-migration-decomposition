@@ -45,7 +45,7 @@ public class RetailprojectApplication {
             userList.add(user3);
 
 
-            for (int i = 0; i <= accountList.size(); i++) {
+            for (int i = 0; i < accountList.size(); i++) {
                 Account accountCheck = accountRepository.findById(i).orElse(null);
                 if (accountCheck == null) {
                     accountRepository.save(accountList.get(i));
