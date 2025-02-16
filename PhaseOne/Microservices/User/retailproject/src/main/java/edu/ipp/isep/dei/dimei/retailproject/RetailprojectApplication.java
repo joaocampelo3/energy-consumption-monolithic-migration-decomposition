@@ -75,9 +75,6 @@ public class RetailprojectApplication {
                     }
                 }
             }
-
-            addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", user2));
-            addressRepository.save(new Address(2, "5th Avenue", "10128", "New York", "USA", user3));
         };
     }
 }
