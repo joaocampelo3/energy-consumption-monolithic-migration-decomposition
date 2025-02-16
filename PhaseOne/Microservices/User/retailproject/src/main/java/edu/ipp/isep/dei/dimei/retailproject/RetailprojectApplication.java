@@ -45,27 +45,27 @@ public class RetailprojectApplication {
             userList.add(user3);
 
 
-            for (int i = 1; i <= accountList.size(); i++) {
-                Account account = accountRepository.findById(i).orElse(null);
-                if (account == null) {
+            for (int i = 0; i <= accountList.size(); i++) {
+                Account accountCheck = accountRepository.findById(i).orElse(null);
+                if (accountCheck == null) {
                     accountRepository.save(accountList.get(i));
                     accountList.get(i).setId(i);
 
-                    User user = userRepository.findById(i).orElse(null);
-                    if (user != null) {
-                        userRepository.save(user);
+                    User userCheck = userRepository.findById(i).orElse(null);
+                    if (userCheck != null) {
+                        userRepository.save(userCheck);
                         userList.get(i).setId(i);
-                        Address address;
+                        Address addressCheck;
                         switch (i) {
                             case 2:
-                                address = addressRepository.findById(1).orElse(null);
-                                if (address == null) {
+                                addressCheck = addressRepository.findById(1).orElse(null);
+                                if (addressCheck == null) {
                                     addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", userList.get(i)));
                                 }
                                 break;
                             case 3:
-                                address = addressRepository.findById(2).orElse(null);
-                                if (address == null) {
+                                addressCheck = addressRepository.findById(2).orElse(null);
+                                if (addressCheck == null) {
                                     addressRepository.save(new Address(2, "5th Avenue", "10128", "New York", "USA", userList.get(i)));
                                 }
                                 break;

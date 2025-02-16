@@ -50,7 +50,7 @@ public class RetailprojectApplication {
                 category2.setId(2);
             }
 
-            if (merchantCheck != null) {
+            if (merchant != null) {
                 if (category1 != null) {
                     Item item1 = itemRepository.findById(1).orElse(null);
                     if (item1 == null) {
