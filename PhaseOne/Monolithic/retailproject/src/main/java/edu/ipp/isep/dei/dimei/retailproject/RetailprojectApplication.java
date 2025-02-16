@@ -25,17 +25,45 @@ public class RetailprojectApplication {
     @Bean
     public CommandLineRunner demoData(CategoryRepository categoryRepository, MerchantRepository merchantRepository, ItemRepository itemRepository) {
         return args -> {
-            Category category1 = new Category("Category 1 description", "Category 1");
-            Category category2 = new Category("Category 2 description", "Category 2");
+            Merchant merchant = null;
+            Category category1 = null;
+            Category category2 = null;
 
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
+            Merchant merchantCheck = merchantRepository.findById(1).orElse(null);
+            if (merchantCheck == null) {
+                merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", 2);
+                merchantRepository.save(merchant);
+                merchant.setId(1);
+            }
 
-            Merchant merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", 2);
-            merchantRepository.save(merchant);
+            Category categoryCheck = categoryRepository.findById(1).orElse(null);
+            if (categoryCheck == null) {
+                category1 = new Category("Category 1 description", "Category 1");
+                categoryRepository.save(category1);
+                category1.setId(1);
+            }
 
-            itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 200, category1, merchant));
-            itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 300, category1, merchant));
+            categoryCheck = categoryRepository.findById(2).orElse(null);
+            if (categoryCheck == null) {
+                category2 = new Category("Category 2 description", "Category 2");
+                categoryRepository.save(category2);
+                category2.setId(2);
+            }
+
+            if (merchantCheck != null) {
+                if (category1 != null) {
+                    Item item1 = itemRepository.findById(1).orElse(null);
+                    if (item1 == null) {
+                        itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 200, category1, merchant));
+                    }
+                }
+                if (category2 != null) {
+                    Item item2 = itemRepository.findById(2).orElse(null);
+                    if (item2 == null) {
+                        itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 300, category2, merchant));
+                    }
+                }
+            }
         };
     }
 
