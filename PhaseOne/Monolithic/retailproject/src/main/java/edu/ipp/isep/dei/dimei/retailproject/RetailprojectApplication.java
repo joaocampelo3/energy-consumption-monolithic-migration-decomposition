@@ -54,13 +54,13 @@ public class RetailprojectApplication {
                 if (category1 != null) {
                     Item item1 = itemRepository.findById(1).orElse(null);
                     if (item1 == null) {
-                        itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 200, category1, merchant));
+                        itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 20000, category1, merchant));
                     }
                 }
                 if (category2 != null) {
                     Item item2 = itemRepository.findById(2).orElse(null);
                     if (item2 == null) {
-                        itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 300, category2, merchant));
+                        itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 30000, category2, merchant));
                     }
                 }
             }

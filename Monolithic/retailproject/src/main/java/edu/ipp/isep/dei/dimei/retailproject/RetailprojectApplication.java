@@ -55,8 +55,8 @@ public class RetailprojectApplication {
             Merchant merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", merchantAddress);
             merchantRepository.save(merchant);
 
-            itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 200, category1, merchant));
-            itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 300, category1, merchant));
+            itemRepository.save(new Item("Item 1", "ABC-12345-S-BL", "Item 1 description", 8, 20000, category1, merchant));
+            itemRepository.save(new Item("Item 2", "ABC-12345-XL-BL", "Item 2 description", 5, 30000, category1, merchant));
         };
     }
 }
