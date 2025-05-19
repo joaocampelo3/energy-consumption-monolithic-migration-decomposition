@@ -1,0 +1,1860 @@
+{
+	"info": {
+		"_postman_id": "e426fd8f-9c4f-4821-90bd-06bc7e3c1bd4",
+		"name": "Retail Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25044374"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Registration",
+					"item": [
+						{
+							"name": "1. Register Admin User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json()\r",
+											"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{retail_project_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{environment}}/auth/register/admin",
+									"host": [
+										"{{environment}}"
+									],
+									"path": [
+										"auth",
+										"register",
+										"admin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Register Merchant User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json()\r",
+											"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{retail_project_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{environment}}/auth/register/merchant",
+									"host": [
+										"{{environment}}"
+									],
+									"path": [
+										"auth",
+										"register",
+										"merchant"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Register User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json()\r",
+											"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{environment}}/auth/register",
+									"host": [
+										"{{environment}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "1. Login as Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"password\": \"johndoe_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/auth/login",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Login as Merchant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"password\": \"merchant_number1_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/auth/login",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Login as User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()\r",
+									"pm.collectionVariables.set(\"retail_project_token\", response.token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"usernumber1@gmail.com\",\r\n    \"password\": \"user_number1_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/auth/login",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/categories/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"categories",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/categories/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Category 1\",\r\n    \"description\": \"Category 1 description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/categories",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Category 1 Changed\",\r\n    \"description\": \"Category 1 description Changed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/categories/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/categories/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Items",
+			"item": [
+				{
+					"name": "Get All Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/items/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/items",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/items/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Item ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"itemName\": \"Item 1\",\r\n    \"sku\": \"ABC-12345-S-BL\",\r\n    \"itemDescription\": \"Item 1 description\",\r\n    \"price\": 12.0,\r\n    \"quantityInStock\": 10,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Category 1\",\r\n        \"description\": \"Category 1 description\"\r\n    },\r\n    \"merchant\": {\r\n        \"id\": 1,\r\n        \"name\": \"Merchant 1\",\r\n        \"email\": \"merchantnumber1@gmail.com\",\r\n        \"address\": {\r\n            \"id\": 1,\r\n            \"street\": \"5th Avenue\",\r\n            \"zipCode\": \"10128\",\r\n            \"city\": \"New York\",\r\n            \"country\": \"USA\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/items",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/items/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase stock to Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"price\": 12.0,\r\n    \"quantityInStock\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/items/:id/addStock",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items",
+								":id",
+								"addStock"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Item ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Decrease stock to Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"price\": 12.0,\r\n    \"quantityInStock\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/items/:id/removeStock",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"items",
+								":id",
+								"removeStock"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Item ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Merchants",
+			"item": [
+				{
+					"name": "Get All Merchants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchants/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchants",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Merchant by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchants/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Merchant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Merchant 1\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"address\": {\r\n        \"street\": \"5th Avenue\",\r\n        \"zipCode\": \"10128\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchants",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Merchant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Merchant 1\",\r\n    \"email\": \"johndoe1234@gmail.com\",\r\n    \"address\": {\r\n        \"id\": 1,\r\n        \"street\": \"5th Avenue\",\r\n        \"zipCode\": \"10128\",\r\n        \"city\": \"New York\",\r\n        \"country\": \"USA\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchants/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Merchant ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Merchant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchants/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Merchant Orders",
+			"item": [
+				{
+					"name": "Get All Merchant Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchantorders/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Merchant Orders by User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchantorders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Merchant Orders by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/merchantorders/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Merchant Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-14T12:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchantorders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Merchant Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"APPROVED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchantorders/:id/approve",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders",
+								":id",
+								"approve"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Merchant Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"CANCELLED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchantorders/:id/cancel",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Merchant Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"merchantOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"merchantOrderStatus\": \"REJECTED\",\r\n    \"email\": \"merchantnumber1@gmail.com\",\r\n    \"orderId\": 1,\r\n    \"merchantId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/merchantorders/:id/reject",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"merchantorders",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Merchant Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/orders/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/orders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Orders by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/orders/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderDate\": \"2024-03-20T13:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-20T13:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/orders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/orders/user/:userId/order/:orderId",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								"user",
+								":userId",
+								"order",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "2",
+									"description": "User ID"
+								},
+								{
+									"key": "orderId",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"APPROVED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/orders/:id/approve",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"approve"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"CANCELLED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/orders/:id/cancel",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderStatus\": \"REJECTED\",\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/orders/:id/reject",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shipping Orders",
+			"item": [
+				{
+					"name": "Get All Shipping Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/shippingorders/all",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shipping Orders by User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/shippingorders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Shipping Orders by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"orderItems\": [\r\n        {\r\n            \"itemId\": 1,\r\n            \"itemName\": \"Item 1\",\r\n            \"itemSku\": \"ABC-12345-S-BL\",\r\n            \"itemDescription\": \"Item 1 description\",\r\n            \"qty\": 2,\r\n            \"price\": 12.0\r\n        }\r\n    ],\r\n    \"payment\": {\r\n        \"amount\": 12.0,\r\n        \"paymentDateTime\": \"2024-03-14T12:59:11.332\",\r\n        \"paymentMethod\": \"CARD\",\r\n        \"status\": \"ACCEPTED\"\r\n    },\r\n    \"merchantId\": 1,\r\n    \"address\": {\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"APPROVED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id/approve",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id",
+								"approve"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"CANCELLED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id/cancel",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"REJECTED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id/reject",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ship Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"SHIPPED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id/ship",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id",
+								"ship"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delivered Shipping Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{retail_project_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"shippingOrderDate\": \"2024-03-14T12:59:11.332\",\r\n    \"shippingOrderStatus\": \"DELIVERED\",\r\n    \"addressDTO\": {\r\n        \"id\": 18,\r\n        \"street\": \"Different street\",\r\n        \"zipCode\": \"1234\",\r\n        \"city\": \"Lisbon\",\r\n        \"country\": \"Portugal\"\r\n    },\r\n    \"orderId\": 1,\r\n    \"merchantOrderId\": 1,\r\n    \"email\": \"usernumber1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{environment}}/shippingorders/:id/delivered",
+							"host": [
+								"{{environment}}"
+							],
+							"path": [
+								"shippingorders",
+								":id",
+								"delivered"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Shipping Order ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "retail_project_token",
+			"value": ""
+		}
+	]
+}
