@@ -22,9 +22,11 @@ class JwtServiceTest {
     private String secretKey;
     @Value("${jwt.token.expirationTimeSecs}")
     private long tokenExpirationTime;
+    int userId;
 
     @BeforeEach
     void beforeEach() {
+        userId = 1;
         account = Account.builder()
                 .id(1)
                 .email("johndoe1234@gmail.com")
@@ -40,7 +42,7 @@ class JwtServiceTest {
     @Test
     void test_generateToken() {
         // Call the service method
-        String token = jwtService.generateToken(account);
+        String token = jwtService.generateToken(account, userId);
 
         // Perform assertions
         assertNotNull(token);
@@ -50,7 +52,7 @@ class JwtServiceTest {
     @Test
     void test_extractUsername() {
         // Call the service method
-        String token = jwtService.generateToken(account);
+        String token = jwtService.generateToken(account, userId);
         String username = jwtService.extractUsername(token);
 
         // Perform assertions
@@ -60,7 +62,7 @@ class JwtServiceTest {
     @Test
     void test_isTokenValid() {
         // Call the service method
-        String token = jwtService.generateToken(account);
+        String token = jwtService.generateToken(account, userId);
         boolean isValid = jwtService.isTokenValid(token, account);
 
         // Perform assertions
@@ -70,7 +72,7 @@ class JwtServiceTest {
     @Test
     void test_extractRole() {
         // Call the service method
-        String token = jwtService.generateToken(account);
+        String token = jwtService.generateToken(account, userId);
         String role = jwtService.extractRole(token);
 
         // Perform assertions
