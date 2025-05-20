@@ -6,7 +6,7 @@ pipeline {
         jdk 'Amazon Corretto JDK 17'
     }
     environment {
-        PHASE_NUMBER = "PhaseOne"
+        PHASE_NUMBER = "PhaseTwo"
         WORK_DIR="/home/jenkins"
         REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
         GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
@@ -19,9 +19,15 @@ pipeline {
         // LOAD BALANCER
         LOAD_BALANCER_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
         LOAD_BALANCER_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
+        // RABBITMQ
+        RABBITMQ_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/RabbitMQ"
+        RABBITMQ_DIR="$REMOTE_DIR/$PHASE_NUMBER/RabbitMQ"
         // USER MICROSERVICE
         USER_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User/retailproject"
         USER_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User"
+        // ITEMS MICROSERVICE
+        ITEMS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items/retailproject"
+        ITEMS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items"
         // MONITORING VARIABLES
         MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
         MONITORING_DIR="$WORK_DIR/Monitoring"
@@ -116,6 +122,11 @@ pipeline {
         
         stage('Cleanup') {
             parallel {
+                stage('Cleanup RabbitMQ') {
+                    steps {
+                        sh 'cd $RABBITMQ_DIR && kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
+                    }
+                }
                 stage('Cleanup Monolith') {
                     steps {
                         sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
@@ -134,6 +145,11 @@ pipeline {
                 stage('Cleanup User Microservice') {
                     steps {
                         sh 'cd $USER_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Items Microservice') {
+                    steps {
+                        sh 'cd $ITEMS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
             }
@@ -194,6 +210,25 @@ pipeline {
                         }
                     }
                 }
+                stage('Build Items Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ITEMS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ITEMS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Startup RabbitMQ') {
+            steps {
+                sh 'chmod 777 $RABBITMQ_DIR -R && cd $RABBITMQ_DIR && ./build.sh'
             }
         }
         
@@ -219,6 +254,11 @@ pipeline {
                  stage('Startup User Microservice') {
                     steps {
                         sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Items Microservice') {
+                    steps {
+                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
                     }
                  }
             }
