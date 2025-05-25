@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: CategoryMicroserviceApp
+    name: ItemMicroserviceApp
   datasource:
-    url: jdbc:mysql://retaildatabase-category-service/dummy?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://retaildatabase-item-service/dummy?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
