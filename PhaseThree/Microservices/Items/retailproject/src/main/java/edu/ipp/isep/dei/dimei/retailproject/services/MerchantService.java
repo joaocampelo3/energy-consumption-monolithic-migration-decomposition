@@ -45,7 +45,7 @@ public class MerchantService {
     }
 
     public MerchantDTO createMerchant(MerchantDTO merchantDTO) {
-        Merchant merchant = new Merchant(merchantDTO.getId(), merchantDTO.getName(), merchantDTO.getEmail());
+        Merchant merchant = new Merchant(merchantDTO.getId(), merchantDTO.getName(), merchantDTO.getEmail(), merchantDTO.getAddressId());
 
         merchant = this.merchantRepository.save(merchant);
 

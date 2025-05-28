@@ -20,12 +20,14 @@ public class MerchantEvent {
     private int id;
     private String name;
     private String email;
+    private int addressId;
     private EventTypeEnum eventTypeEnum;
 
     public MerchantEvent(MerchantDTO merchantDTO, EventTypeEnum eventTypeEnum) {
         this.id = merchantDTO.getId();
         this.name = merchantDTO.getName();
         this.email = merchantDTO.getEmail();
+        this.addressId = merchantDTO.getAddressId();
         this.eventTypeEnum = eventTypeEnum;
     }
 
@@ -39,6 +41,6 @@ public class MerchantEvent {
     }
 
     public Merchant toMerchant() {
-        return new Merchant(this.id, this.name, this.email);
+        return new Merchant(this.id, this.name, this.email, this.addressId);
     }
 }

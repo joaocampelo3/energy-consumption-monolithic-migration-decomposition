@@ -29,9 +29,11 @@ public class Merchant {
     @Column(name = "merchant_email", nullable = false)
     @Email
     private String email;
+    private int addressId;
 
-    public Merchant(String name, String email) {
+    public Merchant(String name, String email, int addressId) {
         this.name = name;
         this.email = email;
+        this.addressId = addressId;
     }
 }
