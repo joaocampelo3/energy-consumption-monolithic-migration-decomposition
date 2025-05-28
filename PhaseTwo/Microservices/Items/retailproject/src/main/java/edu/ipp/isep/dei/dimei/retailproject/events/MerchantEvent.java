@@ -41,6 +41,6 @@ public class MerchantEvent {
     }
 
     public Merchant toMerchant() {
-        return new Merchant(this.id, this.name, this.email);
+        return new Merchant(this.id, this.name, this.email, this.addressId);
     }
 }

@@ -74,7 +74,7 @@ public class RetailprojectApplication {
 
             Merchant merchantCheck = merchantRepository.findById(1).orElse(null);
             if (merchantCheck == null) {
-                merchant = new Merchant("Merchant Dummy", "merchant@gmail.com");
+                merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", 1);
                 merchantRepository.save(merchant);
                 merchant.setId(1);
             }
