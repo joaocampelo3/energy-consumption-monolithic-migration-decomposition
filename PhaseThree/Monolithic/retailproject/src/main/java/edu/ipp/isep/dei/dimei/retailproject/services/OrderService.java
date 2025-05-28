@@ -2,14 +2,12 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -33,42 +31,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MerchantOrderService merchantOrderService;
     private final ShippingOrderService shippingOrderService;
-    private final ItemService itemService;
-    private final PaymentService paymentService;
     private final ItemQuantityService itemQuantityService;
 
-    public List<OrderDTO> getAllOrders() {
-        List<OrderDTO> orders = new ArrayList<>();
-
-        this.orderRepository.findAll().forEach(order -> orders.add(new OrderDTO(order)));
-        return orders;
-    }
-
-    public List<OrderDTO> getUserOrders(UserDTO userDTO) {
-        List<OrderDTO> orders = new ArrayList<>();
-
-        this.orderRepository.findByUserId(userDTO.getUserId()).forEach(order -> orders.add(new OrderDTO(order)));
-
-        return orders;
-    }
-
     public OrderDTO createOrder(OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
-        isSameMerchantForAllItems(orderDTO.getOrderItems(), orderDTO.getMerchantId());
-
-        Payment payment = this.paymentService.createPayment(orderDTO.getPayment());
-
         List<ItemQuantity> itemQuantities = new ArrayList<>();
         ItemQuantity itemQuantity;
-        int itemStock;
 
         for (ItemQuantityDTO itemQuantityDTO : orderDTO.getOrderItems()) {
             itemQuantity = this.itemQuantityService.createItemQuantity(itemQuantityDTO);
-            itemStock = itemQuantity.getItem().getQuantityInStock().getQuantity();
             itemQuantities.add(itemQuantity);
-            this.itemService.removeItemStock(itemQuantityDTO.getItemId(), new ItemUpdateDTO(itemQuantityDTO.getItemId(), itemQuantityDTO.getItemSku(), itemQuantityDTO.getPrice(), itemStock - itemQuantityDTO.getQty(), orderDTO.getUserDTO()));
         }
 
-        Order order = orderDTO.dtoToEntity(payment, itemQuantities);
+        Order order = orderDTO.dtoToEntity(null, itemQuantities);
 
         order = this.orderRepository.save(order);
 
@@ -77,16 +51,6 @@ public class OrderService {
         this.shippingOrderService.createShippingOrder(orderDTO.getUserDTO(), order, merchantOrder, orderDTO.getAddress().getId());
 
         return new OrderDTO(order);
-    }
-
-    private void isSameMerchantForAllItems(List<ItemQuantityDTO> itemQuantityDTOS, int merchantId) throws NotFoundException, BadPayloadException {
-        ItemDTO itemDTO;
-        for (ItemQuantityDTO itemQuantityDTO : itemQuantityDTOS) {
-            itemDTO = this.itemService.getItemDTO(itemQuantityDTO.getItemId());
-            if (itemDTO.getMerchant().getId() != merchantId) {
-                throw new BadPayloadException("Only can order items form same merchant");
-            }
-        }
     }
 
     public OrderDTO getUserOrder(UserDTO userDTO, int id) throws NotFoundException {
@@ -107,7 +71,7 @@ public class OrderService {
         return new OrderDTO(order);
     }
 
-    public OrderUpdateDTO fullCancelOrder(int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+    public OrderUpdateDTO fullCancelOrder(int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
         if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.CANCELLED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
@@ -117,8 +81,6 @@ public class OrderService {
         this.merchantOrderService.fullCancelMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order);
         this.shippingOrderService.fullCancelShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order);
 
-        addItemStock(orderUpdateDTO.getUserDTO(), order);
-
         return new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
     }
 
@@ -126,7 +88,7 @@ public class OrderService {
         return new OrderUpdateDTO(changeOrderStatus(userDTO, orderId, OrderStatusEnum.CANCELLED), userDTO.getEmail());
     }
 
-    public OrderUpdateDTO rejectOrder(int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException, InvalidQuantityException {
+    public OrderUpdateDTO rejectOrder(int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
         if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.REJECTED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
@@ -135,8 +97,6 @@ public class OrderService {
 
         this.merchantOrderService.rejectMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order);
         this.shippingOrderService.rejectShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order);
-
-        addItemStock(orderUpdateDTO.getUserDTO(), order);
 
         return new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
     }
@@ -216,16 +176,6 @@ public class OrderService {
 
     private boolean isIdNotEqualToOrderId(int id, OrderUpdateDTO orderUpdateDTO) {
         return id != orderUpdateDTO.getId();
-    }
-
-    private void addItemStock(UserDTO userDTO, Order order) throws InvalidQuantityException, BadPayloadException, NotFoundException {
-        ItemUpdateDTO itemUpdateDTO;
-        for (ItemQuantity itemQuantity : order.getItemQuantities()) {
-            itemUpdateDTO = new ItemUpdateDTO(itemQuantity.getItem());
-            itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + itemQuantity.getQuantityOrdered().getQuantity());
-            itemUpdateDTO.setUserDTO(userDTO);
-            this.itemService.addItemStock(itemQuantity.getItem().getId(), itemUpdateDTO);
-        }
     }
 
     private boolean merchantOrderDTOIsPendingOrApproved(MerchantOrderDTO merchantOrderDTO) {

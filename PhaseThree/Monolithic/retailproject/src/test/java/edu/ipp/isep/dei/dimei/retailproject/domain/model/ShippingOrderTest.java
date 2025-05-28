@@ -75,7 +75,7 @@ class ShippingOrderTest {
                 .price(price)
                 .build();
         itemQuantityList.add(itemQuantity1);
-        double totalPrice = itemQuantityList.stream().mapToDouble(value -> value.getItem().getPrice() * value.getQuantityOrdered().getQuantity()).sum();
+        double totalPrice = itemQuantityList.stream().mapToDouble(value -> value.getItemId().getPrice() * value.getQuantityOrdered().getQuantity()).sum();
 
         Payment payment = Payment.builder()
                 .id(1)

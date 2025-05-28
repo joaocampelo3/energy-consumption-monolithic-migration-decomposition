@@ -3,8 +3,6 @@ package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
@@ -79,7 +77,7 @@ class OrderTest {
                 .price(price)
                 .build();
         itemQuantities.add(itemQuantity1);
-        double totalPrice = itemQuantities.stream().mapToDouble(value -> value.getItem().getPrice() * value.getQuantityOrdered().getQuantity()).sum();
+        double totalPrice = itemQuantities.stream().mapToDouble(value -> value.getItemId().getPrice() * value.getQuantityOrdered().getQuantity()).sum();
 
         payment = Payment.builder()
                 .id(1)

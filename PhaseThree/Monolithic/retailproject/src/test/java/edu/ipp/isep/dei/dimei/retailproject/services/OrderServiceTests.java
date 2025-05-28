@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
@@ -353,7 +352,7 @@ class OrderServiceTests {
         verify(itemService, atLeastOnce()).getItemDTO(itemQuantityDTO1.getId());
         verify(paymentService, atLeastOnce()).createPayment(orderCreateDTO.getPayment());
         verify(itemQuantityService, atLeastOnce()).createItemQuantity(itemQuantityDTO1);
-        verify(itemService, atLeastOnce()).removeItemStock(itemQuantity1.getItem().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty(), userDTO));
+        verify(itemService, atLeastOnce()).removeItemStock(itemQuantity1.getItemId().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty(), userDTO));
         verify(orderRepository, atLeastOnce()).save(newOrder1);
         verify(merchantOrderService, atLeastOnce()).createMerchantOrder(userDTO, order1, orderCreateDTO.getMerchantId());
         assertNotNull(result);

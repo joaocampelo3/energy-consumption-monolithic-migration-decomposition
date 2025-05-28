@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -111,7 +110,7 @@ class ItemQuantityDTOTest {
         assertNotNull(itemQuantity);
         assertEquals(id, itemQuantity.getId());
         assertEquals(qty, itemQuantity.getQuantityOrdered().getQuantity());
-        assertEquals(item, itemQuantity.getItem());
+        assertEquals(item, itemQuantity.getItemId());
 
     }
 

@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -24,12 +23,12 @@ public class ItemQuantityDTO {
 
     public ItemQuantityDTO(ItemQuantity itemQuantity) {
         this.id = itemQuantity.getId();
-        this.itemId = itemQuantity.getItem().getId();
-        this.itemName = itemQuantity.getItem().getName();
-        this.itemSku = itemQuantity.getItem().getSku();
-        this.itemDescription = itemQuantity.getItem().getDescription();
+        this.itemId = itemQuantity.getItemId().getId();
+        this.itemName = itemQuantity.getItemId().getName();
+        this.itemSku = itemQuantity.getItemId().getSku();
+        this.itemDescription = itemQuantity.getItemId().getDescription();
         this.qty = itemQuantity.getQuantityOrdered().getQuantity();
-        this.price = itemQuantity.getItem().getPrice() * itemQuantity.getQuantityOrdered().getQuantity();
+        this.price = itemQuantity.getItemId().getPrice() * itemQuantity.getQuantityOrdered().getQuantity();
     }
 
     public Item dtoToItem() {

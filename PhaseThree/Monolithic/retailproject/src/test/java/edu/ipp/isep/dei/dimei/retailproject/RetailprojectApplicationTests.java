@@ -20,8 +20,6 @@ class RetailprojectApplicationTests {
     @Autowired
     MerchantOrderController merchantOrderController;
     @Autowired
-    OrderController orderController;
-    @Autowired
     ShippingOrderController shippingOrderController;
 
     @Test
@@ -29,7 +27,6 @@ class RetailprojectApplicationTests {
         List.of(
                 merchantController,
                 merchantOrderController,
-                orderController,
                 shippingOrderController
         ).forEach(Assertions::assertNotNull);
     }

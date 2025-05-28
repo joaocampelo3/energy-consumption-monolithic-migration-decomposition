@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;

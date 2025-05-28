@@ -5,8 +5,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;

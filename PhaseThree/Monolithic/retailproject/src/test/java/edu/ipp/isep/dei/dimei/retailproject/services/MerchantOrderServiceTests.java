@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
@@ -348,7 +347,7 @@ class MerchantOrderServiceTests {
         when(shippingOrderService.getUserShippingOrder(merchantUserDTO, merchantOrder1.getOrder().getId())).thenReturn(new ShippingOrderDTO(shippingOrder1, merchantUserDTO.getEmail()));
         when(orderService.fullCancelOrderByOrderId(merchantUserDTO, merchantOrder1.getOrder().getId())).thenReturn(orderUpdateDTO1);
         when(shippingOrderService.fullCancelShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
-        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItem());
+        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItemId());
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
@@ -662,7 +661,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(orderService.rejectOrderByOrderId(merchantUserDTO, merchantOrder1Updated.getOrder().getId())).thenReturn(orderUpdateDTO1);
         when(shippingOrderService.rejectShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
-        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItem());
+        itemUpdateDTO = new ItemUpdateDTO(merchantOrder1Updated.getOrder().getItemQuantities().get(0).getItemId());
         itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + merchantOrder1Updated.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
         when(itemService.addItemStock(itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);

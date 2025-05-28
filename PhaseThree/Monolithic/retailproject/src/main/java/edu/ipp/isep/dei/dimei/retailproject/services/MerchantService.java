@@ -2,12 +2,17 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
+import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.MerchantPublisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
+import edu.ipp.isep.dei.dimei.retailproject.events.MerchantEvent;
+import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
+import edu.ipp.isep.dei.dimei.retailproject.events.enums.MerchantRoutingKeyEnum;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.MerchantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +26,9 @@ public class MerchantService {
     private static final String NOTFOUNDEXCEPTIONMESSAGE = "Merchant not found.";
     private static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong merchant payload.";
     private final MerchantRepository merchantRepository;
+
+    @Autowired
+    MerchantPublisher merchantPublisher;
 
     public Merchant getMerchantByUser(UserDTO userDTO) throws NotFoundException {
         return merchantRepository.findByEmail(userDTO.getEmail()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
@@ -49,8 +57,15 @@ public class MerchantService {
         Merchant merchant = new Merchant(merchantDTO.getName(), merchantDTO.getEmail(), merchantDTO.getAddressDTO().getId());
 
         merchant = this.merchantRepository.save(merchant);
+        MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
 
-        return new MerchantDTO(merchant);
+        try {
+            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.CREATE), MerchantRoutingKeyEnum.MERCHANT_CREATED.getKey());
+        } catch (Exception e) {
+            return merchantDTO1;
+        }
+
+        return merchantDTO1;
     }
 
     public MerchantDTO updateMerchant(int id, MerchantDTO merchantDTO) throws NotFoundException, BadPayloadException {
@@ -64,14 +79,29 @@ public class MerchantService {
         merchant.setAddressId(merchantDTO.getAddressDTO().getId());
 
         merchant = this.merchantRepository.save(merchant);
-        return new MerchantDTO(merchant);
+        MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
+
+        try {
+            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.UPDATE), MerchantRoutingKeyEnum.MERCHANT_UPDATED.getKey());
+        } catch (Exception e) {
+            return merchantDTO1;
+        }
+
+        return merchantDTO1;
     }
 
     public MerchantDTO deleteMerchant(int id) throws NotFoundException {
         Merchant merchant = getMerchantById(id);
 
         this.merchantRepository.delete(merchant);
+        MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
 
-        return new MerchantDTO(merchant);
+        try {
+            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.DELETE), MerchantRoutingKeyEnum.MERCHANT_DELETED.getKey());
+        } catch (Exception e) {
+            return merchantDTO1;
+        }
+
+        return merchantDTO1;
     }
 }

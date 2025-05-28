@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;

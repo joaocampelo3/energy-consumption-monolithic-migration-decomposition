@@ -21,14 +21,13 @@ public class ItemQuantity {
     @Column(nullable = false)
     private OrderQuantity quantityOrdered;
 
-    @ManyToOne(optional = false)
-    private Item item;
+    private int itemId;
 
     private double price;
 
-    public ItemQuantity(OrderQuantity quantityOrdered, Item item, double price) {
+    public ItemQuantity(OrderQuantity quantityOrdered, int itemId, double price) {
         this.quantityOrdered = quantityOrdered;
-        this.item = item;
+        this.itemId = itemId;
         this.price = price;
     }
 

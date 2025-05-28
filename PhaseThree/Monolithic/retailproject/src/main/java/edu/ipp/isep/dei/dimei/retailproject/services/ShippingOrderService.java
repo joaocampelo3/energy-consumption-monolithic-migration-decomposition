@@ -4,12 +4,10 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
@@ -37,13 +35,11 @@ public class ShippingOrderService {
     private final ShippingOrderRepository shippingOrderRepository;
     private final MerchantOrderService merchantOrderService;
     private final OrderService orderService;
-    private final ItemService itemService;
 
-    public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService, ItemService itemService) {
+    public ShippingOrderService(ShippingOrderRepository shippingOrderRepository, @Lazy MerchantOrderService merchantOrderService, @Lazy OrderService orderService) {
         this.shippingOrderRepository = shippingOrderRepository;
         this.merchantOrderService = merchantOrderService;
         this.orderService = orderService;
-        this.itemService = itemService;
     }
 
     public List<ShippingOrderDTO> getAllShippingOrders(UserDTO userDTO) {
@@ -84,8 +80,6 @@ public class ShippingOrderService {
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.fullCancelMerchantOrderByShippingOrder(shippingOrderUpdateDTO.getUserDTO(), shippingOrder);
 
-        addItemStock(shippingOrder);
-
         shippingOrder = this.shippingOrderRepository.findById(shippingOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         return new ShippingOrderUpdateDTO(shippingOrder);
@@ -113,8 +107,6 @@ public class ShippingOrderService {
         OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(shippingOrderUpdateDTO.getUserDTO(), shippingOrder.getOrder().getId());
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.rejectMerchantOrderByShippingOrder(shippingOrderUpdateDTO.getUserDTO(), shippingOrder);
-
-        addItemStock(shippingOrder);
 
         shippingOrder = this.shippingOrderRepository.findById(shippingOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
@@ -242,16 +234,6 @@ public class ShippingOrderService {
 
     private boolean isIdNotEqualToOrderId(int id, ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         return id != shippingOrderUpdateDTO.getId();
-    }
-
-    private void addItemStock(ShippingOrder shippingOrder) throws InvalidQuantityException, BadPayloadException, NotFoundException {
-        ItemUpdateDTO itemUpdateDTO;
-
-        for (ItemQuantity itemQuantity : shippingOrder.getOrder().getItemQuantities()) {
-            itemUpdateDTO = new ItemUpdateDTO(itemQuantity.getItem());
-            itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + itemQuantity.getQuantityOrdered().getQuantity());
-            this.itemService.addItemStock(itemQuantity.getItem().getId(), itemUpdateDTO);
-        }
     }
 
     protected void deleteShippingOrderByOrderId(int orderId) {

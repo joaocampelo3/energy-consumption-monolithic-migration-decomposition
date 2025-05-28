@@ -4,11 +4,13 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -31,14 +33,12 @@ public class MerchantOrderService {
     private final MerchantService merchantService;
     private final OrderService orderService;
     private final ShippingOrderService shippingOrderService;
-    private final ItemService itemService;
 
-    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, MerchantService merchantService, @Lazy OrderService orderService, ShippingOrderService shippingOrderService, ItemService itemService) {
+    public MerchantOrderService(MerchantOrderRepository merchantOrderRepository, MerchantService merchantService, @Lazy OrderService orderService, ShippingOrderService shippingOrderService) {
         this.merchantOrderRepository = merchantOrderRepository;
         this.merchantService = merchantService;
         this.orderService = orderService;
         this.shippingOrderService = shippingOrderService;
-        this.itemService = itemService;
     }
 
     public List<MerchantOrderDTO> getAllMerchantOrders(UserDTO userDTO) {
@@ -87,8 +87,6 @@ public class MerchantOrderService {
         merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.shippingOrderService.fullCancelShippingOrderByMerchantOrder(merchantOrderUpdateDTO.getUserDTO(), merchantOrder);
 
-        addItemStock(merchantOrder);
-
         merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
         return new MerchantOrderUpdateDTO(merchantOrder, merchantOrderUpdateDTO.getUserDTO().getEmail());
@@ -120,8 +118,6 @@ public class MerchantOrderService {
         OrderUpdateDTO orderUpdateDTO = this.orderService.rejectOrderByOrderId(merchantOrderUpdateDTO.getUserDTO(), merchantOrder.getOrder().getId());
         merchantOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.shippingOrderService.rejectShippingOrderByMerchantOrder(merchantOrderUpdateDTO.getUserDTO(), merchantOrder);
-
-        addItemStock(merchantOrder);
 
         merchantOrder = this.merchantOrderRepository.findById(merchantOrder.getId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
@@ -247,15 +243,6 @@ public class MerchantOrderService {
 
     private boolean isIdNotEqualToOrderId(int id, MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         return id != merchantOrderUpdateDTO.getId();
-    }
-
-    private void addItemStock(MerchantOrder merchantOrder) throws InvalidQuantityException, BadPayloadException, NotFoundException {
-        ItemUpdateDTO itemUpdateDTO;
-        for (ItemQuantity itemQuantity : merchantOrder.getOrder().getItemQuantities()) {
-            itemUpdateDTO = new ItemUpdateDTO(itemQuantity.getItem());
-            itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + itemQuantity.getQuantityOrdered().getQuantity());
-            this.itemService.addItemStock(itemQuantity.getItem().getId(), itemUpdateDTO);
-        }
     }
 
     protected void deleteMerchantOrderByOrderId(int orderId) {

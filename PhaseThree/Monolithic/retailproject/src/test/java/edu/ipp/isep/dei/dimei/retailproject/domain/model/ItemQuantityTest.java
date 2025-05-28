@@ -56,7 +56,7 @@ class ItemQuantityTest {
         assertNotNull(itemQuantity);
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
-        assertEquals(item, itemQuantity.getItem());
+        assertEquals(item, itemQuantity.getItemId());
         assertEquals(price, itemQuantity.getPrice());
         itemQuantityExpected.setId(0);
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
@@ -71,7 +71,7 @@ class ItemQuantityTest {
         assertEquals(id, itemQuantity.getId());
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
-        assertEquals(item, itemQuantity.getItem());
+        assertEquals(item, itemQuantity.getItemId());
         assertEquals(price, itemQuantity.getPrice());
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
         assertEquals(itemQuantityExpected, itemQuantity);
@@ -90,7 +90,7 @@ class ItemQuantityTest {
         assertEquals(id, itemQuantity.getId());
         assertEquals(quantityOrdered.getQuantity(), itemQuantity.getQuantityOrdered().getQuantity());
         assertEquals(quantityOrdered, itemQuantity.getQuantityOrdered());
-        assertEquals(item, itemQuantity.getItem());
+        assertEquals(item, itemQuantity.getItemId());
         assertEquals(price, itemQuantity.getPrice());
         assertEquals(itemQuantityExpected.hashCode(), itemQuantity.hashCode());
         assertEquals(itemQuantityExpected, itemQuantity);

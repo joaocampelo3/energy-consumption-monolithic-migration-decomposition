@@ -5,7 +5,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;

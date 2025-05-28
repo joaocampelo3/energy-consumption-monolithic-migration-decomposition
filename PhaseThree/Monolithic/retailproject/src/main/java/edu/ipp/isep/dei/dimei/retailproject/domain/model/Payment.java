@@ -1,7 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

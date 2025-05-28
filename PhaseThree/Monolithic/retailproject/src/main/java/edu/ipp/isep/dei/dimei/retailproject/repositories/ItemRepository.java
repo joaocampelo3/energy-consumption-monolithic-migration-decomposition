@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

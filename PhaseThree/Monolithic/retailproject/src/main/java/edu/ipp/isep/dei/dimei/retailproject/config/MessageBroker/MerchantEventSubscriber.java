@@ -1,9 +1,10 @@
 package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 
 import com.rabbitmq.client.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
-import edu.ipp.isep.dei.dimei.retailproject.events.ItemEvent;
-import edu.ipp.isep.dei.dimei.retailproject.events.enums.ItemRoutingKeyEnum;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
+import edu.ipp.isep.dei.dimei.retailproject.events.MerchantEvent;
+import edu.ipp.isep.dei.dimei.retailproject.events.enums.MerchantRoutingKeyEnum;
+import edu.ipp.isep.dei.dimei.retailproject.services.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
@@ -16,12 +17,12 @@ import java.util.concurrent.TimeoutException;
 
 @Component
 @EnableAsync
-public class ItemEventSubscriber {
+public class MerchantEventSubscriber {
 
-    private static final String EXCHANGE_NAME = "item";
+    private static final String EXCHANGE_NAME = "merchant";
 
     @Autowired
-    private ItemService itemService;
+    private MerchantService merchantService;
 
     @Autowired
     private RabbitMQHost rabbitMQHost;
@@ -39,7 +40,7 @@ public class ItemEventSubscriber {
         String queueName = channel.queueDeclare().getQueue();
 
         // bind the queue to the exchange for the item events
-        channel.queueBind(queueName, EXCHANGE_NAME, "item.*");
+        channel.queueBind(queueName, EXCHANGE_NAME, "merchant.*");
 
         // create a consumer and start consuming messages
         Consumer consumer = new DefaultConsumer(channel) {
@@ -50,11 +51,11 @@ public class ItemEventSubscriber {
                 String originService = envelope.getRoutingKey().substring(0, envelope.getRoutingKey().indexOf("."));
                 System.out.println("Received event '" + eventType + "' from service '" + originService + "' with message '" + message + "'");
 
-                // parse the message as a ItemEvent
-                if (eventType.equals(ItemRoutingKeyEnum.ITEM_CREATED.getKey()) || eventType.equals(ItemRoutingKeyEnum.ITEM_ADD_STOCK.getKey()) || eventType.equals(ItemRoutingKeyEnum.ITEM_REMOVE_STOCK.getKey()) || eventType.equals(ItemRoutingKeyEnum.ITEM_DELETED.getKey())) {
-                    ItemEvent event = ItemEvent.fromJson(message);
+                // parse the message as a MerchantEvent
+                if (eventType.equals(MerchantRoutingKeyEnum.MERCHANT_CREATED.getKey()) || eventType.equals(MerchantRoutingKeyEnum.MERCHANT_UPDATED.getKey()) || eventType.equals(MerchantRoutingKeyEnum.MERCHANT_DELETED.getKey())) {
+                    MerchantEvent event = MerchantEvent.fromJson(message);
                     try {
-                        handleItemEvent(eventType, event);
+                        handleMerchantEvent(eventType, event);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -70,41 +71,26 @@ public class ItemEventSubscriber {
         }
     }
 
-    private void handleItemEvent(String eventType, ItemEvent event) throws Exception {
+    private void handleMerchantEvent(String eventType, MerchantEvent event) throws Exception {
         // handle the item event
-        if (ItemRoutingKeyEnum.ITEM_CREATED.getKey().equals(eventType)) {
-            itemService.createItem(
-                    ItemDTO.builder()
+        if (MerchantRoutingKeyEnum.MERCHANT_CREATED.getKey().equals(eventType)) {
+            merchantService.createMerchant(
+                    MerchantDTO.builder()
                             .id(event.getId())
-                            .itemName(event.getName())
-                            .sku(event.getSku())
-                            .itemDescription(event.getDescription())
-                            .price(event.getPrice())
-                            .quantityInStock(event.getQuantity())
-                            .category(event.getCategoryDTO())
-                            .merchant(event.getMerchantDTO())
+                            .name(event.getName())
+                            .email(event.getEmail())
                             .build()
             );
-        } else if (ItemRoutingKeyEnum.ITEM_ADD_STOCK.getKey().equals(eventType)) {
-            itemService.addItemStock(event.getId(),
-                    ItemUpdateDTO.builder()
+        } else if (MerchantRoutingKeyEnum.MERCHANT_UPDATED.getKey().equals(eventType)) {
+            merchantService.updateMerchant(event.getId(),
+                    MerchantDTO.builder()
                             .id(event.getId())
-                            .sku(event.getSku())
-                            .price(event.getPrice())
-                            .quantityInStock(event.getQuantity())
+                            .name(event.getName())
+                            .email(event.getEmail())
                             .build()
             );
-        } else if (ItemRoutingKeyEnum.ITEM_REMOVE_STOCK.getKey().equals(eventType)) {
-            itemService.removeItemStock(event.getId(),
-                    ItemUpdateDTO.builder()
-                            .id(event.getId())
-                            .sku(event.getSku())
-                            .price(event.getPrice())
-                            .quantityInStock(event.getQuantity())
-                            .build()
-            );
-        } else if (ItemRoutingKeyEnum.ITEM_DELETED.getKey().equals(eventType)) {
-            itemService.deleteItem(event.getId());
+        } else if (MerchantRoutingKeyEnum.MERCHANT_DELETED.getKey().equals(eventType)) {
+            merchantService.deleteMerchant(event.getId());
         } else {
             throw new Exception("Not a valid event type");
         }
@@ -112,7 +98,7 @@ public class ItemEventSubscriber {
 
     @Bean
     @Async
-    public void mainItemSubscription() throws IOException, TimeoutException {
+    public void mainMerchantSubscription() throws IOException, TimeoutException {
         this.start();
     }
 

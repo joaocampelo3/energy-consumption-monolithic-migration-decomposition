@@ -1,7 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,8 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.PaymentDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
