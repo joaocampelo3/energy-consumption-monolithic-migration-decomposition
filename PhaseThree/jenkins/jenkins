@@ -28,6 +28,9 @@ pipeline {
         // ITEMS MICROSERVICE
         ITEMS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items/retailproject"
         ITEMS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items"
+        // ORDERS MICROSERVICE
+        ORDERS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Orders/retailproject"
+        ORDERS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Orders"
         // MONITORING VARIABLES
         MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
         MONITORING_DIR="$WORK_DIR/Monitoring"
@@ -152,6 +155,11 @@ pipeline {
                         sh 'cd $ITEMS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
+                stage('Cleanup Orders Microservice') {
+                    steps {
+                        sh 'cd $ORDERS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
             }
             
         }
@@ -223,6 +231,19 @@ pipeline {
                         }
                     }
                 }
+                stage('Build Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
             }
         }
         
@@ -258,7 +279,12 @@ pipeline {
                  }
                  stage('Startup Items Microservice') {
                     steps {
-                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $ITEMS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Orders Microservice') {
+                    steps {
+                        sh 'chmod 777 $ORDERS_MICROSERVICE_DIR -R && cd $ORDERS_MICROSERVICE_DIR && ./build.sh'
                     }
                  }
             }
