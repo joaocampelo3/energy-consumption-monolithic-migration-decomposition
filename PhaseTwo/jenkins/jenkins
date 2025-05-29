@@ -258,7 +258,7 @@ pipeline {
                  }
                  stage('Startup Items Microservice') {
                     steps {
-                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $ITEMS_MICROSERVICE_DIR && ./build.sh'
                     }
                  }
             }
