@@ -6,7 +6,7 @@ pipeline {
         jdk 'Amazon Corretto JDK 17'
     }
     environment {
-        PHASE_NUMBER = "PhaseTwo"
+        PHASE_NUMBER = "PhaseThree"
         WORK_DIR="/home/jenkins"
         REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
         GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
