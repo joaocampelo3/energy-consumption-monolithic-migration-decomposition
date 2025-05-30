@@ -45,28 +45,29 @@ public class RetailprojectApplication {
             userList.add(user3);
 
 
-            for (int i = 1; i <= accountList.size(); i++) {
-                Account account = accountRepository.findById(i).orElse(null);
+            for (int i = 0; i < accountList.size(); i++) {
+                int id = i + 1;
+                Account account = accountRepository.findById(id).orElse(null);
                 if (account == null) {
                     accountRepository.save(accountList.get(i));
-                    accountList.get(i).setId(i);
+                    accountList.get(i).setId(id);
 
-                    User user = userRepository.findById(i).orElse(null);
+                    User user = userRepository.findById(id).orElse(null);
                     if (user != null) {
                         userRepository.save(user);
-                        userList.get(i).setId(i);
+                        userList.get(i).setId(id);
                         Address address;
-                        switch (i) {
-                            case 2:
+                        switch (id) {
+                            case 1:
                                 address = addressRepository.findById(1).orElse(null);
                                 if (address == null) {
-                                    addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", userList.get(i)));
+                                    addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", userList.get(id+1)));
                                 }
                                 break;
-                            case 3:
+                            case 2:
                                 address = addressRepository.findById(2).orElse(null);
                                 if (address == null) {
-                                    addressRepository.save(new Address(2, "5th Avenue", "10128", "New York", "USA", userList.get(i)));
+                                    addressRepository.save(new Address(2, "5th Avenue", "10128", "New York", "USA", userList.get(id+1)));
                                 }
                                 break;
                             default:
@@ -75,9 +76,6 @@ public class RetailprojectApplication {
                     }
                 }
             }
-
-            addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", user2));
-            addressRepository.save(new Address(2, "5th Avenue", "10128", "New York", "USA", user3));
         };
     }
 }

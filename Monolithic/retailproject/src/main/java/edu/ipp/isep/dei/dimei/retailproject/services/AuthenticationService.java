@@ -6,6 +6,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.UserRepository;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -49,14 +50,14 @@ public class AuthenticationService {
 
         User savedUser = this.userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(savedUser.getAccount());
+        var jwtToken = jwtService.generateToken(savedUser.getAccount(), savedUser.getId());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponse login(LoginDTO loginDTO) {
+    public AuthenticationResponse login(LoginDTO loginDTO) throws NotFoundException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getEmail(),
@@ -65,9 +66,9 @@ public class AuthenticationService {
         );
 
         var user = userRepository.findByAccountEmail(loginDTO.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("User or Password not correct"));
 
-        var jwtToken = jwtService.generateToken(user.getAccount());
+        var jwtToken = jwtService.generateToken(user.getAccount(), user.getId());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)

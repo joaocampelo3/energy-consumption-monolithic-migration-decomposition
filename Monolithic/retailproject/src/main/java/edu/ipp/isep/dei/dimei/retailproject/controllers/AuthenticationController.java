@@ -3,6 +3,7 @@ package edu.ipp.isep.dei.dimei.retailproject.controllers;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.auth.AuthenticationResponse;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.LoginDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,8 +44,12 @@ public class AuthenticationController {
                     )
             }
     )
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDTO loginDTO) {
-        return ResponseEntity.ok(authenticationService.login(loginDTO));
+    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            return ResponseEntity.ok(authenticationService.login(loginDTO));
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/register")

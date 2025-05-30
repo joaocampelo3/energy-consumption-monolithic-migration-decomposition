@@ -6,6 +6,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.RegisterDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.User;
+import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.UserRepository;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import edu.ipp.isep.dei.dimei.retailproject.services.AuthenticationService;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -125,18 +127,33 @@ class AuthenticationControllerTests {
     }
 
     @Test
-    void test_LoginUser() {
+    void test_LoginUser() throws NotFoundException {
         // Define the behavior of the mock
         when(authenticationService.login(any())).thenReturn(authenticationResponse);
 
         // Call the service method that uses the Repository
-        ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntity = authenticationController.login(loginDTO);
+        ResponseEntity<Object> authenticationResponseResponseEntity = authenticationController.login(loginDTO);
         ResponseEntity<AuthenticationResponse> authenticationResponseResponseEntityExpected = ResponseEntity.ok(authenticationResponse);
 
         // Perform assertions
         verify(authenticationService, atLeastOnce()).login((loginDTO));
         assertNotNull(authenticationResponseResponseEntity);
         assertEquals(authenticationResponseResponseEntityExpected, authenticationResponseResponseEntity);
+    }
+
+    @Test
+    void test_LoginUserFail() throws NotFoundException {
+        // Define the behavior of the mock
+        when(authenticationService.login(any())).thenThrow(new NotFoundException("User or Password not correct"));
+
+        // Call the service method that uses the Repository
+        ResponseEntity<Object> authenticationResponseResponseEntity = authenticationController.login(loginDTO);
+
+        // Perform assertions
+        verify(authenticationService, atLeastOnce()).login((loginDTO));
+        assertNotNull(authenticationResponseResponseEntity);
+        assertEquals(HttpStatus.NOT_FOUND, authenticationResponseResponseEntity.getStatusCode());
+        assertEquals("User or Password not correct", authenticationResponseResponseEntity.getBody());
     }
 
 }

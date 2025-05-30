@@ -47,6 +47,7 @@ class AuthenticationServiceTests {
 
     Account account;
     User user;
+    User userExpected;
     LoginDTO loginDTO;
 
     @BeforeEach
@@ -74,6 +75,13 @@ class AuthenticationServiceTests {
                 .lastname(registerDTO.getLastname())
                 .account(account)
                 .build();
+
+        userExpected = User.builder()
+                .id(1)
+                .firstname(registerDTO.getFirstname())
+                .lastname(registerDTO.getLastname())
+                .account(account)
+                .build();
         loginDTO = LoginDTO.builder()
                 .email(user.getAccount().getEmail())
                 .password(user.getAccount().getPassword())
@@ -84,8 +92,8 @@ class AuthenticationServiceTests {
     void test_registerAdmin() {
         // Define the behavior of the mock
         account.setRole(RoleEnum.ADMIN);
-        when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
+        when(userRepository.save(user)).thenReturn(userExpected);
+        when(jwtService.generateToken(userExpected.getAccount(), userExpected.getId())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.registerAdmin(registerDTO);
@@ -93,7 +101,7 @@ class AuthenticationServiceTests {
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
-        verify(jwtService, atLeastOnce()).generateToken(user.getAccount());
+        verify(jwtService, atLeastOnce()).generateToken(userExpected.getAccount(), userExpected.getId());
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -102,8 +110,8 @@ class AuthenticationServiceTests {
     void test_registerMerchant() {
         // Define the behavior of the mock
         account.setRole(RoleEnum.MERCHANT);
-        when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
+        when(userRepository.save(user)).thenReturn(userExpected);
+        when(jwtService.generateToken(userExpected.getAccount(), userExpected.getId())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.registerMerchant(registerDTO);
@@ -111,7 +119,7 @@ class AuthenticationServiceTests {
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
-        verify(jwtService, atLeastOnce()).generateToken(user.getAccount());
+        verify(jwtService, atLeastOnce()).generateToken(userExpected.getAccount(), userExpected.getId());
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -119,8 +127,8 @@ class AuthenticationServiceTests {
     @Test
     void test_register() {
         // Define the behavior of the mock
-        when(userRepository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
+        when(userRepository.save(user)).thenReturn(userExpected);
+        when(jwtService.generateToken(userExpected.getAccount(), userExpected.getId())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.register(registerDTO);
@@ -128,7 +136,7 @@ class AuthenticationServiceTests {
 
         // Perform assertions
         verify(userRepository, atLeastOnce()).save(user);
-        verify(jwtService, atLeastOnce()).generateToken(user.getAccount());
+        verify(jwtService, atLeastOnce()).generateToken(userExpected.getAccount(), userExpected.getId());
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -142,8 +150,8 @@ class AuthenticationServiceTests {
                         loginDTO.getPassword()
                 )
         )).thenReturn(any());
-        when(userRepository.findByAccountEmail(loginDTO.getEmail())).thenReturn(Optional.ofNullable(user));
-        when(jwtService.generateToken(user.getAccount())).thenReturn(jwtTokenDummy);
+        when(userRepository.findByAccountEmail(loginDTO.getEmail())).thenReturn(Optional.ofNullable(userExpected));
+        when(jwtService.generateToken(userExpected.getAccount(), userExpected.getId())).thenReturn(jwtTokenDummy);
 
         // Call the service method that uses the Repository
         AuthenticationResponse result = authenticationService.login(loginDTO);
@@ -156,7 +164,7 @@ class AuthenticationServiceTests {
                         loginDTO.getPassword()
                 )
         );
-        verify(jwtService, atLeastOnce()).generateToken(user.getAccount());
+        verify(jwtService, atLeastOnce()).generateToken(userExpected.getAccount(), userExpected.getId());
         assertNotNull(result);
         assertEquals(expected, result);
     }
