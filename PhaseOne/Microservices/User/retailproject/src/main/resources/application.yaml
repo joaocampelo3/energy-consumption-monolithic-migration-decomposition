@@ -5,7 +5,8 @@ spring:
   application:
     name: UserMicroserviceApp
   datasource:
-    url: jdbc:mysql://retaildatabase-user-service/dummy?useUnicode=true&characterEncoding=UTF-8
+    #url: jdbc:mysql://retaildatabase-user-service/dummy?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://retaildatabase-monolith-service/dummy?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
