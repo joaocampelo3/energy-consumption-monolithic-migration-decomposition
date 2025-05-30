@@ -24,7 +24,7 @@ public class JwtService {
     @Value("${jwt.token.expirationTimeSecs}")
     private long tokenExpirationTime;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, int userId) {
         // Extract authorities as a list of strings
         String authorities = userDetails.getAuthorities()
                 .stream()
@@ -34,6 +34,7 @@ public class JwtService {
         // Add authorities to extraClaims
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("role", authorities);
+        extraClaims.put("userId", userId);
 
         return generateToken(extraClaims, userDetails);
     }
@@ -94,5 +95,16 @@ public class JwtService {
                 .getBody();
 
         return claims.get("role", String.class); // Extract the role claim
+    }
+
+    public int extractUserId(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("userId", Integer.class); // Extract the user id claim
     }
 }

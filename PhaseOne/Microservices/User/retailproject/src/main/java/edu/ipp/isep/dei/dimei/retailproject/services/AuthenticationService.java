@@ -50,7 +50,7 @@ public class AuthenticationService {
 
         User savedUser = this.userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(savedUser.getAccount());
+        var jwtToken = jwtService.generateToken(savedUser.getAccount(), savedUser.getId());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -68,7 +68,7 @@ public class AuthenticationService {
         var user = userRepository.findByAccountEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new NotFoundException("User or Password not correct"));
 
-        var jwtToken = jwtService.generateToken(user.getAccount());
+        var jwtToken = jwtService.generateToken(user.getAccount(), user.getId());
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
