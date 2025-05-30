@@ -6,7 +6,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retailproject-monolith-deployment
+  name: retailproject-order-deployment
   namespace: retailproject-namespace
 spec:
   selector:
@@ -19,8 +19,8 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-monolith-container
-          image: monolithic-retailproject_service
+        - name: retailproject-order-container
+          image: order-retailproject_service
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: retailproject-monolith-service
+  name: retailproject-order-service
   namespace: retailproject-namespace
 spec:
   selector:
@@ -44,21 +44,21 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 30003
+      nodePort: 30011
   type: NodePort
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-monolith-service-hpa
+  name: retailproject-order-service-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retailproject-monolith-deployment
+    name: retailproject-order-deployment
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
