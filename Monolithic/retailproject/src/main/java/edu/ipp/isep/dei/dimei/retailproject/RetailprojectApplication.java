@@ -49,21 +49,21 @@ public class RetailprojectApplication {
                     accountList.get(i).setId(id);
 
                     User user = userRepository.findById(id).orElse(null);
-                    if (user != null) {
-                        userRepository.save(user);
-                        userList.get(i).setId(id);
+                    if (user == null) {
+                        user = userRepository.save(userList.get(i));
+                        userList.get(i).setId(user.getId());
                         Address address;
                         switch (id) {
-                            case 1:
+                            case 2:
                                 address = addressRepository.findById(1).orElse(null);
                                 if (address == null) {
-                                    addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", userList.get(id+1)));
+                                    addressRepository.save(new Address(1, "Different Street", "1234", "Lisbon", "Portugal", userList.get(i)));
                                 }
                                 break;
-                            case 2:
+                            case 3:
                                 address = addressRepository.findById(2).orElse(null);
                                 if (address == null) {
-                                    Address merchantAddress = new Address(2, "5th Avenue", "10128", "New York", "USA", userList.get(id+1));
+                                    Address merchantAddress = new Address(2, "5th Avenue", "10128", "New York", "USA", userList.get(i));
                                     merchantAddress = addressRepository.save(merchantAddress);
 
                                     Merchant merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", merchantAddress);
