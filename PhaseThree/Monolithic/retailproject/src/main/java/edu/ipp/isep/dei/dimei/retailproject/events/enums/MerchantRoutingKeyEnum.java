@@ -15,7 +15,7 @@ public enum MerchantRoutingKeyEnum {
         return key;
     }
 
-    public String getItemKey() {
+    public String getMerchantKey() {
         return "merchant." + key;
     }
 }

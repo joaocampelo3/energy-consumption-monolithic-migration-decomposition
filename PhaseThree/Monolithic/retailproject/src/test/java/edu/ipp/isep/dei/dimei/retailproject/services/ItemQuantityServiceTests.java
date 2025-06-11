@@ -5,7 +5,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -27,8 +26,6 @@ class ItemQuantityServiceTests {
     ItemQuantityService itemQuantityService;
     @Mock
     ItemQuantityRepository itemQuantityRepository;
-    @Mock
-    ItemService itemService;
 
     double price;
     ItemQuantityDTO itemQuantityDTO1;
@@ -36,7 +33,6 @@ class ItemQuantityServiceTests {
     ItemQuantity itemQuantity1Updated;
     AddressDTO merchantAddressDTO;
     Merchant merchant;
-    Item item1;
     OrderQuantity orderQuantity;
 
     @BeforeEach
@@ -58,29 +54,19 @@ class ItemQuantityServiceTests {
                 .addressId(merchantAddressDTO.getId())
                 .build();
 
-        item1 = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(price)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
-
         orderQuantity = new OrderQuantity(1);
 
         itemQuantity1 = ItemQuantity.builder()
                 .id(1)
                 .quantityOrdered(orderQuantity)
-                .item(item1)
+                .itemId(1)
                 .price(price)
                 .build();
 
         itemQuantity1Updated = ItemQuantity.builder()
                 .id(1)
                 .quantityOrdered(orderQuantity)
-                .item(item1)
+                .itemId(2)
                 .price(price)
                 .build();
 
@@ -91,7 +77,6 @@ class ItemQuantityServiceTests {
     @Test
     void test_CreateItemQuantity() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(itemService.getItemById(itemQuantityDTO1.getId())).thenReturn(item1);
         doReturn(itemQuantity1Updated).when(itemQuantityRepository).save(any(ItemQuantity.class));
 
         // Call the service method that uses the Repository
@@ -99,7 +84,6 @@ class ItemQuantityServiceTests {
         ItemQuantity expected = itemQuantity1Updated;
 
         // Perform assertions
-        verify(itemService, atLeastOnce()).getItemById(itemQuantityDTO1.getId());
         verify(itemQuantityRepository, atLeastOnce()).save(any(ItemQuantity.class));
         assertNotNull(result);
         assertEquals(expected, result);

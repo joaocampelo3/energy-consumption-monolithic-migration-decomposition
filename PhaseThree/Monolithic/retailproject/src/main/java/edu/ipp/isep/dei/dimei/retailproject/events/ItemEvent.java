@@ -46,8 +46,4 @@ public class ItemEvent {
     public String toJson() {
         return new GsonBuilder().serializeNulls().create().toJson(this);
     }
-
-    public Item toItem() throws InvalidQuantityException {
-        return new Item(this.id, this.name, this.sku, this.description, this.price, new StockQuantity(this.quantity), this.merchantDTO.dtoToEntity());
-    }
 }

@@ -5,10 +5,11 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.OrderPublisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
+import edu.ipp.isep.dei.dimei.retailproject.events.OrderEvent;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -39,13 +40,11 @@ class OrderServiceTests {
     @Mock
     MerchantOrderService merchantOrderService;
     @Mock
-    ItemService itemService;
-    @Mock
     ShippingOrderService shippingOrderService;
     @Mock
-    PaymentService paymentService;
-    @Mock
     ItemQuantityService itemQuantityService;
+    @Mock
+    OrderPublisher publisher;
     double price;
     OrderDTO orderDTO1;
     OrderDTO orderDTO2;
@@ -62,18 +61,12 @@ class OrderServiceTests {
     UserDTO adminUserDTO;
     MerchantOrder merchantOrder1;
     MerchantOrder merchantOrder2;
-    Item item;
-    Item itemUpdated;
     ItemQuantity itemQuantity1;
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList1 = new ArrayList<>();
     List<ItemQuantity> itemQuantityList2 = new ArrayList<>();
     ItemQuantityDTO itemQuantityDTO1;
     ItemQuantityDTO itemQuantityDTO2;
-    ItemUpdateDTO itemUpdateDTO1;
-    ItemDTO itemDTO1;
-    ItemDTO itemDTO2;
-    ItemDTO itemDTO1Updated;
     List<Order> orders = new ArrayList<>();
     Instant currentDateTime = Instant.now();
     OrderCreateDTO orderCreateDTO;
@@ -88,159 +81,39 @@ class OrderServiceTests {
     void beforeEach() throws InvalidQuantityException {
         price = 12.0;
 
-        userDTO = UserDTO.builder()
-                .userId(1)
-                .email("johndoe1234@gmail.com")
-                .role(RoleEnum.USER)
-                .build();
+        userDTO = UserDTO.builder().userId(1).email("johndoe1234@gmail.com").role(RoleEnum.USER).build();
 
-        merchantUserDTO = UserDTO.builder()
-                .userId(2)
-                .email("merchant_email@gmail.com")
-                .role(RoleEnum.MERCHANT)
-                .build();
+        merchantUserDTO = UserDTO.builder().userId(2).email("merchant_email@gmail.com").role(RoleEnum.MERCHANT).build();
 
-        adminUserDTO = UserDTO.builder()
-                .userId(3)
-                .email("admin_email@gmail.com")
-                .role(RoleEnum.ADMIN)
-                .build();
+        adminUserDTO = UserDTO.builder().userId(3).email("admin_email@gmail.com").role(RoleEnum.ADMIN).build();
 
-        shippingAddressDTO = AddressDTO.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
+        shippingAddressDTO = AddressDTO.builder().id(1).street("5th Avenue").zipCode("10128").city("New York").country("USA").build();
 
-        merchantAddressDTO = AddressDTO.builder()
-                .id(2)
-                .street("Different Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
+        merchantAddressDTO = AddressDTO.builder().id(2).street("Different Avenue").zipCode("10128").city("New York").country("USA").build();
 
-        merchant = Merchant.builder()
-                .id(1)
-                .name("Merchant 1")
-                .email("merchant1_email@gmail.com")
-                .addressId(merchantAddressDTO.getId())
-                .build();
+        merchant = Merchant.builder().id(1).name("Merchant 1").email("merchant1_email@gmail.com").addressId(merchantAddressDTO.getId()).build();
 
-        item = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(1)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
-
-        itemUpdated = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(price)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
-
-        itemQuantity1 = ItemQuantity.builder()
-                .id(1)
-                .quantityOrdered(new OrderQuantity(1))
-                .item(item)
-                .price(price)
-                .build();
+        itemQuantity1 = ItemQuantity.builder().id(1).quantityOrdered(new OrderQuantity(1)).itemId(1).price(price).build();
 
         itemQuantityDTO1 = new ItemQuantityDTO(itemQuantity1);
 
-        itemQuantity2 = ItemQuantity.builder()
-                .id(2)
-                .quantityOrdered(new OrderQuantity(1))
-                .item(item)
-                .price(price)
-                .build();
+        itemQuantity2 = ItemQuantity.builder().id(2).quantityOrdered(new OrderQuantity(1)).itemId(1).price(price).build();
 
         itemQuantityDTO2 = new ItemQuantityDTO(itemQuantity2);
 
-        itemUpdateDTO1 = new ItemUpdateDTO(item.getId(), item.getSku(), item.getPrice(), item.getQuantityInStock().getQuantity(), userDTO);
-
-        itemDTO1 = new ItemDTO(item);
-        itemDTO2 = new ItemDTO(item);
-
-        itemDTO1Updated = new ItemDTO(item);
-        itemDTO1Updated.setQuantityInStock(itemDTO1Updated.getQuantityInStock() - 1);
-        itemDTO1Updated.setUserDTO(userDTO);
-
         itemQuantityList1.add(itemQuantity1);
 
-        newOrder1 = Order.builder()
-                .id(0)
-                .orderDate(currentDateTime)
-                .status(OrderStatusEnum.PENDING)
-                .userId(userDTO.getUserId())
-                .itemQuantities(itemQuantityList1)
-                .payment(Payment.builder()
-                        .id(1)
-                        .amount(1)
-                        .paymentDateTime(currentDateTime)
-                        .paymentMethod(PaymentMethodEnum.CARD)
-                        .status(PaymentStatusEnum.ACCEPTED)
-                        .build())
-                .build();
+        newOrder1 = Order.builder().id(0).orderDate(currentDateTime).status(OrderStatusEnum.PENDING).userId(userDTO.getUserId()).itemQuantities(itemQuantityList1).payment(Payment.builder().id(1).amount(1).paymentDateTime(currentDateTime).paymentMethod(PaymentMethodEnum.CARD).status(PaymentStatusEnum.ACCEPTED).build()).build();
 
-        order1 = Order.builder()
-                .id(1)
-                .orderDate(currentDateTime)
-                .status(OrderStatusEnum.PENDING)
-                .userId(userDTO.getUserId())
-                .itemQuantities(itemQuantityList1)
-                .payment(Payment.builder()
-                        .id(1)
-                        .amount(1)
-                        .paymentDateTime(currentDateTime)
-                        .paymentMethod(PaymentMethodEnum.CARD)
-                        .status(PaymentStatusEnum.ACCEPTED)
-                        .build())
-                .build();
+        order1 = Order.builder().id(1).orderDate(currentDateTime).status(OrderStatusEnum.PENDING).userId(userDTO.getUserId()).itemQuantities(itemQuantityList1).payment(Payment.builder().id(1).amount(1).paymentDateTime(currentDateTime).paymentMethod(PaymentMethodEnum.CARD).status(PaymentStatusEnum.ACCEPTED).build()).build();
 
         itemQuantityList2.add(itemQuantity2);
 
-        order2 = Order.builder()
-                .id(2)
-                .status(OrderStatusEnum.PENDING)
-                .userId(userDTO.getUserId())
-                .itemQuantities(itemQuantityList2)
-                .payment(Payment.builder()
-                        .id(1)
-                        .amount(1)
-                        .paymentDateTime(currentDateTime)
-                        .paymentMethod(PaymentMethodEnum.CARD)
-                        .status(PaymentStatusEnum.ACCEPTED)
-                        .build())
-                .build();
+        order2 = Order.builder().id(2).status(OrderStatusEnum.PENDING).userId(userDTO.getUserId()).itemQuantities(itemQuantityList2).payment(Payment.builder().id(1).amount(1).paymentDateTime(currentDateTime).paymentMethod(PaymentMethodEnum.CARD).status(PaymentStatusEnum.ACCEPTED).build()).build();
 
-        merchantOrder1 = MerchantOrder.builder()
-                .id(1)
-                .orderDate(currentDateTime)
-                .status(MerchantOrderStatusEnum.PENDING)
-                .userId(merchantUserDTO.getUserId())
-                .order(order1)
-                .merchant(merchant)
-                .build();
+        merchantOrder1 = MerchantOrder.builder().id(1).orderDate(currentDateTime).status(MerchantOrderStatusEnum.PENDING).userId(merchantUserDTO.getUserId()).order(order1).merchant(merchant).build();
 
-        merchantOrder2 = MerchantOrder.builder()
-                .id(2)
-                .orderDate(currentDateTime)
-                .status(MerchantOrderStatusEnum.PENDING)
-                .userId(merchantUserDTO.getUserId())
-                .order(order2)
-                .merchant(merchant)
-                .build();
+        merchantOrder2 = MerchantOrder.builder().id(2).orderDate(currentDateTime).status(MerchantOrderStatusEnum.PENDING).userId(merchantUserDTO.getUserId()).order(order2).merchant(merchant).build();
 
         orders.add(order1);
         orders.add(order2);
@@ -250,50 +123,15 @@ class OrderServiceTests {
         orderDTOS.add(orderDTO1);
         orderDTOS.add(orderDTO2);
 
-        shippingAddressDTO = AddressDTO.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
-                .build();
+        shippingAddressDTO = AddressDTO.builder().id(1).street("5th Avenue").zipCode("10128").city("New York").country("USA").build();
 
-        payment = Payment.builder()
-                .id(1)
-                .amount(1)
-                .paymentDateTime(currentDateTime)
-                .paymentMethod(PaymentMethodEnum.CARD)
-                .status(PaymentStatusEnum.ACCEPTED)
-                .build();
+        payment = Payment.builder().id(1).amount(1).paymentDateTime(currentDateTime).paymentMethod(PaymentMethodEnum.CARD).status(PaymentStatusEnum.ACCEPTED).build();
 
         paymentDTO = new PaymentDTO(payment);
 
-        orderCreateDTO = OrderCreateDTO.builder()
-                .orderDate(currentDateTime)
-                .customerId(userDTO.getUserId())
-                .email(userDTO.getEmail())
-                .orderItems(order1.getItemQuantities().stream().map(ItemQuantityDTO::new).toList())
-                .totalPrice(1)
-                .payment(paymentDTO)
-                .merchantId(merchant.getId())
-                .address(shippingAddressDTO)
-                .userDTO(userDTO)
-                .build();
+        orderCreateDTO = OrderCreateDTO.builder().orderDate(currentDateTime).customerId(userDTO.getUserId()).email(userDTO.getEmail()).orderItems(order1.getItemQuantities().stream().map(ItemQuantityDTO::new).toList()).totalPrice(1).payment(paymentDTO).merchantId(merchant.getId()).address(shippingAddressDTO).userDTO(userDTO).build();
 
-        order1Updated = Order.builder()
-                .id(1)
-                .orderDate(currentDateTime)
-                .status(OrderStatusEnum.PENDING)
-                .userId(userDTO.getUserId())
-                .itemQuantities(itemQuantityList1)
-                .payment(Payment.builder()
-                        .id(1)
-                        .amount(1)
-                        .paymentDateTime(currentDateTime)
-                        .paymentMethod(PaymentMethodEnum.CARD)
-                        .status(PaymentStatusEnum.ACCEPTED)
-                        .build())
-                .build();
+        order1Updated = Order.builder().id(1).orderDate(currentDateTime).status(OrderStatusEnum.PENDING).userId(userDTO.getUserId()).itemQuantities(itemQuantityList1).payment(Payment.builder().id(1).amount(1).paymentDateTime(currentDateTime).paymentMethod(PaymentMethodEnum.CARD).status(PaymentStatusEnum.ACCEPTED).build()).build();
 
         orderUpdateDTO = new OrderUpdateDTO(order1.getId(), order1.getOrderDate(), order1.getStatus(), userDTO.getEmail(), userDTO);
         merchantOrderDTO1 = new MerchantOrderDTO(merchantOrder1.getId(), merchantOrder1.getOrderDate(), merchantOrder1.getStatus(), userDTO.getUserId(), userDTO.getEmail(), order1.getId(), merchant.getId());
@@ -303,58 +141,18 @@ class OrderServiceTests {
     }
 
     @Test
-    void test_GetAllOrders() {
-        // Define the behavior of the mock
-        when(orderRepository.findAll()).thenReturn(orders);
-
-        // Call the service method that uses the Repository
-        List<OrderDTO> result = orderService.getAllOrders();
-        List<OrderDTO> expected = orderDTOS;
-
-        // Perform assertions
-        verify(orderRepository, atLeastOnce()).findAll();
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetUserOrders() {
-        // Define the behavior of the mock
-        when(orderRepository.findByUserId(userDTO.getUserId())).thenReturn(orders);
-
-        // Call the service method that uses the Repository
-        List<OrderDTO> result = orderService.getUserOrders(userDTO);
-        List<OrderDTO> expected = orderDTOS;
-
-        // Perform assertions
-        verify(orderRepository, atLeastOnce()).findByUserId(userDTO.getUserId());
-        assertNotNull(result);
-        assertEquals(expected, result);
-    }
-
-    @Test
     void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        itemUpdateDTO1.setQuantityInStock(itemUpdateDTO1.getQuantityInStock() - 1);
-        itemUpdated.getQuantityInStock().setQuantity((itemUpdated.getQuantityInStock().getQuantity() - 1));
-        when(itemService.getItemDTO(itemQuantityDTO1.getId())).thenReturn(itemDTO1);
-        when(paymentService.createPayment(orderCreateDTO.getPayment())).thenReturn(payment);
         when(itemQuantityService.createItemQuantity(itemQuantityDTO1)).thenReturn(itemQuantity1);
-        when(itemService.removeItemStock(itemQuantityDTO1.getItemId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty(), userDTO))).thenReturn(itemDTO1Updated);
-        when(orderRepository.save(newOrder1)).thenReturn(order1);
-        when(merchantOrderService.createMerchantOrder(userDTO, order1, orderCreateDTO.getMerchantId())).thenReturn(merchantOrder1);
+        when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.createOrder(orderCreateDTO);
+        OrderDTO result = orderService.createOrder(orderCreateDTO, false);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
-        verify(itemService, atLeastOnce()).getItemDTO(itemQuantityDTO1.getId());
-        verify(paymentService, atLeastOnce()).createPayment(orderCreateDTO.getPayment());
         verify(itemQuantityService, atLeastOnce()).createItemQuantity(itemQuantityDTO1);
-        verify(itemService, atLeastOnce()).removeItemStock(itemQuantity1.getItemId().getId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty(), userDTO));
-        verify(orderRepository, atLeastOnce()).save(newOrder1);
-        verify(merchantOrderService, atLeastOnce()).createMerchantOrder(userDTO, order1, orderCreateDTO.getMerchantId());
+        verify(orderRepository, atLeastOnce()).save(any(Order.class));
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -423,9 +221,36 @@ class OrderServiceTests {
     }
 
     @Test
-    void test_FullCancelOrder() throws InvalidQuantityException, WrongFlowException, BadPayloadException, NotFoundException {
+    void test_FullCancelOrder() throws WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
+        order1Updated.setStatus(OrderStatusEnum.CANCELLED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
+        MerchantOrderUpdateDTO merchantOrderUpdateDTO = new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail());
+        merchantOrderUpdateDTO.setMerchantOrderStatus(MerchantOrderStatusEnum.CANCELLED);
+        ShippingOrderUpdateDTO shippingOrderUpdateDTO = new ShippingOrderUpdateDTO(shippingOrder1);
+        shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
+
+        when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(orderRepository.save(order1Updated)).thenReturn(order1Updated);
+        when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
+
+        // Call the service method that uses the Repository
+        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
+
+        // Perform assertions
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(userDTO, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(userDTO, order1.getId());
+        verify(orderRepository, atLeastOnce()).findById(order1.getId());
+        verify(orderRepository, atLeastOnce()).save(order1Updated);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_FullCancelOrderIsEvent() throws WrongFlowException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.CANCELLED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
         MerchantOrderUpdateDTO merchantOrderUpdateDTO = new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail());
@@ -441,7 +266,7 @@ class OrderServiceTests {
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -462,7 +287,21 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO);
+            orderService.fullCancelOrder(id, orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_FullCancelOrderFailDifferentOrderIDIsEvent() {
+        // Define the behavior of the mock
+        int id = 2;
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.fullCancelOrder(id, orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -476,7 +315,21 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_FullCancelOrderFailCancelledOrderIsEvent() {
+        // Define the behavior of the mock
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -491,7 +344,22 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO);
+            orderService.fullCancelOrder(id, orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_FullCancelOrderFailDifferentOrderIDAndCancelledOrderIsEvent() {
+        // Define the behavior of the mock
+        int id = 2;
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.fullCancelOrder(id, orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -508,7 +376,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId());
+        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), false);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -521,7 +389,29 @@ class OrderServiceTests {
     }
 
     @Test
-    void test_RejectOrder() throws InvalidQuantityException, WrongFlowException, BadPayloadException, NotFoundException {
+    void test_FullCancelOrderByOrderIdIsEvent() throws WrongFlowException, NotFoundException {
+        // Define the behavior of the mock
+        order1Updated.setStatus(OrderStatusEnum.CANCELLED);
+        when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
+        when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(orderRepository.save(order1)).thenReturn(order1Updated);
+
+        // Call the service method that uses the Repository
+        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), true);
+        OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
+
+        // Perform assertions
+        verify(orderRepository, atLeastOnce()).findById(order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(userDTO, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(userDTO, order1.getId());
+        verify(orderRepository, atLeastOnce()).save(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_RejectOrder() throws WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.REJECTED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
@@ -531,7 +421,30 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
+
+        // Perform assertions
+        verify(orderRepository, atLeastOnce()).findById(order1.getId());
+        verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(userDTO, order1.getId());
+        verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(userDTO, order1.getId());
+        verify(orderRepository, atLeastOnce()).save(order1);
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void test_RejectOrderIsEvent() throws WrongFlowException, BadPayloadException, NotFoundException {
+        // Define the behavior of the mock
+        order1Updated.setStatus(OrderStatusEnum.REJECTED);
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
+        when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
+        when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
+        when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
+        when(orderRepository.save(order1)).thenReturn(order1Updated);
+
+        // Call the service method that uses the Repository
+        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -572,7 +485,21 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO);
+            orderService.rejectOrder(id, orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_RejectOrderFailDifferentOrderIDIsEvent() {
+        // Define the behavior of the mock
+        int id = 2;
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.rejectOrder(id, orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -586,7 +513,21 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_RejectOrderFailRejectedOrderIsEvent() {
+        // Define the behavior of the mock
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -601,7 +542,22 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO);
+            orderService.rejectOrder(id, orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_RejectOrderFailDifferentOrderIDAndRejectedOrderIsEvent() {
+        // Define the behavior of the mock
+        int id = 2;
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.rejectOrder(id, orderUpdateDTO, true);
         });
 
         // Perform assertions
@@ -667,7 +623,22 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO);
+            orderService.rejectOrder(id, orderUpdateDTO, false);
+        });
+
+        // Perform assertions
+        assertEquals(BADPAYLOADEXCEPTIONMESSAGE, exception.getMessage());
+    }
+
+    @Test
+    void test_ApproveOrderFailDifferentOrderIDAndApprovedOrderIsEvent() {
+        // Define the behavior of the mock
+        int id = 2;
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.APPROVED);
+
+        // Call the service method that uses the Repository
+        BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
+            orderService.rejectOrder(id, orderUpdateDTO, true);
         });
 
         // Perform assertions
