@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 public class OrderEventSubscriber {
 
     private static final String EXCHANGE_NAME = "order";
+    private static final boolean isEvent = true;
 
     @Autowired
     private OrderService orderService;
@@ -80,7 +81,6 @@ public class OrderEventSubscriber {
 
     private void handleOrderEvent(String eventType, OrderEvent event) throws Exception {
         // handle the order event
-        boolean isEvent = true;
         if (OrderRoutingKeyEnum.ORDER_CREATED.getKey().equals(eventType)) {
             orderService.createOrder(
                     OrderCreateDTO.builder()
@@ -96,7 +96,7 @@ public class OrderEventSubscriber {
                             .address(event.getAddressDTO())
                             .userDTO(event.getUserDTO())
                             .build(),
-                    true
+                    isEvent
             );
         } else if (OrderRoutingKeyEnum.ORDER_FULL_CANCEL.getKey().equals(eventType)) {
             orderService.fullCancelOrder(event.getId(),
@@ -107,7 +107,7 @@ public class OrderEventSubscriber {
                             .email(event.getEmail())
                             .userDTO(event.getUserDTO())
                             .build(),
-                    true
+                    isEvent
             );
         } else if (OrderRoutingKeyEnum.ORDER_REJECTED.getKey().equals(eventType)) {
             orderService.rejectOrder(event.getId(),
@@ -118,7 +118,7 @@ public class OrderEventSubscriber {
                             .email(event.getEmail())
                             .userDTO(event.getUserDTO())
                             .build(),
-                    true
+                    isEvent
             );
         } else if (OrderRoutingKeyEnum.ORDER_APPROVED.getKey().equals(eventType)) {
             orderService.approveOrder(event.getId(),
@@ -128,14 +128,15 @@ public class OrderEventSubscriber {
                             .orderStatus(event.getOrderStatus())
                             .email(event.getEmail())
                             .userDTO(event.getUserDTO())
-                            .build()
+                            .build(),
+                    isEvent
             );
         } else if (OrderRoutingKeyEnum.ORDER_SHIPPED.getKey().equals(eventType)) {
             orderService.shipOrder(null, event.getId());
         } else if (OrderRoutingKeyEnum.ORDER_DELIVERED.getKey().equals(eventType)) {
             orderService.deliverOrder(null, event.getId());
         } else if (OrderRoutingKeyEnum.ORDER_DELETED.getKey().equals(eventType)) {
-            orderService.deleteOrder(0, event.getId());
+            orderService.deleteOrder(0, event.getId(), isEvent);
         } else {
             throw new Exception("Not a valid event type");
         }

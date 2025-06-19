@@ -42,6 +42,7 @@ class MerchantServiceTests {
     List<MerchantDTO> merchantDTOList = new ArrayList<>();
     MerchantDTO merchantDTO1Updated;
     AddressDTO addressDTOUpdated;
+    boolean isEvent;
 
     @BeforeEach
     void beforeEach() {
@@ -114,7 +115,7 @@ class MerchantServiceTests {
                 .city("New York")
                 .country("USA")
                 .build();
-
+        isEvent = false;
     }
 
     @Test
@@ -172,7 +173,7 @@ class MerchantServiceTests {
                 .thenReturn(merchant1);
 
         // Call the service method that uses the Repository
-        MerchantDTO result = merchantService.createMerchant(merchantDTO1);
+        MerchantDTO result = merchantService.createMerchant(merchantDTO1, isEvent);
         MerchantDTO expected = new MerchantDTO(merchant1);
 
         // Perform assertions
@@ -195,7 +196,7 @@ class MerchantServiceTests {
                 .thenReturn(merchant1Updated);
 
         // Call the service method that uses the Repository
-        MerchantDTO result = merchantService.updateMerchant(merchant1.getId(), merchantDTO1Updated);
+        MerchantDTO result = merchantService.updateMerchant(merchant1.getId(), merchantDTO1Updated, isEvent);
         merchantDTO1Updated.setAddressDTO(null);
         MerchantDTO expected = merchantDTO1Updated;
 
@@ -213,7 +214,7 @@ class MerchantServiceTests {
         merchantDTO1.setAddressDTO(null);
 
         // Call the service method that uses the Repository
-        MerchantDTO result = merchantService.deleteMerchant(merchant1.getId());
+        MerchantDTO result = merchantService.deleteMerchant(merchant1.getId(), isEvent);
         MerchantDTO expected = merchantDTO1;
 
         // Perform assertions

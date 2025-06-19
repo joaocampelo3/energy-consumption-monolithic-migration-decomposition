@@ -29,6 +29,7 @@ import java.util.List;
 public class MerchantController {
 
     private final MerchantService merchantService;
+    private final boolean isEvent = false;
 
     @GetMapping("/all")
     @Cacheable
@@ -59,7 +60,7 @@ public class MerchantController {
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Merchant was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     public ResponseEntity<Object> createMerchant(@RequestBody MerchantDTO merchantDTO) {
-        return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.merchantService.createMerchant(merchantDTO, isEvent), HttpStatus.CREATED);
     }
 
     @PatchMapping(path = "/{merchantId}")
@@ -70,7 +71,7 @@ public class MerchantController {
     )
     public ResponseEntity<Object> updateMerchant(@PathVariable int merchantId, @RequestBody MerchantDTO merchantDTO) {
         try {
-            return new ResponseEntity<>(this.merchantService.updateMerchant(merchantId, merchantDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantService.updateMerchant(merchantId, merchantDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (BadPayloadException e) {
@@ -86,7 +87,7 @@ public class MerchantController {
     )
     public ResponseEntity<Object> deleteMerchant(@PathVariable int merchantId) {
         try {
-            return new ResponseEntity<>(this.merchantService.deleteMerchant(merchantId), HttpStatus.OK);
+            return new ResponseEntity<>(this.merchantService.deleteMerchant(merchantId, isEvent), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

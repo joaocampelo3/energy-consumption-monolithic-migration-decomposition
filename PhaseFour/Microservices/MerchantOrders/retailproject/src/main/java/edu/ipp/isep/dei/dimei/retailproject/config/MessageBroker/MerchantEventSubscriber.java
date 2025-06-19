@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 public class MerchantEventSubscriber {
 
     private static final String EXCHANGE_NAME = "merchant";
+    private static final boolean isEvent = true;
 
     @Autowired
     private MerchantService merchantService;
@@ -79,7 +80,8 @@ public class MerchantEventSubscriber {
                             .id(event.getId())
                             .name(event.getName())
                             .email(event.getEmail())
-                            .build()
+                            .build(),
+                    isEvent
             );
         } else if (MerchantRoutingKeyEnum.MERCHANT_UPDATED.getKey().equals(eventType)) {
             merchantService.updateMerchant(event.getId(),
@@ -87,10 +89,11 @@ public class MerchantEventSubscriber {
                             .id(event.getId())
                             .name(event.getName())
                             .email(event.getEmail())
-                            .build()
+                            .build(),
+                    isEvent
             );
         } else if (MerchantRoutingKeyEnum.MERCHANT_DELETED.getKey().equals(eventType)) {
-            merchantService.deleteMerchant(event.getId());
+            merchantService.deleteMerchant(event.getId(), isEvent);
         } else {
             throw new Exception("Not a valid event type");
         }

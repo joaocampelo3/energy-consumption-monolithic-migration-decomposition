@@ -8,8 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class OrderQuantityTest {
     final int validQuantity = 1;
     final int invalidQuantity = -1;

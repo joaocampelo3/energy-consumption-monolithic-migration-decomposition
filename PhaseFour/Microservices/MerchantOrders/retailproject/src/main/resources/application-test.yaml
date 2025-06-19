@@ -14,7 +14,7 @@ spring:
     hibernate:
       ddl-auto: update
   cache:
-    cache-names: merchants, merchantorders, orders, shippingorders
+    cache-names: merchants, merchantorders
   ## RabbitMQ
   rabbitmq:
     host: rabbitmq-service

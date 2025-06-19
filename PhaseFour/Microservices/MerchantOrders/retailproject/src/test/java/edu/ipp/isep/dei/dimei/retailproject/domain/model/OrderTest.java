@@ -14,8 +14,6 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class OrderTest {
     final OrderStatusEnum status = OrderStatusEnum.PENDING;
     int id;
@@ -27,7 +25,7 @@ class OrderTest {
     Order orderExpected2;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         id = 1;
         Instant currentDate = Instant.now();
         orderDate = currentDate;

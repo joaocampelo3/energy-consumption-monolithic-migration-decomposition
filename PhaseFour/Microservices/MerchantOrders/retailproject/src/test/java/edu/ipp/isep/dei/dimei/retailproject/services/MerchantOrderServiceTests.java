@@ -4,6 +4,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
+import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.MerchantOrderPublisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
@@ -49,6 +50,9 @@ class MerchantOrderServiceTests {
     MerchantService merchantService;
     @Mock
     ShippingOrderService shippingOrderService;
+    @Mock
+    MerchantOrderPublisher merchantOrderPublisher;
+
     MerchantOrderDTO merchantOrderDTO1;
     MerchantOrderDTO merchantOrderDTO2;
     List<MerchantOrderDTO> merchantOrderDTOS = new ArrayList<>();
@@ -67,6 +71,7 @@ class MerchantOrderServiceTests {
     List<MerchantOrder> merchantOrders = new ArrayList<>();
     ShippingOrder shippingOrder1;
     ShippingOrderUpdateDTO shippingOrderUpdateDTO1;
+    boolean isEvent;
 
     @BeforeEach
     void beforeEach() {
@@ -193,6 +198,7 @@ class MerchantOrderServiceTests {
                 .build();
 
         shippingOrderUpdateDTO1 = new ShippingOrderUpdateDTO(shippingOrder1);
+        isEvent = false;
     }
 
     @Test
@@ -270,8 +276,8 @@ class MerchantOrderServiceTests {
 
         when(orderService.getUserOrder(merchantUserDTO, merchantOrder1.getOrderId())).thenReturn(new OrderDTO(order1));
         when(shippingOrderService.getUserShippingOrder(merchantUserDTO, merchantOrder1.getOrderId())).thenReturn(new ShippingOrderDTO(shippingOrder1, merchantUserDTO.getEmail()));
-        when(orderService.fullCancelOrderByOrderId(merchantUserDTO, merchantOrder1.getOrderId(), false)).thenReturn(orderUpdateDTO1);
-        when(shippingOrderService.fullCancelShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
+        when(orderService.fullCancelOrderByOrderId(merchantUserDTO, merchantOrder1.getOrderId(), isEvent)).thenReturn(orderUpdateDTO1);
+        when(shippingOrderService.fullCancelShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated, isEvent)).thenReturn(shippingOrderUpdateDTO1);
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUserDTO.getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
@@ -286,7 +292,7 @@ class MerchantOrderServiceTests {
         });
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrder(id, merchantOrderUpdateDTO1);
+        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         merchantOrderUpdateDTO1.setUserDTO(null);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
@@ -294,8 +300,8 @@ class MerchantOrderServiceTests {
         verify(merchantOrderRepository, atLeastOnce()).findById(id);
         verify(orderService, atLeastOnce()).getUserOrder(merchantUserDTO, merchantOrder1.getOrderId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(merchantUserDTO, merchantOrder1.getOrderId());
-        verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(merchantUserDTO, merchantOrder1.getOrderId(), false);
-        verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated);
+        verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(merchantUserDTO, merchantOrder1.getOrderId(), isEvent);
+        verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated, isEvent);
         verify(merchantOrderRepository, atLeastOnce()).findById(merchantOrder1.getId());
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
@@ -309,7 +315,7 @@ class MerchantOrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
-            merchantOrderService.fullCancelMerchantOrder(id, merchantOrderUpdateDTO1);
+            merchantOrderService.fullCancelMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         });
 
         // Perform assertions
@@ -332,7 +338,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(merchantUserDTO, order1.getId());
+        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(merchantUserDTO, order1.getId(), isEvent);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
         // Perform assertions
@@ -356,7 +362,7 @@ class MerchantOrderServiceTests {
 
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(merchantUserDTO, order1.getId());
+        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByOrder(merchantUserDTO, order1.getId(), isEvent);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
         // Perform assertions
@@ -541,7 +547,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByShippingOrder(merchantUserDTO, shippingOrder1);
+        MerchantOrderUpdateDTO result = merchantOrderService.fullCancelMerchantOrderByShippingOrder(merchantUserDTO, shippingOrder1, isEvent);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
         // Perform assertions
@@ -568,7 +574,7 @@ class MerchantOrderServiceTests {
         when(shippingOrderService.getUserShippingOrder(merchantUserDTO, merchantOrder1.getOrderId())).thenReturn(new ShippingOrderDTO(shippingOrder1, userDTO.getEmail()));
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(orderService.rejectOrderByOrderId(merchantUserDTO, merchantOrder1Updated.getOrderId())).thenReturn(orderUpdateDTO1);
-        when(shippingOrderService.rejectShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated)).thenReturn(shippingOrderUpdateDTO1);
+        when(shippingOrderService.rejectShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated, isEvent)).thenReturn(shippingOrderUpdateDTO1);
         when(merchantOrderRepository.save(merchantOrder1Updated)).thenReturn(merchantOrder1Updated);
         when(merchantOrderRepository.findById(merchantOrder1.getId()).filter(o -> o.getMerchant().getEmail().compareTo(merchantUserDTO.getEmail()) == 0)).thenAnswer(new Answer<Optional<MerchantOrder>>() {
             private int count = 0;
@@ -583,7 +589,7 @@ class MerchantOrderServiceTests {
         });
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO1);
+        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         merchantOrderUpdateDTO1.setUserDTO(null);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
@@ -593,7 +599,7 @@ class MerchantOrderServiceTests {
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(merchantUserDTO, merchantOrder1.getOrderId());
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         verify(orderService, atLeastOnce()).rejectOrderByOrderId(merchantUserDTO, merchantOrder1.getOrderId());
-        verify(shippingOrderService, atLeastOnce()).rejectShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated);
+        verify(shippingOrderService, atLeastOnce()).rejectShippingOrderByMerchantOrder(merchantUserDTO, merchantOrder1Updated, isEvent);
         verify(merchantOrderRepository, atLeastOnce()).findById(merchantOrder1.getId());
         verify(merchantOrderRepository, atLeastOnce()).save(merchantOrder1Updated);
         assertNotNull(result);
@@ -607,7 +613,7 @@ class MerchantOrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
-            merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO1);
+            merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         });
 
         // Perform assertions
@@ -642,7 +648,7 @@ class MerchantOrderServiceTests {
         });
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrderByOrder(merchantUserDTO, order1.getId());
+        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrderByOrder(merchantUserDTO, order1.getId(), isEvent);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
         // Perform assertions
@@ -682,7 +688,7 @@ class MerchantOrderServiceTests {
         });
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrderByShippingOrder(merchantUserDTO, shippingOrder1);
+        MerchantOrderUpdateDTO result = merchantOrderService.rejectMerchantOrderByShippingOrder(merchantUserDTO, shippingOrder1, isEvent);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
         // Perform assertions
@@ -719,7 +725,7 @@ class MerchantOrderServiceTests {
         });
 
         // Call the service method that uses the Repository
-        MerchantOrderUpdateDTO result = merchantOrderService.approveMerchantOrder(id, merchantOrderUpdateDTO1);
+        MerchantOrderUpdateDTO result = merchantOrderService.approveMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         merchantOrderUpdateDTO1.setUserDTO(null);
         MerchantOrderUpdateDTO expected = merchantOrderUpdateDTO1;
 
@@ -739,7 +745,7 @@ class MerchantOrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException result = assertThrows(BadPayloadException.class, () -> {
-            merchantOrderService.approveMerchantOrder(id, merchantOrderUpdateDTO1);
+            merchantOrderService.approveMerchantOrder(id, merchantOrderUpdateDTO1, isEvent);
         });
 
         // Perform assertions
@@ -762,7 +768,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.save(merchantOrder1)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
-        MerchantOrder result = merchantOrderService.shipMerchantOrder(merchantUserDTO, id);
+        MerchantOrder result = merchantOrderService.shipMerchantOrder(merchantUserDTO, id, isEvent);
         MerchantOrder expected = merchantOrder1;
 
         // Perform assertions
@@ -789,7 +795,7 @@ class MerchantOrderServiceTests {
         when(merchantOrderRepository.save(merchantOrder1)).thenReturn(merchantOrder1Updated);
 
         // Call the service method that uses the Repository
-        MerchantOrder result = merchantOrderService.deliverMerchantOrder(merchantUserDTO, id);
+        MerchantOrder result = merchantOrderService.deliverMerchantOrder(merchantUserDTO, id, isEvent);
         MerchantOrder expected = merchantOrder1;
 
         // Perform assertions

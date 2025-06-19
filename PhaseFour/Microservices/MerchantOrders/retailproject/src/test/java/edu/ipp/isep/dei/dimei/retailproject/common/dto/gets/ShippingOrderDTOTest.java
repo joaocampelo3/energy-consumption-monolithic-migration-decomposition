@@ -18,8 +18,6 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class ShippingOrderDTOTest {
     int id;
     Instant shippingOrderDate;

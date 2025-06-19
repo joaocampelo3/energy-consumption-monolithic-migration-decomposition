@@ -32,6 +32,7 @@ import java.util.List;
 public class MerchantOrderController {
 
     private final MerchantOrderService merchantOrderService;
+    private final boolean isEvent = false;
 
     @GetMapping("/all")
     @Cacheable
@@ -68,7 +69,7 @@ public class MerchantOrderController {
     )
     public ResponseEntity<Object> fullCancelMerchantOrderById(@PathVariable int merchantOrderId, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(merchantOrderId, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.fullCancelMerchantOrder(merchantOrderId, merchantOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -84,7 +85,7 @@ public class MerchantOrderController {
     )
     public ResponseEntity<Object> rejectMerchantOrderById(@PathVariable int id, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.rejectMerchantOrder(id, merchantOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -101,7 +102,7 @@ public class MerchantOrderController {
     )
     public ResponseEntity<Object> approveMerchantOrderById(@PathVariable int merchantOrderId, @RequestBody MerchantOrderUpdateDTO merchantOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(merchantOrderId, merchantOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.merchantOrderService.approveMerchantOrder(merchantOrderId, merchantOrderUpdateDTO, false), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {

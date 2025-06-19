@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;

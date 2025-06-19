@@ -41,7 +41,8 @@ public class MerchantOrderEvent {
         this.id = merchantOrderUpdateDTO.getId();
         this.orderDate = merchantOrderUpdateDTO.getMerchantOrderDate();
         this.status = merchantOrderUpdateDTO.getMerchantOrderStatus();
-        this.customerId = merchantOrderUpdateDTO.getUserDTO().getUserId();
+        if (merchantOrderUpdateDTO.getUserDTO() != null)
+            this.customerId = merchantOrderUpdateDTO.getUserDTO().getUserId();
         this.orderId = merchantOrderUpdateDTO.getOrderId();
         this.merchantId = merchantOrderUpdateDTO.getMerchantId();
         this.eventTypeEnum = eventTypeEnum;

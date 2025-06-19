@@ -19,8 +19,6 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class ShippingOrderUpdateDTOTest {
     int id;
     Instant shippingOrderDate;

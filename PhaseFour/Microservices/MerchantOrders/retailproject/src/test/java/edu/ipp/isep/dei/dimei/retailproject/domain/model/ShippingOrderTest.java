@@ -15,8 +15,6 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class ShippingOrderTest {
     final ShippingOrderStatusEnum status = ShippingOrderStatusEnum.PENDING;
     int id;
