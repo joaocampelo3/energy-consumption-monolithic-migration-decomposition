@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ import org.springframework.web.bind.annotation.*;
 @CacheConfig(cacheNames = "shippingorders")
 public class ShippingOrderController {
 
-    private final ShippingOrderService shippingOrderService;
+    private final @Lazy ShippingOrderService shippingOrderService;
+    private static final boolean isEvent = false;
 
     @GetMapping("/all")
     @Cacheable
@@ -66,7 +68,7 @@ public class ShippingOrderController {
     )
     public ResponseEntity<Object> fullCancelShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.fullCancelShippingOrder(shippingOrderId, shippingOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -82,7 +84,7 @@ public class ShippingOrderController {
     )
     public ResponseEntity<Object> rejectShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.rejectShippingOrder(shippingOrderId, shippingOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException | InvalidQuantityException e) {
@@ -98,7 +100,7 @@ public class ShippingOrderController {
     )
     public ResponseEntity<Object> approveShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.approveShippingOrder(shippingOrderId, shippingOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {
@@ -114,7 +116,7 @@ public class ShippingOrderController {
     )
     public ResponseEntity<Object> shippedShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.shippedShippingOrder(shippingOrderId, shippingOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {
@@ -130,7 +132,7 @@ public class ShippingOrderController {
     )
     public ResponseEntity<Object> deliveredShippingOrderById(@PathVariable int shippingOrderId, @RequestBody ShippingOrderUpdateDTO shippingOrderUpdateDTO) {
         try {
-            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(shippingOrderId, shippingOrderUpdateDTO), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(this.shippingOrderService.deliveredShippingOrder(shippingOrderId, shippingOrderUpdateDTO, isEvent), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (WrongFlowException | BadPayloadException e) {

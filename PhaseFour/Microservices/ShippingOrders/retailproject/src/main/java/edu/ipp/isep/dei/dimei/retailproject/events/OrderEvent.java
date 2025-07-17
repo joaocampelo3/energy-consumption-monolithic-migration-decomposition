@@ -14,7 +14,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -70,15 +69,18 @@ public class OrderEvent {
     }
 
     public static OrderEvent fromJson(String json) {
-        Gson gson = new Gson();
-        return new GsonBuilder().serializeNulls().create().fromJson(json, OrderEvent.class);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .fromJson(json, OrderEvent.class);
     }
 
     public String toJson() {
-        return new GsonBuilder().serializeNulls().create().toJson(this);
-    }
-
-    public Order toOrder() throws InvalidQuantityException {
-        return new Order(this.id, this.orderDate, this.orderStatus, this.customerId);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .toJson(this);
     }
 }

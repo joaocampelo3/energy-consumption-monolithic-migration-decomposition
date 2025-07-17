@@ -7,7 +7,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpda
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,22 +39,26 @@ public class MerchantOrderEvent {
         this.id = merchantOrderUpdateDTO.getId();
         this.orderDate = merchantOrderUpdateDTO.getMerchantOrderDate();
         this.status = merchantOrderUpdateDTO.getMerchantOrderStatus();
-        this.customerId = merchantOrderUpdateDTO.getUserDTO().getUserId();
+        if (merchantOrderUpdateDTO.getUserDTO() != null)
+            this.customerId = merchantOrderUpdateDTO.getUserDTO().getUserId();
         this.orderId = merchantOrderUpdateDTO.getOrderId();
         this.merchantId = merchantOrderUpdateDTO.getMerchantId();
         this.eventTypeEnum = eventTypeEnum;
     }
 
     public static MerchantOrderEvent fromJson(String json) {
-        Gson gson = new Gson();
-        return new GsonBuilder().serializeNulls().create().fromJson(json, MerchantOrderEvent.class);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .fromJson(json, MerchantOrderEvent.class);
     }
 
     public String toJson() {
-        return new GsonBuilder().serializeNulls().create().toJson(this);
-    }
-
-    public MerchantOrder toMerchantOrder() throws InvalidQuantityException {
-        return new MerchantOrder(this.id, this.orderId, this.orderDate, this.merchantId);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .toJson(this);
     }
 }

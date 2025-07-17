@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.repositories;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -21,4 +20,5 @@ public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, I
     List<MerchantOrder> findAll();
 
     void deleteByOrderId(int orderId);
+    void deleteByMerchantId(int merchantId);
 }

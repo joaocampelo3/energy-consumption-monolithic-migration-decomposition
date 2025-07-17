@@ -11,57 +11,54 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
-import edu.ipp.isep.dei.dimei.retailproject.events.OrderEvent;
-import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.OrderRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
 @Transactional
-@RequiredArgsConstructor
 @Service
 public class OrderService {
 
     protected static final String NOTFOUNDEXCEPTIONMESSAGE = "Order not found.";
     protected static final String BADPAYLOADEXCEPTIONMESSAGE = "Wrong order payload.";
     private final OrderRepository orderRepository;
-    private final MerchantOrderService merchantOrderService;
+    private final MerchantOrderHelperService merchantOrderService;
     private final ShippingOrderService shippingOrderService;
-    private final OrderPublisher orderPublisher;
 
-    public OrderDTO createOrder(OrderCreateDTO orderDTO, boolean isEvent) throws NotFoundException, InvalidQuantityException, BadPayloadException {
+    public OrderService(OrderRepository orderRepository, @Lazy MerchantOrderHelperService merchantOrderService, @Lazy ShippingOrderService shippingOrderService, OrderPublisher orderPublisher) {
+        this.orderRepository = orderRepository;
+        this.merchantOrderService = merchantOrderService;
+        this.shippingOrderService = shippingOrderService;
+    }
+
+    public OrderDTO createOrder(OrderCreateDTO orderDTO, boolean isEvent) {
         Order order = orderDTO.dtoToEntity();
 
         order = this.orderRepository.save(order);
-
-        if (isEvent) {
-            MerchantOrder merchantOrder = this.merchantOrderService.createMerchantOrder(orderDTO.getUserDTO(), order, orderDTO.getMerchantId());
-
-            this.shippingOrderService.createShippingOrder(orderDTO.getUserDTO(), order, merchantOrder, orderDTO.getAddress().getId());
-        }
+        MerchantOrder merchantOrder = this.merchantOrderService.createMerchantOrder(orderDTO.getUserDTO(), order, orderDTO.getMerchantId());
+        this.shippingOrderService.createShippingOrder(orderDTO.getUserDTO(), order, merchantOrder, orderDTO.getAddress().getId());
 
         return new OrderDTO(order);
     }
 
     public OrderDTO getUserOrder(UserDTO userDTO, int id) throws NotFoundException {
-        Order order = getUserOrderById(userDTO, id);
+        Order order = getUserOrderById(userDTO, id, false);
         return new OrderDTO(order);
     }
 
-    public OrderDTO deleteOrder(int id, int orderId) throws NotFoundException {
+    public OrderDTO deleteOrder(int id, int orderId, boolean isEvent) throws NotFoundException {
 
         Order order = this.orderRepository.findById(orderId)
-                .filter(o -> o.getUserId() == id)
+                .filter(o -> o.getUserId() == id || isEvent)
                 .orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
 
-        this.shippingOrderService.deleteShippingOrderByOrderId(order.getId());
-        this.merchantOrderService.deleteMerchantOrderByOrderId(order.getId());
+        this.shippingOrderService.deleteShippingOrderByOrderId(order.getId(), isEvent);
+        this.merchantOrderService.deleteMerchantOrderByOrderId(order.getId(), isEvent);
         this.orderRepository.delete(order);
 
         return new OrderDTO(order);
@@ -72,28 +69,18 @@ public class OrderService {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
-        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.CANCELLED);
+        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.CANCELLED, isEvent);
 
         OrderUpdateDTO orderUpdateDTO2 = new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
 
-        if (isEvent) {
-            this.merchantOrderService.fullCancelMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
-            this.shippingOrderService.fullCancelShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
-        } else {
-            orderPublisher.publishEvent(new OrderEvent(orderUpdateDTO2, EventTypeEnum.UPDATE));
-        }
+        this.merchantOrderService.fullCancelMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId(), isEvent);
+        this.shippingOrderService.fullCancelShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
 
         return orderUpdateDTO2;
     }
 
     public OrderUpdateDTO fullCancelOrderByOrderId(UserDTO userDTO, int orderId, boolean isEvent) throws NotFoundException, WrongFlowException {
-        OrderUpdateDTO orderUpdateDTO = new OrderUpdateDTO(changeOrderStatus(userDTO, orderId, OrderStatusEnum.CANCELLED), userDTO.getEmail());
-
-        if (isEvent) {
-            orderPublisher.publishEvent(new OrderEvent(orderUpdateDTO, EventTypeEnum.UPDATE));
-        }
-
-        return orderUpdateDTO;
+        return new OrderUpdateDTO(changeOrderStatus(userDTO, orderId, OrderStatusEnum.CANCELLED, isEvent), userDTO.getEmail());
     }
 
     public OrderUpdateDTO rejectOrder(int id, OrderUpdateDTO orderUpdateDTO, boolean isEvent) throws NotFoundException, WrongFlowException, BadPayloadException {
@@ -101,50 +88,39 @@ public class OrderService {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
-        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.REJECTED);
+        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.REJECTED, isEvent);
 
         OrderUpdateDTO orderUpdateDTO2 = new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
-
-        if (isEvent) {
-            this.merchantOrderService.rejectMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
-            this.shippingOrderService.rejectShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
-        } else {
-            orderPublisher.publishEvent(new OrderEvent(orderUpdateDTO2, EventTypeEnum.UPDATE));
-        }
+        this.merchantOrderService.rejectMerchantOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId(), isEvent);
+        this.shippingOrderService.rejectShippingOrderByOrder(orderUpdateDTO.getUserDTO(), order.getId());
 
         return orderUpdateDTO2;
     }
 
-    public OrderUpdateDTO rejectOrderByOrderId(UserDTO userDTO, int orderId) throws NotFoundException, WrongFlowException {
-        OrderUpdateDTO orderUpdateDTO = new OrderUpdateDTO(changeOrderStatus(userDTO, orderId, OrderStatusEnum.REJECTED), userDTO.getEmail());
-        orderPublisher.publishEvent(new OrderEvent(orderUpdateDTO, EventTypeEnum.UPDATE));
-        return orderUpdateDTO;
+    public OrderUpdateDTO rejectOrderByOrderId(UserDTO userDTO, int orderId, boolean isEvent) throws NotFoundException, WrongFlowException {
+        return new OrderUpdateDTO(changeOrderStatus(userDTO, orderId, OrderStatusEnum.REJECTED, isEvent), userDTO.getEmail());
     }
 
-    public OrderUpdateDTO approveOrder(int id, OrderUpdateDTO orderUpdateDTO) throws NotFoundException, WrongFlowException, BadPayloadException {
+    public OrderUpdateDTO approveOrder(int id, OrderUpdateDTO orderUpdateDTO, boolean isEvent) throws NotFoundException, WrongFlowException, BadPayloadException {
         if (isIdNotEqualToOrderId(id, orderUpdateDTO) || !OrderStatusEnum.APPROVED.equals(orderUpdateDTO.getOrderStatus())) {
             throw new BadPayloadException(BADPAYLOADEXCEPTIONMESSAGE);
         }
 
-        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.APPROVED);
+        Order order = changeOrderStatus(orderUpdateDTO.getUserDTO(), orderUpdateDTO.getId(), OrderStatusEnum.APPROVED, isEvent);
 
-        OrderUpdateDTO orderUpdateDTO2 = new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
-        orderPublisher.publishEvent(new OrderEvent(orderUpdateDTO2, EventTypeEnum.UPDATE));
-        return orderUpdateDTO2;
+        return new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
     }
 
-    private Order getUserOrderById(UserDTO userDTO, int id) throws NotFoundException {
-        if (userDTO.getRole().equals(RoleEnum.ADMIN) || userDTO.getRole().equals(RoleEnum.MERCHANT)) {
+    private Order getUserOrderById(UserDTO userDTO, int id, boolean isEvent) throws NotFoundException {
+        if (userDTO.getRole().equals(RoleEnum.ADMIN) || userDTO.getRole().equals(RoleEnum.MERCHANT) || isEvent) {
             return this.orderRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
         } else {
             return this.orderRepository.findById(id).filter(o -> o.getUserId() == userDTO.getUserId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
         }
-
-
     }
 
-    private Order changeOrderStatus(UserDTO userDTO, int id, OrderStatusEnum status) throws NotFoundException, WrongFlowException {
-        Order order = getUserOrderById(userDTO, id);
+    private Order changeOrderStatus(UserDTO userDTO, int id, OrderStatusEnum status, boolean isEvent) throws NotFoundException, WrongFlowException {
+        Order order = getUserOrderById(userDTO, id, isEvent);
 
         if (isOrderFlowValid(userDTO, order, status)) {
             order.setStatus(status);
@@ -155,12 +131,12 @@ public class OrderService {
         }
     }
 
-    public void shipOrder(UserDTO userDTO, int id) throws NotFoundException, WrongFlowException {
-        changeOrderStatus(userDTO, id, OrderStatusEnum.SHIPPED);
+    public void shipOrder(UserDTO userDTO, int id, boolean isEvent) throws NotFoundException, WrongFlowException {
+        changeOrderStatus(userDTO, id, OrderStatusEnum.SHIPPED, isEvent);
     }
 
-    public void deliverOrder(UserDTO userDTO, int id) throws NotFoundException, WrongFlowException {
-        changeOrderStatus(userDTO, id, OrderStatusEnum.DELIVERED);
+    public void deliverOrder(UserDTO userDTO, int id, boolean isEvent) throws NotFoundException, WrongFlowException {
+        changeOrderStatus(userDTO, id, OrderStatusEnum.DELIVERED, isEvent);
     }
 
     private boolean isOrderFlowValid(UserDTO userDTO, Order order, OrderStatusEnum newStatus) throws NotFoundException {

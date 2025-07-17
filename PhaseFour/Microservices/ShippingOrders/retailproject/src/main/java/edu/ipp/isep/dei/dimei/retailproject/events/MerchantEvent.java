@@ -27,7 +27,6 @@ public class MerchantEvent {
     }
 
     public static MerchantEvent fromJson(String json) {
-        Gson gson = new Gson();
         return new GsonBuilder().serializeNulls().create().fromJson(json, MerchantEvent.class);
     }
 

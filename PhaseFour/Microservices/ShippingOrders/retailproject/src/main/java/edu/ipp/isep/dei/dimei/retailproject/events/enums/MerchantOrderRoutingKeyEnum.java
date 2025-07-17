@@ -19,7 +19,7 @@ public enum MerchantOrderRoutingKeyEnum {
         return key;
     }
 
-    public String getOrderKey() {
+    public String getMerchantOrderKey() {
         return "merchantorder." + key;
     }
 }

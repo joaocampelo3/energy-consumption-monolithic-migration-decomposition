@@ -5,7 +5,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.OrderPublisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
@@ -14,7 +13,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.OrderRepository;
@@ -43,11 +41,10 @@ class OrderServiceTests {
     @Mock
     OrderRepository orderRepository;
     @Mock
-    MerchantOrderService merchantOrderService;
+    MerchantOrderHelperService merchantOrderService;
     @Mock
     ShippingOrderService shippingOrderService;
-    @Mock
-    OrderPublisher publisher;
+
     OrderDTO orderDTO1;
     OrderDTO orderDTO2;
     List<OrderDTO> orderDTOS = new ArrayList<>();
@@ -67,9 +64,10 @@ class OrderServiceTests {
     ShippingOrder shippingOrder1;
     ShippingOrderDTO shippingOrderDTO1;
     int merchantId;
+    boolean isEvent;
 
     @BeforeEach
-    void beforeEach() throws InvalidQuantityException {
+    void beforeEach() {
         userDTO = UserDTO.builder().userId(1).email("johndoe1234@gmail.com").role(RoleEnum.USER).build();
 
         merchantUserDTO = UserDTO.builder().userId(2).email("merchant_email@gmail.com").role(RoleEnum.MERCHANT).build();
@@ -105,15 +103,16 @@ class OrderServiceTests {
         merchantOrderDTO1 = new MerchantOrderDTO(merchantOrder1, userDTO.getEmail());
         shippingOrder1 = new ShippingOrder(userDTO.getUserId(), order1.getId(), order1.getOrderDate(), merchantOrder1.getId(), shippingAddressDTO.getId());
         shippingOrderDTO1 = new ShippingOrderDTO(shippingOrder1, userDTO.getEmail());
+        isEvent = false;
     }
 
     @Test
-    void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
+    void test_CreateOrder() {
         // Define the behavior of the mock
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.createOrder(orderCreateDTO, false);
+        OrderDTO result = orderService.createOrder(orderCreateDTO, isEvent);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
@@ -176,7 +175,7 @@ class OrderServiceTests {
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.deleteOrder(userDTO.getUserId(), order1.getId());
+        OrderDTO result = orderService.deleteOrder(userDTO.getUserId(), order1.getId(), isEvent);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions
@@ -201,7 +200,7 @@ class OrderServiceTests {
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -216,6 +215,7 @@ class OrderServiceTests {
     @Test
     void test_FullCancelOrderIsEvent() throws WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
+        isEvent = true;
         order1Updated.setStatus(OrderStatusEnum.CANCELLED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
         MerchantOrderUpdateDTO merchantOrderUpdateDTO = new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail());
@@ -225,19 +225,19 @@ class OrderServiceTests {
 
         when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
-        when(merchantOrderService.fullCancelMerchantOrderByOrder(userDTO, order1Updated.getId())).thenReturn(merchantOrderUpdateDTO);
+        when(merchantOrderService.fullCancelMerchantOrderByOrder(userDTO, order1Updated.getId(), isEvent)).thenReturn(merchantOrderUpdateDTO);
         doReturn(shippingOrderUpdateDTO).when(shippingOrderService).fullCancelShippingOrderByOrder(userDTO, order1Updated.getId());
         when(orderRepository.save(order1Updated)).thenReturn(order1Updated);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
+        OrderUpdateDTO result = orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
         verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(userDTO, order1.getId());
         verify(shippingOrderService, atLeastOnce()).getUserShippingOrder(userDTO, order1.getId());
-        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByOrder(userDTO, order1Updated.getId());
+        verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByOrder(userDTO, order1Updated.getId(), isEvent);
         verify(shippingOrderService, atLeastOnce()).fullCancelShippingOrderByOrder(userDTO, order1Updated.getId());
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
         verify(orderRepository, atLeastOnce()).save(order1Updated);
@@ -252,7 +252,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO, false);
+            orderService.fullCancelOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -263,10 +263,11 @@ class OrderServiceTests {
     void test_FullCancelOrderFailDifferentOrderIDIsEvent() {
         // Define the behavior of the mock
         int id = 2;
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO, true);
+            orderService.fullCancelOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -280,7 +281,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -291,10 +292,11 @@ class OrderServiceTests {
     void test_FullCancelOrderFailCancelledOrderIsEvent() {
         // Define the behavior of the mock
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
+            orderService.fullCancelOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -309,7 +311,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO, false);
+            orderService.fullCancelOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -321,10 +323,11 @@ class OrderServiceTests {
         // Define the behavior of the mock
         int id = 2;
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.CANCELLED);
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.fullCancelOrder(id, orderUpdateDTO, true);
+            orderService.fullCancelOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -341,7 +344,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), false);
+        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -356,6 +359,7 @@ class OrderServiceTests {
     @Test
     void test_FullCancelOrderByOrderIdIsEvent() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
+        isEvent = true;
         order1Updated.setStatus(OrderStatusEnum.CANCELLED);
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
         when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
@@ -363,7 +367,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), true);
+        OrderUpdateDTO result = orderService.fullCancelOrderByOrderId(userDTO, orderUpdateDTO.getId(), isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -386,7 +390,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -403,13 +407,14 @@ class OrderServiceTests {
         // Define the behavior of the mock
         order1Updated.setStatus(OrderStatusEnum.REJECTED);
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
+        isEvent = true;
         when(orderRepository.findById(order1.getId()).filter(o -> o.getUserId() == userDTO.getUserId())).thenReturn(Optional.ofNullable(order1));
         when(merchantOrderService.getUserMerchantOrder(userDTO, order1.getId())).thenReturn(merchantOrderDTO1);
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
+        OrderUpdateDTO result = orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -431,7 +436,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.rejectOrderByOrderId(userDTO, orderUpdateDTO.getId());
+        OrderUpdateDTO result = orderService.rejectOrderByOrderId(userDTO, orderUpdateDTO.getId(), isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -450,7 +455,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, false);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -461,10 +466,11 @@ class OrderServiceTests {
     void test_RejectOrderFailDifferentOrderIDIsEvent() {
         // Define the behavior of the mock
         int id = 2;
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, true);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -478,7 +484,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, false);
+            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -489,10 +495,11 @@ class OrderServiceTests {
     void test_RejectOrderFailRejectedOrderIsEvent() {
         // Define the behavior of the mock
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.PENDING);
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, true);
+            orderService.rejectOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -507,7 +514,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, false);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -519,10 +526,11 @@ class OrderServiceTests {
         // Define the behavior of the mock
         int id = 2;
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.REJECTED);
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, true);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -540,7 +548,7 @@ class OrderServiceTests {
         when(orderRepository.save(order1Updated)).thenReturn(order1Updated);
 
         // Call the service method that uses the Repository
-        OrderUpdateDTO result = orderService.approveOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+        OrderUpdateDTO result = orderService.approveOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         OrderUpdateDTO expected = new OrderUpdateDTO(order1Updated, userDTO.getEmail());
 
         // Perform assertions
@@ -559,7 +567,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.approveOrder(id, orderUpdateDTO);
+            orderService.approveOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -573,7 +581,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.approveOrder(orderUpdateDTO.getId(), orderUpdateDTO);
+            orderService.approveOrder(orderUpdateDTO.getId(), orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -588,7 +596,7 @@ class OrderServiceTests {
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, false);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -600,10 +608,11 @@ class OrderServiceTests {
         // Define the behavior of the mock
         int id = 2;
         orderUpdateDTO.setOrderStatus(OrderStatusEnum.APPROVED);
+        isEvent = true;
 
         // Call the service method that uses the Repository
         BadPayloadException exception = assertThrows(BadPayloadException.class, () -> {
-            orderService.rejectOrder(id, orderUpdateDTO, true);
+            orderService.rejectOrder(id, orderUpdateDTO, isEvent);
         });
 
         // Perform assertions
@@ -622,7 +631,7 @@ class OrderServiceTests {
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
 
         // Call the service method that uses the Repository
-        assertDoesNotThrow(() -> orderService.shipOrder(userDTO, orderUpdateDTO.getId()));
+        assertDoesNotThrow(() -> orderService.shipOrder(userDTO, orderUpdateDTO.getId(), isEvent));
 
         // Perform assertions
         verify(orderRepository, atLeastOnce()).findById(order1.getId());
@@ -642,7 +651,7 @@ class OrderServiceTests {
         when(shippingOrderService.getUserShippingOrder(userDTO, order1.getId())).thenReturn(shippingOrderDTO1);
 
         // Call the service method that uses the Repository
-        assertDoesNotThrow(() -> orderService.deliverOrder(userDTO, orderUpdateDTO.getId()));
+        assertDoesNotThrow(() -> orderService.deliverOrder(userDTO, orderUpdateDTO.getId(), isEvent));
 
         // Perform assertions
         verify(orderRepository, atLeastOnce()).findById(order1.getId());

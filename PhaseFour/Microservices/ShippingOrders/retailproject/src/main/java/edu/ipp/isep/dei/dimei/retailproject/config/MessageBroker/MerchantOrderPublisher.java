@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
@@ -24,18 +25,22 @@ public class MerchantOrderPublisher {
             String routingKey = determineRoutingKey(merchantOrderEvent);
             mainPublish(merchantOrderEvent, routingKey);
         } catch (Exception e) {
-            logger.log(java.util.logging.Level.SEVERE, "Error publishing event", e);
+            logger.log(Level.SEVERE, "Error publishing event", e);
         }
     }
 
     private String determineRoutingKey(MerchantOrderEvent merchantOrderEvent) {
-        return switch (merchantOrderEvent.getStatus()) {
-            case CANCELLED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_FULL_CANCEL.getOrderKey();
-            case REJECTED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_REJECTED.getOrderKey();
-            case APPROVED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_APPROVED.getOrderKey();
-            case SHIPPED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_SHIPPED.getOrderKey();
-            case DELIVERED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_DELIVERED.getOrderKey();
-            default -> null;
+        return switch (merchantOrderEvent.getEventTypeEnum()) {
+            case CREATE -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_CREATED.getMerchantOrderKey();
+            case DELETE -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_DELETED.getMerchantOrderKey();
+            default -> switch (merchantOrderEvent.getStatus()) {
+                case CANCELLED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_FULL_CANCEL.getMerchantOrderKey();
+                case REJECTED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_REJECTED.getMerchantOrderKey();
+                case APPROVED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_APPROVED.getMerchantOrderKey();
+                case SHIPPED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_SHIPPED.getMerchantOrderKey();
+                case DELIVERED -> MerchantOrderRoutingKeyEnum.MERCHANT_ORDER_DELIVERED.getMerchantOrderKey();
+                default -> null;
+            };
         };
     }
 
