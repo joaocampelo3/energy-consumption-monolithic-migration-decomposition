@@ -1,0 +1,345 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "Maven 3.9.6"
+        jdk 'Amazon Corretto JDK 17'
+    }
+    environment {
+        PHASE_NUMBER = "PhaseFour"
+        WORK_DIR="/home/jenkins"
+        REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
+        GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
+        // MONOLITH
+        BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic/retailproject"
+        MONOLITH_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic"
+        // API GATEWAY
+        API_GATEWAY_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
+        API_GATEWAY_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
+        // LOAD BALANCER
+        LOAD_BALANCER_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
+        LOAD_BALANCER_DIR="$REMOTE_DIR/$PHASE_NUMBER/LoadBalancerApplication"
+        // RABBITMQ
+        RABBITMQ_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/RabbitMQ"
+        RABBITMQ_DIR="$REMOTE_DIR/$PHASE_NUMBER/RabbitMQ"
+        // USER MICROSERVICE
+        USER_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User/retailproject"
+        USER_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/User"
+        // ITEMS MICROSERVICE
+        ITEMS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items/retailproject"
+        ITEMS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Items"
+        // ORDERS MICROSERVICE
+        ORDERS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Orders/retailproject"
+        ORDERS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/Orders"
+        // SHIPPING ORDERS MICROSERVICE
+        SHIPPING_ORDERS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/ShippingOrders/retailproject"
+        SHIPPING_ORDERS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/ShippingOrders"
+        // MERCHANT ORDERS MICROSERVICE
+        MERCHANT_ORDERS_MICROSERVICE_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/MerchantOrders/retailproject"
+        MERCHANT_ORDERS_MICROSERVICE_DIR="$REMOTE_DIR/$PHASE_NUMBER/Microservices/MerchantOrders"
+        // MONITORING VARIABLES
+        MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
+        MONITORING_DIR="$WORK_DIR/Monitoring"
+        // PROMETHEUS VARIABLES
+        PROMETHEUS_PROJ_PATH="$MONITORING_DIR/kube-prometheus"
+        PROMETHEUS_GITHUB_REPO="https://github.com/prometheus-operator/kube-prometheus"
+        // KEPLER VARIABLES
+        KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
+        KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
+        //GOLANG_HOME
+        GOLANG_HOME = '/usr/local/go/bin'
+        PATH = "${GOLANG_HOME}:${env.PATH}"
+    }
+
+    stages {
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "USER = $USER"
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    echo "REMOTE_DIR = ${REMOTE_DIR}"
+                    echo "BUILD_DIR = ${BUILD_DIR}"
+                    echo "GITHUB_REPO = ${GITHUB_REPO}"
+                    echo "JAVA_HOME = ${JAVA_HOME}"
+                    echo "GOLANG_HOME = ${GOLANG_HOME}"
+                ''' 
+            }
+        }
+
+        stage('Remove Directories') {
+            steps {
+                parallel(
+                    dimei: {
+                        sh 'rm -rf $REMOTE_DIR'
+                    },
+                    monitoring: {
+                        sh 'rm -rf $MONITORING_DIR'
+                    }
+                )
+            }
+        }
+        
+        stage('Go Test') {
+            steps {
+                sh '''
+                cd $WORK_DIR
+                go version
+                '''
+            }
+        }
+        
+        stage('Git Clone') {
+            steps {
+                parallel(
+                    dimei: {
+                        // Clone GitHub repository
+                        sh 'rm -rf $REMOTE_DIR'
+                        sh 'git clone $GITHUB_REPO $REMOTE_DIR && chmod 777 -R $REMOTE_DIR'
+                    },
+                    prometheus: {
+                        // Clone Prometheus GitHub repository
+                        sh 'git clone --depth 1 $PROMETHEUS_GITHUB_REPO $PROMETHEUS_PROJ_PATH && chmod 777 -R $PROMETHEUS_PROJ_PATH'
+                    },
+                    kepler: {
+                        // Clone Kepler GitHub repository
+                        sh 'git clone --depth 1 $KEPLER_GITHUB_REPO $KEPLER_PROJ_PATH && chmod 777 -R $KEPLER_PROJ_PATH'
+                    }
+                )
+            }
+        }
+
+        stage('Create Kind Cluster'){
+            steps {
+                sh 'cd $MONITORING_CONFIG_DIR && ./kind_config.sh'
+            }
+        }
+
+        stage('Prometheus Setup') {
+            steps {
+                sh 'cp $MONITORING_CONFIG_DIR/prometheus_config.sh $PROMETHEUS_PROJ_PATH'
+                sh 'cd $PROMETHEUS_PROJ_PATH && ./prometheus_config.sh'
+            }
+        }
+
+        stage('Kepler Setup') {
+            steps {
+                sh 'cp $MONITORING_CONFIG_DIR/kepler_config.sh $KEPLER_PROJ_PATH'
+                sh 'cd $KEPLER_PROJ_PATH && ./kepler_config.sh'
+            }
+        }
+        
+        stage('Cleanup') {
+            parallel {
+                stage('Cleanup RabbitMQ') {
+                    steps {
+                        sh 'cd $RABBITMQ_DIR && kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Monolith') {
+                    steps {
+                        sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup API Gateway') {
+                    steps {
+                        sh 'cd $API_GATEWAY_DIR && kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Load Balancer') {
+                    steps {
+                        sh 'cd $LOAD_BALANCER_DIR && kubectl delete -f ./retailproject_loadbalancer_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup User Microservice') {
+                    steps {
+                        sh 'cd $USER_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Items Microservice') {
+                    steps {
+                        sh 'cd $ITEMS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Orders Microservice') {
+                    steps {
+                        sh 'cd $ORDERS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Shipping Orders Microservice') {
+                    steps {
+                        sh 'cd $SHIPPING_ORDERS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+                stage('Cleanup Merchant Orders Microservice') {
+                    steps {
+                        sh 'cd $MERCHANT_ORDERS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                    }
+                }
+            }
+            
+        }
+        
+        stage('Build Monolith') {
+            parallel {
+                stage('Build Monolith') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build API Gateway') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $API_GATEWAY_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${API_GATEWAY_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Load Balancer') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $LOAD_BALANCER_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${LOAD_BALANCER_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build User Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $USER_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${USER_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Items Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ITEMS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ITEMS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Shipping Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $SHIPPING_ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${SHIPPING_ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Merchant Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $MERCHANT_ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${MERCHANT_ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Startup RabbitMQ') {
+            steps {
+                sh 'chmod 777 $RABBITMQ_DIR -R && cd $RABBITMQ_DIR && ./build.sh'
+            }
+        }
+        
+        stage('Startup API Gateway') {
+            steps {
+                sh 'chmod 777 $API_GATEWAY_DIR -R && cd $API_GATEWAY_DIR && ./build.sh'
+            }
+        }
+        
+        stage('Startup Load Balancer') {
+            steps {
+                sh 'chmod 777 $LOAD_BALANCER_DIR -R && cd $LOAD_BALANCER_DIR && ./build.sh'
+            }
+        }
+        
+        stage('Startup Services') {
+            parallel {
+                 stage('Startup Monolith') {
+                    steps {
+                        sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup User Microservice') {
+                    steps {
+                        sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Items Microservice') {
+                    steps {
+                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $ITEMS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Orders Microservice') {
+                    steps {
+                        sh 'chmod 777 $ORDERS_MICROSERVICE_DIR -R && cd $ORDERS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Shipping Orders Microservice') {
+                    steps {
+                        sh 'chmod 777 $SHIPPING_ORDERS_MICROSERVICE_DIR -R && cd $SHIPPING_ORDERS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Merchant Orders Microservice') {
+                    steps {
+                        sh 'chmod 777 $MERCHANT_ORDERS_MICROSERVICE_DIR -R && cd $MERCHANT_ORDERS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+            }
+        }
+    }
+}

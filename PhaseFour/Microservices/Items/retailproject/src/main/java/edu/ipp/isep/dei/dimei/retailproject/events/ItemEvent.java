@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.CategoryDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Category;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
@@ -45,5 +48,9 @@ public class ItemEvent {
 
     public String toJson() {
         return new GsonBuilder().serializeNulls().create().toJson(this);
+    }
+
+    public Item toItem() throws InvalidQuantityException {
+        return new Item(this.id, this.name, this.sku, this.description, this.price, new StockQuantity(this.quantity), this.categoryDTO.dtoToEntity(), this.merchantDTO.dtoToEntity());
     }
 }
