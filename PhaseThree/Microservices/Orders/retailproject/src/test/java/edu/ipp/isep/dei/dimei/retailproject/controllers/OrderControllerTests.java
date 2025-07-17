@@ -60,6 +60,7 @@ class OrderControllerTests {
     int categoryId;
     int merchantId;
     Payment payment;
+    boolean isEvent = false;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -219,14 +220,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenReturn(orderDTO);
+        when(orderService.createOrder(orderCreateDTO, isEvent)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
         ResponseEntity<Object> orderResponseEntity = orderController.createOrder(orderCreateDTO);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
 
         // Perform assertions
-        verify(orderService, atMostOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atMostOnce()).createOrder(orderCreateDTO, isEvent);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
     }
@@ -234,14 +235,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+        when(orderService.createOrder(orderCreateDTO, isEvent)).thenThrow(new NotFoundException(exceptionOrderNotFound));
 
         // Call the service method that uses the Repository
         ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO, isEvent);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -251,14 +252,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+        when(orderService.createOrder(orderCreateDTO, isEvent)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
 
         // Call the service method that uses the Repository
         ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO, isEvent);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -268,14 +269,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail3() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderInvalidQuantity));
+        when(orderService.createOrder(orderCreateDTO, isEvent)).thenThrow(new BadPayloadException(exceptionOrderInvalidQuantity));
 
         // Call the service method that uses the Repository
         ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderInvalidQuantity, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO, isEvent);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());

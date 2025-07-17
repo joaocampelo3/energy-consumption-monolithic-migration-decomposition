@@ -1,10 +1,13 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemQuantityDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.Publisher;
+import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.OrderPublisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
@@ -19,7 +22,6 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class OrderService {
     private final ItemService itemService;
     private final PaymentService paymentService;
     private final ItemQuantityService itemQuantityService;
-    private final Publisher publisher;
+    private final OrderPublisher orderPublisher;
 
     public List<OrderDTO> getAllOrders() {
         List<OrderDTO> orders = new ArrayList<>();
@@ -54,7 +56,7 @@ public class OrderService {
         return orders;
     }
 
-    public OrderDTO createOrder(OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
+    public OrderDTO createOrder(OrderCreateDTO orderDTO, boolean isEvent) throws NotFoundException, InvalidQuantityException, BadPayloadException {
         isSameMerchantForAllItems(orderDTO.getOrderItems(), orderDTO.getMerchantId());
 
         Payment payment = this.paymentService.createPayment(orderDTO.getPayment());
@@ -75,7 +77,9 @@ public class OrderService {
         order = this.orderRepository.save(order);
         OrderDTO orderDTO1 = new OrderDTO(order);
 
-        publisher.publishEvent(new OrderEvent(orderDTO1, EventTypeEnum.CREATE));
+        if (!isEvent) {
+            orderPublisher.publishEvent(new OrderEvent(orderDTO1, EventTypeEnum.CREATE));
+        }
 
         return orderDTO1;
     }
@@ -91,7 +95,7 @@ public class OrderService {
     }
 
     public OrderDTO getUserOrder(UserDTO userDTO, int id) throws NotFoundException {
-        Order order = getUserOrderById(userDTO, id);
+        Order order = getUserOrderById(userDTO, id, false);
         return new OrderDTO(order);
     }
 
@@ -103,7 +107,7 @@ public class OrderService {
 
         this.orderRepository.delete(order);
         OrderDTO orderDTO = new OrderDTO(order);
-        publisher.publishEvent(new OrderEvent(orderDTO, EventTypeEnum.DELETE));
+        orderPublisher.publishEvent(new OrderEvent(orderDTO, EventTypeEnum.DELETE));
 
         return orderDTO;
     }
@@ -150,8 +154,10 @@ public class OrderService {
         return new OrderUpdateDTO(order, orderUpdateDTO.getUserDTO().getEmail());
     }
 
-    private Order getUserOrderById(UserDTO userDTO, int id) throws NotFoundException {
-        if (userDTO.getRole().equals(RoleEnum.ADMIN) || userDTO.getRole().equals(RoleEnum.MERCHANT)) {
+    private Order getUserOrderById(UserDTO userDTO, int id, boolean isEvent) throws NotFoundException {
+        if (isEvent) {
+            return this.orderRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
+        } else if (userDTO.getRole().equals(RoleEnum.ADMIN) || userDTO.getRole().equals(RoleEnum.MERCHANT)) {
             return this.orderRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
         } else {
             return this.orderRepository.findById(id).filter(o -> o.getUserId() == userDTO.getUserId()).orElseThrow(() -> new NotFoundException(NOTFOUNDEXCEPTIONMESSAGE));
@@ -161,7 +167,7 @@ public class OrderService {
     }
 
     private Order changeOrderStatus(UserDTO userDTO, int id, OrderStatusEnum status, boolean isEvent) throws NotFoundException, WrongFlowException {
-        Order order = getUserOrderById(userDTO, id);
+        Order order = getUserOrderById(userDTO, id, isEvent);
 
         if (isOrderFlowValid(order, status)) {
             order.setStatus(status);
@@ -170,7 +176,7 @@ public class OrderService {
             if (!isEvent) {
                 OrderDTO orderDTO = new OrderDTO(order);
                 OrderEvent orderEvent = new OrderEvent(orderDTO, EventTypeEnum.UPDATE);
-                this.publisher.publishEvent(orderEvent);
+                this.orderPublisher.publishEvent(orderEvent);
             }
             return order;
         } else {
