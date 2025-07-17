@@ -51,11 +51,19 @@ public class ShippingOrderEvent {
 
     public static ShippingOrderEvent fromJson(String json) {
         Gson gson = new Gson();
-        return new GsonBuilder().serializeNulls().create().fromJson(json, ShippingOrderEvent.class);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .fromJson(json, ShippingOrderEvent.class);
     }
 
     public String toJson() {
-        return new GsonBuilder().serializeNulls().create().toJson(this);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .toJson(this);
     }
 
     public ShippingOrder toShippingOrder() {

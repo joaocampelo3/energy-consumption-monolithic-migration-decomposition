@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 public class ShippingOrderEventSubscriber {
 
     private static final String EXCHANGE_NAME = "shippingorder";
-
+    private static final boolean isEvent = true;
     @Autowired
     private RabbitMQHost rabbitMQHost;
     @Autowired
@@ -80,31 +80,31 @@ public class ShippingOrderEventSubscriber {
                     ShippingOrderUpdateDTO.builder()
                             .id(event.getId())
                             .build(),
-                    true);
+                    isEvent);
         } else if (ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_FULL_CANCEL.getKey().equals(eventType)) {
             shippingOrderService.fullCancelShippingOrder(event.getId(),
                     ShippingOrderUpdateDTO.builder()
                             .id(event.getId())
                             .build(),
-                    true);
+                    isEvent);
         } else if (ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_REJECTED.getKey().equals(eventType)) {
             shippingOrderService.rejectShippingOrder(event.getId(),
                     ShippingOrderUpdateDTO.builder()
                             .id(event.getId())
                             .build(),
-                    true);
+                    isEvent);
         } else if (ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_SHIPPED.getKey().equals(eventType)) {
             shippingOrderService.shippedShippingOrder(event.getId(),
                     ShippingOrderUpdateDTO.builder()
                             .id(event.getId())
                             .build(),
-                    true);
+                    isEvent);
         } else if (ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_DELIVERED.getKey().equals(eventType)) {
             shippingOrderService.deliveredShippingOrder(event.getId(),
                     ShippingOrderUpdateDTO.builder()
                             .id(event.getId())
                             .build(),
-                    true);
+                    isEvent);
         } else if (ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_DELETED.getKey().equals(eventType)) {
             shippingOrderService.deleteShippingOrderByOrderId(event.getOrderId());
         } else {

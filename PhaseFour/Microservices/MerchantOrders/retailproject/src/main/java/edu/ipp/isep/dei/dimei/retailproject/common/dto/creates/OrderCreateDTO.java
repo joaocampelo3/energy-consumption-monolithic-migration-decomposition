@@ -39,4 +39,11 @@ public class OrderCreateDTO {
                 .userId(userDTO.getUserId())
                 .build();
     }
+
+    public OrderCreateDTO(Order order) {
+        this.id = order.getId();
+        this.orderDate = order.getOrderDate();
+        this.orderStatus = order.getStatus();
+        this.customerId = order.getUserId();
+    }
 }

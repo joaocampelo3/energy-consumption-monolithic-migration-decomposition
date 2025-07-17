@@ -50,14 +50,18 @@ public class MerchantOrderEvent {
 
     public static MerchantOrderEvent fromJson(String json) {
         Gson gson = new Gson();
-        return new GsonBuilder().serializeNulls().create().fromJson(json, MerchantOrderEvent.class);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create().
+                fromJson(json, MerchantOrderEvent.class);
     }
 
     public String toJson() {
-        return new GsonBuilder().serializeNulls().create().toJson(this);
-    }
-
-    public MerchantOrder toMerchantOrder(Merchant merchant) {
-        return new MerchantOrder(this.id, this.orderId, this.orderDate, merchant);
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .serializeNulls()
+                .create()
+                .toJson(this);
     }
 }

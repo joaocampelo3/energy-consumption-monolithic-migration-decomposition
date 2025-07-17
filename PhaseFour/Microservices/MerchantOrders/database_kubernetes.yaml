@@ -6,7 +6,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim-monolith
+  name: mysql-pv-claim-merchantorder
   namespace: retailproject-namespace
 spec:
   accessModes:
@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: retaildatabase-monolith-service
+  name: retaildatabase-merchantorder-service
   namespace: retailproject-namespace
 spec:
   selector:
@@ -33,7 +33,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retaildatabase-monolith-deployment
+  name: retaildatabase-merchantorder-deployment
   namespace: retailproject-namespace
 spec:
   replicas: 1
@@ -59,7 +59,7 @@ spec:
             - --character-set-server=utf8mb3
             - --collation-server=utf8mb3_general_ci
           volumeMounts:
-            - name: mysql-persistent-storage-monolith
+            - name: mysql-persistent-storage-merchantorder
               mountPath: /var/lib/mysql
           resources:
             requests:
@@ -69,20 +69,20 @@ spec:
               cpu: 1000m
               memory: 752Mi
       volumes:
-        - name: mysql-persistent-storage-monolith
+        - name: mysql-persistent-storage-merchantorder
           persistentVolumeClaim:
-            claimName: mysql-pv-claim-monolith
+            claimName: mysql-pv-claim-merchantorder
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-monolith-db-hpa
+  name: retailproject-merchantorder-db-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retaildatabase-monolith-deployment
+    name: retaildatabase-merchantorder-deployment
   minReplicas: 1
   maxReplicas: 1
   metrics:
