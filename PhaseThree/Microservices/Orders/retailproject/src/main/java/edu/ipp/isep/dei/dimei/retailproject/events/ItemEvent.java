@@ -3,6 +3,7 @@ package edu.ipp.isep.dei.dimei.retailproject.events;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
@@ -35,6 +36,13 @@ public class ItemEvent {
         this.eventTypeEnum = eventTypeEnum;
         this.categoryId = itemDTO.getCategory().getId();
         this.merchantId = itemDTO.getMerchant().getId();
+    }
+    public ItemEvent(ItemUpdateDTO itemDTO, EventTypeEnum eventTypeEnum) {
+        this.id = itemDTO.getId();
+        this.sku = itemDTO.getSku();
+        this.price = itemDTO.getPrice();
+        this.quantity = itemDTO.getQuantityInStock();
+        this.eventTypeEnum = eventTypeEnum;
     }
 
     public static ItemEvent fromJson(String json) {

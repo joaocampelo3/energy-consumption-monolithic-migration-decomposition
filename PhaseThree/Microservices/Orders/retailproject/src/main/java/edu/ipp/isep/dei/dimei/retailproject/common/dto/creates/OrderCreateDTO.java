@@ -33,6 +33,19 @@ public class OrderCreateDTO {
     private AddressDTO address;
     private UserDTO userDTO;
 
+    public OrderCreateDTO(Order order, String email, AddressDTO address, UserDTO userDTO) {
+        this.id = order.getId();
+        this.orderDate = order.getOrderDate();
+        this.orderStatus = order.getStatus();
+        this.customerId = order.getUserId();
+        this.email = email;
+        this.orderItems = order.getItemQuantities().stream().map(ItemQuantityDTO::new).toList();
+        this.totalPrice = order.getItemQuantities().stream().mapToDouble(ItemQuantity::getTotalPrice).sum();
+        this.payment = order.getPayment() == null ? null : new PaymentDTO(order.getPayment());
+        this.address = address;
+        this.userDTO = userDTO;
+    }
+
     public Order dtoToEntity(Payment payment, List<ItemQuantity> itemQuantities) {
         return Order.builder()
                 .id(this.id)

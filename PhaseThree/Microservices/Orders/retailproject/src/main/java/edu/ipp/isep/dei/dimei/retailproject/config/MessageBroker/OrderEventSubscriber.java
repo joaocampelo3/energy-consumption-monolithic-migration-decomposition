@@ -99,7 +99,8 @@ public class OrderEventSubscriber {
                             .merchantId(event.getMerchantId())
                             .address(event.getAddressDTO())
                             .userDTO(event.getUserDTO())
-                            .build()
+                            .build(),
+                    isEvent
             );
         } else if (OrderRoutingKeyEnum.ORDER_FULL_CANCEL.getKey().equals(eventType)) {
             orderService.fullCancelOrder(event.getId(),

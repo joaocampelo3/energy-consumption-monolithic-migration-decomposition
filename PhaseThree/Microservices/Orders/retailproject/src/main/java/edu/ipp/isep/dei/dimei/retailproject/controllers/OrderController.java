@@ -63,7 +63,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> createOrder(@RequestBody OrderCreateDTO orderDTO) {
         try {
-            return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
+            return new ResponseEntity<>(orderService.createOrder(orderDTO, false), HttpStatus.CREATED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (InvalidQuantityException | BadPayloadException e) {
