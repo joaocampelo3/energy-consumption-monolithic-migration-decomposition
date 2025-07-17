@@ -1,0 +1,46 @@
+package edu.ipp.isep.dei.dimei.retailproject.config;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
+import java.util.Arrays;
+
+@Configuration
+@EnableCaching
+public class CaffeineConfig {
+    @Value("${cache.caffeine.time-to-live}")
+    private int timeToLive;
+    @Value("${cache.caffeine.initialCapacity}")
+    private int initialCapacity;
+    @Value("${cache.caffeine.maximumSize}")
+    private int maximumSize;
+
+    private static final String CATEGORIES_CACHE = "categories";
+
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+        cacheManager.setCaffeine(caffeineCacheBuilder());
+
+        // Add multiple caches
+        String[] cacheNames = {
+                CATEGORIES_CACHE
+        };
+        cacheManager.setCacheNames(Arrays.asList(cacheNames));
+
+        return cacheManager;
+    }
+
+    Caffeine<Object, Object> caffeineCacheBuilder() {
+        return Caffeine.newBuilder()
+                .initialCapacity(initialCapacity)
+                .maximumSize(maximumSize)
+                .expireAfterWrite(Duration.ofMinutes(timeToLive));
+    }
+}
