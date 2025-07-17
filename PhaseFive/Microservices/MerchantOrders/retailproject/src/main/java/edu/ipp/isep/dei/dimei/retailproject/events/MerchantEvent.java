@@ -1,0 +1,42 @@
+package edu.ipp.isep.dei.dimei.retailproject.events;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
+import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@AllArgsConstructor
+@Data
+public class MerchantEvent {
+    private int id;
+    private String name;
+    private String email;
+    private int addressId;
+    private EventTypeEnum eventTypeEnum;
+
+    public MerchantEvent(MerchantDTO merchantDTO, EventTypeEnum eventTypeEnum) {
+        this.id = merchantDTO.getId();
+        this.name = merchantDTO.getName();
+        this.email = merchantDTO.getEmail();
+        this.addressId = merchantDTO.getAddressId();
+        this.eventTypeEnum = eventTypeEnum;
+    }
+
+    public static MerchantEvent fromJson(String json) {
+        Gson gson = new Gson();
+        return new GsonBuilder().serializeNulls().create().fromJson(json, MerchantEvent.class);
+    }
+
+    public String toJson() {
+        return new GsonBuilder().serializeNulls().create().toJson(this);
+    }
+
+    public Merchant toMerchant() {
+        return new Merchant(this.id, this.name, this.email, this.addressId);
+    }
+}

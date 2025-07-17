@@ -1,0 +1,25 @@
+package edu.ipp.isep.dei.dimei.retailproject.repositories;
+
+import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, Integer> {
+    Optional<MerchantOrder> findById(int id);
+
+    @Query("SELECT o FROM MerchantOrder o WHERE o.merchant.email = ?1")
+    List<MerchantOrder> findByMerchantEmail(String email);
+
+    Optional<MerchantOrder> findByOrderId(int orderId);
+
+    @NonNull
+    List<MerchantOrder> findAll();
+
+    void deleteByOrderId(int orderId);
+}
