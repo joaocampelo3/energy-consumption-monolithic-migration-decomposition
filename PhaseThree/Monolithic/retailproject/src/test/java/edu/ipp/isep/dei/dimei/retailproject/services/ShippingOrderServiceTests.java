@@ -7,7 +7,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpda
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.BadPayloadException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
@@ -41,8 +40,6 @@ class ShippingOrderServiceTests {
     MerchantOrderService merchantOrderService;
     @Mock
     OrderService orderService;
-    @Mock
-    ItemService itemService;
 
     double price;
     ShippingOrderDTO shippingOrderDTO1;
@@ -61,11 +58,11 @@ class ShippingOrderServiceTests {
     UserDTO merchantUserDTO;
     MerchantOrder merchantOrder1;
     MerchantOrder merchantOrder2;
-    Item item;
     ItemQuantity itemQuantity1;
     ItemQuantity itemQuantity2;
     List<ItemQuantity> itemQuantityList = new ArrayList<>();
     List<ShippingOrder> shippingOrders = new ArrayList<>();
+    int itemId;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -106,27 +103,19 @@ class ShippingOrderServiceTests {
                 .addressId(merchantAddressDTO.getId())
                 .build();
 
-        item = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(price)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
+        itemId = 1;
 
         itemQuantity1 = ItemQuantity.builder()
                 .id(1)
                 .quantityOrdered(new OrderQuantity(1))
-                .item(item)
+                .itemId(itemId)
                 .price(price)
                 .build();
 
         itemQuantity2 = ItemQuantity.builder()
                 .id(2)
                 .quantityOrdered(new OrderQuantity(1))
-                .item(item)
+                .itemId(itemId)
                 .price(price)
                 .build();
 
@@ -346,17 +335,6 @@ class ShippingOrderServiceTests {
     void test_FullCancelShippingOrder() throws InvalidQuantityException, WrongFlowException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
-        ItemUpdateDTO itemUpdateDTO;
-        Item itemAux = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(1)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
 
@@ -365,12 +343,9 @@ class ShippingOrderServiceTests {
         when(merchantOrderService.getUserMerchantOrder(userDTO, shippingOrder1.getOrder().getId())).thenReturn(new MerchantOrderDTO(merchantOrder1, userDTO.getEmail()));
         when(shippingOrderRepository.save(shippingOrder1)).thenReturn(shippingOrder1Updated);
         order1.setStatus(OrderStatusEnum.CANCELLED);
-        when(orderService.fullCancelOrderByOrderId(userDTO, shippingOrder1.getOrder().getId())).thenReturn(new OrderUpdateDTO(order1, userDTO.getEmail()));
+        when(orderService.fullCancelOrderByOrderId(userDTO, shippingOrder1.getOrder().getId(), false)).thenReturn(new OrderUpdateDTO(order1, userDTO.getEmail()));
         merchantOrder1.setStatus(MerchantOrderStatusEnum.CANCELLED);
         when(merchantOrderService.fullCancelMerchantOrderByShippingOrder(userDTO, shippingOrder1)).thenReturn(new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail()));
-        itemUpdateDTO = new ItemUpdateDTO(shippingOrder1.getOrder().getItemQuantities().get(0).getItemId());
-        itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + shippingOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
-        when(itemService.addItemStock(itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
 
         // Call the service method that uses the Repository
         ShippingOrderUpdateDTO result = shippingOrderService.fullCancelShippingOrder(id, shippingOrderUpdateDTO);
@@ -382,9 +357,8 @@ class ShippingOrderServiceTests {
         verify(orderService, atLeastOnce()).getUserOrder(userDTO, shippingOrder1.getOrder().getId());
         verify(merchantOrderService, atLeastOnce()).getUserMerchantOrder(userDTO, shippingOrder1.getOrder().getId());
         verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
-        verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(userDTO, shippingOrder1.getOrder().getId());
+        verify(orderService, atLeastOnce()).fullCancelOrderByOrderId(userDTO, shippingOrder1.getOrder().getId(), false);
         verify(merchantOrderService, atLeastOnce()).fullCancelMerchantOrderByShippingOrder(userDTO, shippingOrder1);
-        verify(itemService, atLeastOnce()).addItemStock(itemUpdateDTO.getId(), itemUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -408,7 +382,6 @@ class ShippingOrderServiceTests {
     void test_FullCancelShippingOrderByOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
 
@@ -438,7 +411,6 @@ class ShippingOrderServiceTests {
         // Define the behavior of the mock
         int id = 1;
         userDTO.setRole(RoleEnum.ADMIN);
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
 
@@ -467,7 +439,6 @@ class ShippingOrderServiceTests {
     void test_FullCancelShippingOrderByOrderByAdminFail() {
         // Define the behavior of the mock
         userDTO.setRole(RoleEnum.ADMIN);
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
 
@@ -484,7 +455,6 @@ class ShippingOrderServiceTests {
     void test_FullCancelShippingOrderByMerchantOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.CANCELLED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.CANCELLED);
 
@@ -513,17 +483,6 @@ class ShippingOrderServiceTests {
     void test_RejectShippingOrder() throws NotFoundException, WrongFlowException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() - merchantOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
-        ItemUpdateDTO itemUpdateDTO;
-        Item itemAux = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Desc")
-                .price(1)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrderUpdateDTO.setUserDTO(userDTO);
@@ -536,9 +495,7 @@ class ShippingOrderServiceTests {
         when(orderService.rejectOrderByOrderId(userDTO, shippingOrder1.getOrder().getId())).thenReturn(new OrderUpdateDTO(order1, userDTO.getEmail()));
         merchantOrder1.setStatus(MerchantOrderStatusEnum.REJECTED);
         when(merchantOrderService.rejectMerchantOrderByShippingOrder(userDTO, shippingOrder1)).thenReturn(new MerchantOrderUpdateDTO(merchantOrder1, userDTO.getEmail()));
-        itemUpdateDTO = new ItemUpdateDTO(shippingOrder1.getOrder().getItemQuantities().get(0).getItemId());
-        itemUpdateDTO.setQuantityInStock(itemUpdateDTO.getQuantityInStock() + shippingOrder1.getOrder().getItemQuantities().get(0).getQuantityOrdered().getQuantity());
-        when(itemService.addItemStock(itemUpdateDTO.getId(), itemUpdateDTO)).thenReturn(new ItemDTO(itemAux));
+
 
         // Call the service method that uses the Repository
         ShippingOrderUpdateDTO result = shippingOrderService.rejectShippingOrder(id, shippingOrderUpdateDTO);
@@ -552,7 +509,6 @@ class ShippingOrderServiceTests {
         verify(shippingOrderRepository, atLeastOnce()).save(shippingOrder1Updated);
         verify(orderService, atLeastOnce()).rejectOrderByOrderId(userDTO, shippingOrder1.getOrder().getId());
         verify(merchantOrderService, atLeastOnce()).rejectMerchantOrderByShippingOrder(userDTO, shippingOrder1);
-        verify(itemService, atLeastOnce()).addItemStock(itemUpdateDTO.getId(), itemUpdateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
     }
@@ -561,7 +517,6 @@ class ShippingOrderServiceTests {
     void test_RejectShippingOrderByOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.REJECTED);
 
@@ -589,7 +544,6 @@ class ShippingOrderServiceTests {
     @Test
     void test_RejectShippingOrderByOrderWhereShippingOrderAlreadyReject() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1.setStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.REJECTED);
@@ -626,7 +580,6 @@ class ShippingOrderServiceTests {
     void test_RejectOrderByMerchantOrder() throws WrongFlowException, NotFoundException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.REJECTED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.REJECTED);
 
@@ -655,7 +608,6 @@ class ShippingOrderServiceTests {
     void test_ApproveShippingOrderPending() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
         shippingOrder1.setStatus(ShippingOrderStatusEnum.PENDING);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.APPROVED);
@@ -683,7 +635,6 @@ class ShippingOrderServiceTests {
     void test_ApproveShippingOrder() throws NotFoundException, WrongFlowException, BadPayloadException {
         // Define the behavior of the mock
         int id = 1;
-        item.getQuantityInStock().setQuantity(item.getQuantityInStock().getQuantity() + 1);
         shippingOrderUpdateDTO.setShippingOrderStatus(ShippingOrderStatusEnum.APPROVED);
         shippingOrder1Updated.setStatus(ShippingOrderStatusEnum.APPROVED);
         shippingOrderUpdateDTO.setUserDTO(userDTO);

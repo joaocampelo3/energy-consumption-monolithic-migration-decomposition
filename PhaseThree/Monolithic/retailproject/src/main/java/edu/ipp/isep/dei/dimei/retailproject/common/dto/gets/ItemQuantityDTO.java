@@ -23,22 +23,9 @@ public class ItemQuantityDTO {
 
     public ItemQuantityDTO(ItemQuantity itemQuantity) {
         this.id = itemQuantity.getId();
-        this.itemId = itemQuantity.getItemId().getId();
-        this.itemName = itemQuantity.getItemId().getName();
-        this.itemSku = itemQuantity.getItemId().getSku();
-        this.itemDescription = itemQuantity.getItemId().getDescription();
+        this.itemId = itemQuantity.getItemId();
         this.qty = itemQuantity.getQuantityOrdered().getQuantity();
-        this.price = itemQuantity.getItemId().getPrice() * itemQuantity.getQuantityOrdered().getQuantity();
-    }
-
-    public Item dtoToItem() {
-        return Item.builder()
-                .id(this.itemId)
-                .name(this.itemName)
-                .sku(this.itemSku)
-                .description(this.itemDescription)
-                .price(this.price)
-                .build();
+        this.price = itemQuantity.getPrice();
     }
 
     public ItemQuantity dtoToEntity() throws InvalidQuantityException {
@@ -46,7 +33,7 @@ public class ItemQuantityDTO {
         return ItemQuantity.builder()
                 .id(this.id)
                 .quantityOrdered(quantity)
-                .item(dtoToItem())
+                .itemId(this.itemId)
                 .price(this.price)
                 .build();
     }

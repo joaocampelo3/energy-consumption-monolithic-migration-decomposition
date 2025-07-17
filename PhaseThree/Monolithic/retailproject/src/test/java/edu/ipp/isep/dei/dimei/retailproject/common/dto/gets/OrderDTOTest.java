@@ -2,6 +2,8 @@ package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
@@ -48,9 +50,6 @@ class OrderDTOTest {
         ItemQuantityDTO itemQuantityDTO1 = ItemQuantityDTO.builder()
                 .id(1)
                 .itemId(1)
-                .itemName("Item 1")
-                .itemSku("ABC-12345-S-BL")
-                .itemDescription("Item 1 description")
                 .qty(3)
                 .price(36.0)
                 .build();
@@ -60,9 +59,6 @@ class OrderDTOTest {
         ItemQuantityDTO itemQuantityDTO2 = ItemQuantityDTO.builder()
                 .id(2)
                 .itemId(2)
-                .itemName("Item 2")
-                .itemSku("ABC-12345-XS-BL")
-                .itemDescription("Item 2 description")
                 .qty(5)
                 .price(25.0)
                 .build();
@@ -84,24 +80,8 @@ class OrderDTOTest {
 
         List<ItemQuantity> orderItems = new ArrayList<>();
 
-        Item item1 = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 description")
-                .price(price1)
-                .build();
-
-        Item item2 = Item.builder()
-                .id(2)
-                .name("Item 2")
-                .sku("ABC-12345-XS-BL")
-                .description("Item 2 description")
-                .price(price2)
-                .build();
-
-        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1, price1);
-        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2, price2);
+        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), 1, price1*3);
+        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), 2, price2*5);
 
         orderItems.add(itemQuantity1);
         orderItems.add(itemQuantity2);

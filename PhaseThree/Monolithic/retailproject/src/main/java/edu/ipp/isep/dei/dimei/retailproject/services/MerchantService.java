@@ -60,7 +60,7 @@ public class MerchantService {
         MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
 
         try {
-            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.CREATE), MerchantRoutingKeyEnum.MERCHANT_CREATED.getKey());
+            merchantPublisher.publishEvent(new MerchantEvent(merchantDTO1, EventTypeEnum.CREATE));
         } catch (Exception e) {
             return merchantDTO1;
         }
@@ -82,7 +82,7 @@ public class MerchantService {
         MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
 
         try {
-            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.UPDATE), MerchantRoutingKeyEnum.MERCHANT_UPDATED.getKey());
+            merchantPublisher.publishEvent(new MerchantEvent(merchantDTO1, EventTypeEnum.UPDATE));
         } catch (Exception e) {
             return merchantDTO1;
         }
@@ -97,7 +97,7 @@ public class MerchantService {
         MerchantDTO merchantDTO1 = new MerchantDTO(merchant);
 
         try {
-            merchantPublisher.mainPublish(new MerchantEvent(merchantDTO1, EventTypeEnum.DELETE), MerchantRoutingKeyEnum.MERCHANT_DELETED.getKey());
+            merchantPublisher.publishEvent(new MerchantEvent(merchantDTO1, EventTypeEnum.DELETE));
         } catch (Exception e) {
             return merchantDTO1;
         }

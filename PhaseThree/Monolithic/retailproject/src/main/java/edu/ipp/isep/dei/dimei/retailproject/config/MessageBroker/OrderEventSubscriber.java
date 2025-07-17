@@ -95,7 +95,8 @@ public class OrderEventSubscriber {
                             .merchantId(event.getMerchantId())
                             .address(event.getAddressDTO())
                             .userDTO(event.getUserDTO())
-                            .build()
+                            .build(),
+                    true
             );
         } else if (OrderRoutingKeyEnum.ORDER_FULL_CANCEL.getKey().equals(eventType)) {
             orderService.fullCancelOrder(event.getId(),
@@ -105,7 +106,8 @@ public class OrderEventSubscriber {
                             .orderStatus(event.getOrderStatus())
                             .email(event.getEmail())
                             .userDTO(event.getUserDTO())
-                            .build()
+                            .build(),
+                    true
             );
         } else if (OrderRoutingKeyEnum.ORDER_REJECTED.getKey().equals(eventType)) {
             orderService.rejectOrder(event.getId(),
@@ -115,7 +117,8 @@ public class OrderEventSubscriber {
                             .orderStatus(event.getOrderStatus())
                             .email(event.getEmail())
                             .userDTO(event.getUserDTO())
-                            .build()
+                            .build(),
+                    true
             );
         } else if (OrderRoutingKeyEnum.ORDER_APPROVED.getKey().equals(eventType)) {
             orderService.approveOrder(event.getId(),

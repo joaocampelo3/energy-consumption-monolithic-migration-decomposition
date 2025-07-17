@@ -61,24 +61,11 @@ class MerchantOrderUpdateDTOTest {
 
         List<ItemQuantity> orderItems = new ArrayList<>();
 
-        Item item1 = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 description")
-                .price(price1)
-                .build();
+        int itemId1 = 1;
+        int itemId2 = 2;
 
-        Item item2 = Item.builder()
-                .id(2)
-                .name("Item 2")
-                .sku("ABC-12345-XS-BL")
-                .description("Item 2 description")
-                .price(price2)
-                .build();
-
-        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), item1, price1);
-        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), item2, price2);
+        ItemQuantity itemQuantity1 = new ItemQuantity(1, new OrderQuantity(3), itemId1, price1);
+        ItemQuantity itemQuantity2 = new ItemQuantity(2, new OrderQuantity(5), itemId2, price2);
 
         orderItems.add(itemQuantity1);
         orderItems.add(itemQuantity2);

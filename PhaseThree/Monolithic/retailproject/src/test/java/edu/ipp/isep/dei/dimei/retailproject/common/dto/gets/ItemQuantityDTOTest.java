@@ -23,7 +23,6 @@ class ItemQuantityDTOTest {
     double price;
     ItemQuantityDTO itemQuantityDTOExpected;
     ItemQuantity itemQuantityExpected;
-    Item item;
 
     @BeforeEach
     void beforeEach() throws InvalidQuantityException {
@@ -35,17 +34,10 @@ class ItemQuantityDTOTest {
         qty = 3;
         price = 12.0;
         itemQuantityDTOExpected = new ItemQuantityDTO(id, itemId, itemName, itemSku, itemDescription, qty, price);
-        item = Item.builder()
-                .id(itemId)
-                .name(itemName)
-                .sku(itemSku)
-                .description(itemDescription)
-                .price(price)
-                .build();
 
         itemQuantityExpected = ItemQuantity.builder()
                 .id(id)
-                .item(item)
+                .itemId(1)
                 .quantityOrdered(new OrderQuantity(qty))
                 .price(price)
                 .build();
@@ -110,7 +102,7 @@ class ItemQuantityDTOTest {
         assertNotNull(itemQuantity);
         assertEquals(id, itemQuantity.getId());
         assertEquals(qty, itemQuantity.getQuantityOrdered().getQuantity());
-        assertEquals(item, itemQuantity.getItemId());
+        assertEquals(1, itemQuantity.getItemId());
 
     }
 
@@ -126,14 +118,14 @@ class ItemQuantityDTOTest {
                 .price(price)
                 .build();
 
-        Item item1 = itemQuantityDTO.dtoToItem();
-
-        assertNotNull(item1);
-        assertEquals(item.getId(), item1.getId());
-        assertEquals(item.getName(), item1.getName());
-        assertEquals(item.getSku(), item1.getSku());
-        assertEquals(item.getDescription(), item1.getDescription());
-        assertEquals(item.getPrice(), item1.getPrice());
+        assertNotNull(itemQuantityDTO);
+        assertEquals(id, itemQuantityDTO.getId());
+        assertEquals(itemId, itemQuantityDTO.getItemId());
+        assertEquals(itemName, itemQuantityDTO.getItemName());
+        assertEquals(itemSku, itemQuantityDTO.getItemSku());
+        assertEquals(itemDescription, itemQuantityDTO.getItemDescription());
+        assertEquals(qty, itemQuantityDTO.getQty());
+        assertEquals(price, itemQuantityDTO.getPrice());
 
     }
 

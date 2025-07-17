@@ -4,7 +4,6 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.*;
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,24 +57,15 @@ class ShippingOrderTest {
                 .addressId(addressDTO.getId())
                 .build();
 
-        Item item = Item.builder()
-                .id(1)
-                .name("Item 1")
-                .sku("ABC-12345-S-BL")
-                .description("Item 1 Description")
-                .price(price)
-                .quantityInStock(new StockQuantity(10))
-                .merchant(merchant)
-                .build();
         List<ItemQuantity> itemQuantityList = new ArrayList<>();
         ItemQuantity itemQuantity1 = ItemQuantity.builder()
                 .id(1)
                 .quantityOrdered(new OrderQuantity(1))
-                .item(item)
+                .itemId(1)
                 .price(price)
                 .build();
         itemQuantityList.add(itemQuantity1);
-        double totalPrice = itemQuantityList.stream().mapToDouble(value -> value.getItemId().getPrice() * value.getQuantityOrdered().getQuantity()).sum();
+        double totalPrice = itemQuantityList.stream().mapToDouble(value -> value.getPrice() * value.getQuantityOrdered().getQuantity()).sum();
 
         Payment payment = Payment.builder()
                 .id(1)

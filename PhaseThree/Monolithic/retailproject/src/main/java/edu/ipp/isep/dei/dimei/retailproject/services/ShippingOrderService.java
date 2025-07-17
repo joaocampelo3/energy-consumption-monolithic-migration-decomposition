@@ -76,7 +76,7 @@ public class ShippingOrderService {
 
         ShippingOrder shippingOrder = changeShippingOrderStatus(shippingOrderUpdateDTO.getUserDTO(), shippingOrderUpdateDTO.getId(), ShippingOrderStatusEnum.CANCELLED);
 
-        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(shippingOrderUpdateDTO.getUserDTO(), shippingOrder.getOrder().getId());
+        OrderUpdateDTO orderUpdateDTO = this.orderService.fullCancelOrderByOrderId(shippingOrderUpdateDTO.getUserDTO(), shippingOrder.getOrder().getId(), false);
         shippingOrder.getOrder().setStatus(orderUpdateDTO.getOrderStatus());
         this.merchantOrderService.fullCancelMerchantOrderByShippingOrder(shippingOrderUpdateDTO.getUserDTO(), shippingOrder);
 

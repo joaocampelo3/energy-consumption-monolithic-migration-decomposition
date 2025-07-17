@@ -1,5 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentMethodEnum;
+import edu.ipp.isep.dei.dimei.retailproject.domain.enums.PaymentStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
