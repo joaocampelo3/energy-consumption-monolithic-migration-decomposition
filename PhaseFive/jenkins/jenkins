@@ -10,9 +10,6 @@ pipeline {
         WORK_DIR="/home/jenkins"
         REMOTE_DIR="$WORK_DIR/DIMEI_PROJECT"
         GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
-        // MONOLITH
-        BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic/retailproject"
-        MONOLITH_DIR="$REMOTE_DIR/$PHASE_NUMBER/Monolithic"
         // API GATEWAY
         API_GATEWAY_BUILD_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
         API_GATEWAY_DIR="$REMOTE_DIR/$PHASE_NUMBER/APIGatewayApplication"
@@ -148,11 +145,6 @@ pipeline {
                         sh 'cd $RABBITMQ_DIR && kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
                     }
                 }
-                stage('Cleanup Monolith') {
-                    steps {
-                        sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
-                    }
-                }
                 stage('Cleanup API Gateway') {
                     steps {
                         sh 'cd $API_GATEWAY_DIR && kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
@@ -212,21 +204,8 @@ pipeline {
             
         }
         
-        stage('Build Monolith') {
+        stage('Build API Gateway and Load Balancer') {
             parallel {
-                stage('Build Monolith') {
-                    steps {
-                        // Build the GitHub repository
-                        sh 'cd $BUILD_DIR && mvn clean install -U'
-                    }
-                    post {
-                        success {
-                            dir("${BUILD_DIR}") {
-                                jacoco()
-                            }
-                        }
-                    }
-                }
                 stage('Build API Gateway') {
                     steps {
                         // Build the GitHub repository
@@ -261,6 +240,58 @@ pipeline {
                     post {
                         success {
                             dir("${USER_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Items Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ITEMS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ITEMS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Shipping Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $SHIPPING_ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${SHIPPING_ORDERS_MICROSERVICE_BUILD_DIR}") {
+                                jacoco()
+                            }
+                        }
+                    }
+                }
+                stage('Build Merchant Orders Microservice') {
+                    steps {
+                        // Build the GitHub repository
+                        sh 'cd $MERCHANT_ORDERS_MICROSERVICE_BUILD_DIR && mvn clean install -U'
+                    }
+                    post {
+                        success {
+                            dir("${MERCHANT_ORDERS_MICROSERVICE_BUILD_DIR}") {
                                 jacoco()
                             }
                         }
@@ -341,11 +372,6 @@ pipeline {
         
         stage('Startup Services') {
             parallel {
-                 stage('Startup Monolith') {
-                    steps {
-                        sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
-                    }
-                 }
                  stage('Startup User Microservice') {
                     steps {
                         sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
@@ -369,6 +395,26 @@ pipeline {
                  stage('Startup Merchant Orders Microservice') {
                     steps {
                         sh 'chmod 777 $MERCHANT_ORDERS_MICROSERVICE_DIR -R && cd $MERCHANT_ORDERS_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Items Read Microservice') {
+                    steps {
+                        sh 'chmod 777 $ITEMS_READ_MICROSERVICE_DIR -R && cd $ITEMS_READ_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Orders Read Microservice') {
+                    steps {
+                        sh 'chmod 777 $ORDERS_READ_MICROSERVICE_DIR -R && cd $ORDERS_READ_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Shipping Orders Read Microservice') {
+                    steps {
+                        sh 'chmod 777 $SHIPPING_ORDERS_READ_MICROSERVICE_DIR -R && cd $SHIPPING_ORDERS_READ_MICROSERVICE_DIR && ./build.sh'
+                    }
+                 }
+                 stage('Startup Merchant Orders Read Microservice') {
+                    steps {
+                        sh 'chmod 777 $MERCHANT_ORDERS_READ_MICROSERVICE_DIR -R && cd $MERCHANT_ORDERS_READ_MICROSERVICE_DIR && ./build.sh'
                     }
                  }
             }
