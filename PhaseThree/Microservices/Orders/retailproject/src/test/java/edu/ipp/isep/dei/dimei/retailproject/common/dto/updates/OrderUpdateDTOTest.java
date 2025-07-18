@@ -23,8 +23,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class OrderUpdateDTOTest {
 
     final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
