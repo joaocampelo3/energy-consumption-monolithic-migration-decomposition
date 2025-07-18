@@ -7,7 +7,7 @@ import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.OrderPublisher;
+import edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker.Publisher;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.ItemQuantity;
@@ -39,7 +39,7 @@ public class OrderService {
     private final ItemService itemService;
     private final PaymentService paymentService;
     private final ItemQuantityService itemQuantityService;
-    private final OrderPublisher orderPublisher;
+    private final Publisher publisher;
 
     public List<OrderDTO> getAllOrders() {
         List<OrderDTO> orders = new ArrayList<>();
@@ -78,7 +78,7 @@ public class OrderService {
         OrderDTO orderDTO1 = new OrderDTO(order);
 
         if (!isEvent) {
-            orderPublisher.publishEvent(new OrderEvent(orderDTO1, EventTypeEnum.CREATE));
+            publisher.publishEvent(new OrderEvent(orderDTO1, EventTypeEnum.CREATE));
         }
 
         return orderDTO1;
@@ -107,7 +107,7 @@ public class OrderService {
 
         this.orderRepository.delete(order);
         OrderDTO orderDTO = new OrderDTO(order);
-        orderPublisher.publishEvent(new OrderEvent(orderDTO, EventTypeEnum.DELETE));
+        publisher.publishEvent(new OrderEvent(orderDTO, EventTypeEnum.DELETE));
 
         return orderDTO;
     }
@@ -176,7 +176,7 @@ public class OrderService {
             if (!isEvent) {
                 OrderDTO orderDTO = new OrderDTO(order);
                 OrderEvent orderEvent = new OrderEvent(orderDTO, EventTypeEnum.UPDATE);
-                this.orderPublisher.publishEvent(orderEvent);
+                this.publisher.publishEvent(orderEvent);
             }
             return order;
         } else {

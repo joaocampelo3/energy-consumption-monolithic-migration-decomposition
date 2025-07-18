@@ -20,8 +20,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class OrderTest {
     final OrderStatusEnum status = OrderStatusEnum.PENDING;
     int id;
@@ -44,14 +42,6 @@ class OrderTest {
                 .userId(1)
                 .email("johndoe1234@gmail.com")
                 .role(RoleEnum.USER)
-                .build();
-
-        AddressDTO addressDTO = AddressDTO.builder()
-                .id(1)
-                .street("5th Avenue")
-                .zipCode("10128")
-                .city("New York")
-                .country("USA")
                 .build();
 
         Item item = Item.builder()
