@@ -8,8 +8,6 @@ import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGloba
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class AuthenticationResponseTest {
     static String jwtTokenDummy = BEARER_PREFIX + "AAA1bbb2CcC3";
 

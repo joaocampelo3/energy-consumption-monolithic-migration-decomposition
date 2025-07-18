@@ -22,8 +22,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class OrderDTOTest {
 
     final OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
