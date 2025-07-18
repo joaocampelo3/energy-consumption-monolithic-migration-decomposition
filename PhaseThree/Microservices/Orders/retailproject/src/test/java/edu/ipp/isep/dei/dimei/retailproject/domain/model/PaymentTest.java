@@ -12,8 +12,6 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class PaymentTest {
     final PaymentStatusEnum status = PaymentStatusEnum.PENDING;
     int id;
