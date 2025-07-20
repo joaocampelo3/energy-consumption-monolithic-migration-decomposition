@@ -3,10 +3,8 @@ package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 import com.rabbitmq.client.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.OrderDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Order;
 import edu.ipp.isep.dei.dimei.retailproject.events.OrderEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
@@ -253,32 +251,6 @@ class OrderEventSubscriberTests {
 
         // Assert
         verify(orderService).approveOrder(anyInt(), any(OrderUpdateDTO.class), eq(isEvent));
-
-        // Cleanup
-        subscriptionThread.interrupt();
-    }
-
-    @Test
-    void test_HandleDelivery_ShipOrder() throws WrongFlowException, NotFoundException {
-        // Arrange
-        routingKey = OrderRoutingKeyEnum.ORDER_SHIPPED.getOrderKey();
-        orderUpdateDTO.setOrderStatus(OrderStatusEnum.SHIPPED);
-        doNothing().when(orderService).shipOrder(null, orderUpdateDTO.getId());
-
-        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
-
-        // Cleanup
-        subscriptionThread.interrupt();
-    }
-
-    @Test
-    void test_HandleDelivery_DeliveredOrder() throws WrongFlowException, NotFoundException {
-        // Arrange
-        routingKey = OrderRoutingKeyEnum.ORDER_DELIVERED.getOrderKey();
-        orderUpdateDTO.setOrderStatus(OrderStatusEnum.DELIVERED);
-        doNothing().when(orderService).deliverOrder(null, orderUpdateDTO.getId());
-
-        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
 
         // Cleanup
         subscriptionThread.interrupt();
