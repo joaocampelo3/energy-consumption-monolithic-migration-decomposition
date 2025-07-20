@@ -133,10 +133,6 @@ public class OrderEventSubscriber {
                             .build(),
                     isEvent
             );
-        } else if (OrderRoutingKeyEnum.ORDER_SHIPPED.getKey().equals(eventType)) {
-            orderService.shipOrder(null, event.getId(), isEvent);
-        } else if (OrderRoutingKeyEnum.ORDER_DELIVERED.getKey().equals(eventType)) {
-            orderService.deliverOrder(null, event.getId(), isEvent);
         } else if (OrderRoutingKeyEnum.ORDER_DELETED.getKey().equals(eventType)) {
             orderService.deleteOrder(0, event.getId(), isEvent);
         } else {
