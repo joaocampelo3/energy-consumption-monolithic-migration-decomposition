@@ -58,8 +58,6 @@ public class OrderEventSubscriber {
                         eventType.equals(OrderRoutingKeyEnum.ORDER_FULL_CANCEL.getKey()) ||
                         eventType.equals(OrderRoutingKeyEnum.ORDER_REJECTED.getKey()) ||
                         eventType.equals(OrderRoutingKeyEnum.ORDER_APPROVED.getKey()) ||
-                        eventType.equals(OrderRoutingKeyEnum.ORDER_SHIPPED.getKey()) ||
-                        eventType.equals(OrderRoutingKeyEnum.ORDER_DELIVERED.getKey()) ||
                         eventType.equals(OrderRoutingKeyEnum.ORDER_DELETED.getKey())) {
                     OrderEvent event = OrderEvent.fromJson(message);
                     try {
@@ -131,10 +129,6 @@ public class OrderEventSubscriber {
                             .build(),
                     isEvent
             );
-        } else if (OrderRoutingKeyEnum.ORDER_SHIPPED.getKey().equals(eventType)) {
-            orderService.shipOrder(null, event.getId());
-        } else if (OrderRoutingKeyEnum.ORDER_DELIVERED.getKey().equals(eventType)) {
-            orderService.deliverOrder(null, event.getId());
         } else if (OrderRoutingKeyEnum.ORDER_DELETED.getKey().equals(eventType)) {
             orderService.deleteOrder(0, event.getId(), isEvent);
         } else {
