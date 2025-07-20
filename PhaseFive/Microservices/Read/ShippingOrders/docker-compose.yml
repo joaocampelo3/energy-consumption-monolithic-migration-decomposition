@@ -8,6 +8,7 @@ services:
   #
   retailproject_service:
     build: retailproject
+    image: shippingorder-read-retailproject_service
     container_name: ShippingOrderReadMicroserviceApp
     ports:
       - 8080:8080
