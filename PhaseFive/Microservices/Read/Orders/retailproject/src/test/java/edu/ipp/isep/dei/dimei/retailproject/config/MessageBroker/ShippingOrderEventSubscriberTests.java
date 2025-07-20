@@ -108,7 +108,7 @@ class ShippingOrderEventSubscriberTests {
             subscriptionThread.start();
 
             // Give it a small amount of time to start
-            Thread.sleep(100);
+            Thread.sleep(300);
 
             // Interrupt the thread to stop the infinite loop
             subscriptionThread.interrupt();

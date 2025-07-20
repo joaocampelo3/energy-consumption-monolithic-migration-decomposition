@@ -94,7 +94,7 @@ class ShippingOrderEventSubscriberTests {
             subscriptionThread.start();
 
             // Give it a small amount of time to start
-            Thread.sleep(100);
+            Thread.sleep(300);
 
             // Interrupt the thread to stop the infinite loop
             subscriptionThread.interrupt();
@@ -156,7 +156,7 @@ class ShippingOrderEventSubscriberTests {
         subscriptionThread.start();
 
         // Give it time to initialize
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         // Get the Consumer instance
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
