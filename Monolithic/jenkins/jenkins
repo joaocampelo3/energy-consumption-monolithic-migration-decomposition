@@ -14,12 +14,8 @@ pipeline {
         GITHUB_REPO="https://github.com/joaocampelo3/energy-consumption-monolithic-migration-decomposition.git"
         // MONITORING VARIABLES
         MONITORING_DIR="$WORK_DIR/Monitoring"
-        // PROMETHEUS VARIABLES
-        PROMETHEUS_PROJ_PATH="$MONITORING_DIR/kube-prometheus"
-        PROMETHEUS_GITHUB_REPO="https://github.com/prometheus-operator/kube-prometheus"
         // KEPLER VARIABLES
         KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
-        KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
         //GOLANG_HOME
         GOLANG_HOME = '/usr/local/go/bin'
         PATH = "${GOLANG_HOME}:${env.PATH}"
@@ -46,42 +42,22 @@ pipeline {
                         // Clone GitHub repository
                         sh 'rm -rf $REMOTE_DIR'
                         sh 'git clone $GITHUB_REPO $REMOTE_DIR && chmod 777 -R $REMOTE_DIR'
-                    },
-                    prometheus: {
-                        // Clone Prometheus GitHub repository
-                        sh 'git clone --depth 1 $PROMETHEUS_GITHUB_REPO $PROMETHEUS_PROJ_PATH && chmod 777 -R $PROMETHEUS_PROJ_PATH'
-                    },
-                    kepler: {
-                        // Clone Kepler GitHub repository
-                        sh 'git clone --depth 1 $KEPLER_GITHUB_REPO $KEPLER_PROJ_PATH && chmod 777 -R $KEPLER_PROJ_PATH'
                     }
                 )
             }
         }
 
-        stage('Create Kind Cluster'){
-            steps {
-                sh 'cd $MONITORING_CONFIG_DIR && ./kind_config.sh'
-            }
-        }
-
-        stage('Prometheus Setup') {
-            steps {
-                sh 'cp $MONITORING_CONFIG_DIR/prometheus_config.sh $PROMETHEUS_PROJ_PATH'
-                sh 'cd $PROMETHEUS_PROJ_PATH && ./prometheus_config.sh'
-            }
-        }
-
         stage('Kepler Setup') {
             steps {
-                sh 'cp $MONITORING_CONFIG_DIR/kepler_config.sh $KEPLER_PROJ_PATH'
-                sh 'cd $KEPLER_PROJ_PATH && ./kepler_config.sh'
+                sh '''
+                    cd $KEPLER_PROJ_PATH && sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true && sudo make deploy VERSION=latest GRAFANA_ENABLE=true
+                '''
             }
         }
         
         stage('Cleanup') {
             steps {
-                sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                sh 'cd $MONOLITH_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
             }
         }
         
@@ -101,7 +77,7 @@ pipeline {
         
         stage('Startup') {
             steps {
-                sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+                sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && sudo ./build.sh'
             }
         }
     }

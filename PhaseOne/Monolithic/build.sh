@@ -1,5 +1,5 @@
-docker compose build --no-cache
-kind load docker-image monolithic-retailproject_service:latest -n kepler-cluster
-kubectl apply -f ./database_kubernetes.yaml
+sudo docker compose build --no-cache
+sudo kind load docker-image .* -n kind
+sudo kubectl apply -f .*
 sleep 7s
-kubectl apply -f ./retailproject_kubernetes.yaml
+sudo kubectl apply -f ./retailproject_kubernetes.yaml

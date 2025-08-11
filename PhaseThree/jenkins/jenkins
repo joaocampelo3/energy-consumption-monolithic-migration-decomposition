@@ -34,33 +34,14 @@ pipeline {
         // MONITORING VARIABLES
         MONITORING_CONFIG_DIR="$REMOTE_DIR/monitoring"
         MONITORING_DIR="$WORK_DIR/Monitoring"
-        // PROMETHEUS VARIABLES
-        PROMETHEUS_PROJ_PATH="$MONITORING_DIR/kube-prometheus"
-        PROMETHEUS_GITHUB_REPO="https://github.com/prometheus-operator/kube-prometheus"
         // KEPLER VARIABLES
         KEPLER_PROJ_PATH="$MONITORING_DIR/kepler"
-        KEPLER_GITHUB_REPO="https://github.com/sustainable-computing-io/kepler.git"
         //GOLANG_HOME
         GOLANG_HOME = '/usr/local/go/bin'
         PATH = "${GOLANG_HOME}:${env.PATH}"
     }
 
     stages {
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    echo "USER = $USER"
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                    echo "REMOTE_DIR = ${REMOTE_DIR}"
-                    echo "BUILD_DIR = ${BUILD_DIR}"
-                    echo "GITHUB_REPO = ${GITHUB_REPO}"
-                    echo "JAVA_HOME = ${JAVA_HOME}"
-                    echo "GOLANG_HOME = ${GOLANG_HOME}"
-                ''' 
-            }
-        }
-
         stage('Remove Directories') {
             steps {
                 parallel(
@@ -74,15 +55,6 @@ pipeline {
             }
         }
         
-        stage('Go Test') {
-            steps {
-                sh '''
-                cd $WORK_DIR
-                go version
-                '''
-            }
-        }
-        
         stage('Git Clone') {
             steps {
                 parallel(
@@ -90,36 +62,16 @@ pipeline {
                         // Clone GitHub repository
                         sh 'rm -rf $REMOTE_DIR'
                         sh 'git clone $GITHUB_REPO $REMOTE_DIR && chmod 777 -R $REMOTE_DIR'
-                    },
-                    prometheus: {
-                        // Clone Prometheus GitHub repository
-                        sh 'git clone --depth 1 $PROMETHEUS_GITHUB_REPO $PROMETHEUS_PROJ_PATH && chmod 777 -R $PROMETHEUS_PROJ_PATH'
-                    },
-                    kepler: {
-                        // Clone Kepler GitHub repository
-                        sh 'git clone --depth 1 $KEPLER_GITHUB_REPO $KEPLER_PROJ_PATH && chmod 777 -R $KEPLER_PROJ_PATH'
                     }
                 )
             }
         }
 
-        stage('Create Kind Cluster'){
-            steps {
-                sh 'cd $MONITORING_CONFIG_DIR && ./kind_config.sh'
-            }
-        }
-
-        stage('Prometheus Setup') {
-            steps {
-                sh 'cp $MONITORING_CONFIG_DIR/prometheus_config.sh $PROMETHEUS_PROJ_PATH'
-                sh 'cd $PROMETHEUS_PROJ_PATH && ./prometheus_config.sh'
-            }
-        }
-
         stage('Kepler Setup') {
             steps {
-                sh 'cp $MONITORING_CONFIG_DIR/kepler_config.sh $KEPLER_PROJ_PATH'
-                sh 'cd $KEPLER_PROJ_PATH && ./kepler_config.sh'
+                sh '''
+                    cd $KEPLER_PROJ_PATH && sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true && sudo make deploy VERSION=latest GRAFANA_ENABLE=true
+                '''
             }
         }
         
@@ -127,37 +79,37 @@ pipeline {
             parallel {
                 stage('Cleanup RabbitMQ') {
                     steps {
-                        sh 'cd $RABBITMQ_DIR && kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
+                        sh 'cd $RABBITMQ_DIR && sudo kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup Monolith') {
                     steps {
-                        sh 'cd $MONOLITH_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $MONOLITH_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup API Gateway') {
                     steps {
-                        sh 'cd $API_GATEWAY_DIR && kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $API_GATEWAY_DIR && sudo kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup Load Balancer') {
                     steps {
-                        sh 'cd $LOAD_BALANCER_DIR && kubectl delete -f ./retailproject_loadbalancer_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $LOAD_BALANCER_DIR && sudo kubectl delete -f ./retailproject_loadbalancer_kubernetes.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup User Microservice') {
                     steps {
-                        sh 'cd $USER_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $USER_MICROSERVICE_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup Items Microservice') {
                     steps {
-                        sh 'cd $ITEMS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $ITEMS_MICROSERVICE_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
                 stage('Cleanup Orders Microservice') {
                     steps {
-                        sh 'cd $ORDERS_MICROSERVICE_DIR && kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
+                        sh 'cd $ORDERS_MICROSERVICE_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
                     }
                 }
             }
@@ -249,19 +201,19 @@ pipeline {
         
         stage('Startup RabbitMQ') {
             steps {
-                sh 'chmod 777 $RABBITMQ_DIR -R && cd $RABBITMQ_DIR && ./build.sh'
+                sh 'chmod 777 $RABBITMQ_DIR -R && cd $RABBITMQ_DIR && sudo ./build.sh'
             }
         }
         
         stage('Startup API Gateway') {
             steps {
-                sh 'chmod 777 $API_GATEWAY_DIR -R && cd $API_GATEWAY_DIR && ./build.sh'
+                sh 'chmod 777 $API_GATEWAY_DIR -R && cd $API_GATEWAY_DIR && sudo ./build.sh'
             }
         }
         
         stage('Startup Load Balancer') {
             steps {
-                sh 'chmod 777 $LOAD_BALANCER_DIR -R && cd $LOAD_BALANCER_DIR && ./build.sh'
+                sh 'chmod 777 $LOAD_BALANCER_DIR -R && cd $LOAD_BALANCER_DIR && sudo ./build.sh'
             }
         }
         
@@ -269,22 +221,22 @@ pipeline {
             parallel {
                  stage('Startup Monolith') {
                     steps {
-                        sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && ./build.sh'
+                        sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && sudo ./build.sh'
                     }
                  }
                  stage('Startup User Microservice') {
                     steps {
-                        sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && ./build.sh'
+                        sh 'chmod 777 $USER_MICROSERVICE_DIR -R && cd $USER_MICROSERVICE_DIR && sudo ./build.sh'
                     }
                  }
                  stage('Startup Items Microservice') {
                     steps {
-                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $ITEMS_MICROSERVICE_DIR && ./build.sh'
+                        sh 'chmod 777 $ITEMS_MICROSERVICE_DIR -R && cd $ITEMS_MICROSERVICE_DIR && sudo ./build.sh'
                     }
                  }
                  stage('Startup Orders Microservice') {
                     steps {
-                        sh 'chmod 777 $ORDERS_MICROSERVICE_DIR -R && cd $ORDERS_MICROSERVICE_DIR && ./build.sh'
+                        sh 'chmod 777 $ORDERS_MICROSERVICE_DIR -R && cd $ORDERS_MICROSERVICE_DIR && sudo ./build.sh'
                     }
                  }
             }
