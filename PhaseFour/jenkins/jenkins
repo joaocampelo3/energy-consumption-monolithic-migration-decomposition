@@ -50,9 +50,6 @@ pipeline {
                 parallel(
                     dimei: {
                         sh 'rm -rf $REMOTE_DIR'
-                    },
-                    monitoring: {
-                        sh 'rm -rf $MONITORING_DIR'
                     }
                 )
             }
