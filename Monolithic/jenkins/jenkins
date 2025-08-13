@@ -47,14 +47,11 @@ pipeline {
         stage('Kepler Setup') {
             steps {
                 sh '''
-                    cd $KEPLER_PROJ_PATH && sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true && sudo make deploy VERSION=latest GRAFANA_ENABLE=true
+                    sudo chmod 777 $KEPLER_PROJ_PATH -R
+                    cd $KEPLER_PROJ_PATH
+                    sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true
+                    sudo make deploy VERSION=latest GRAFANA_ENABLE=true
                 '''
-            }
-        }
-        
-        stage('Cleanup') {
-            steps {
-                sh 'cd $MONOLITH_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
             }
         }
         
@@ -74,7 +71,11 @@ pipeline {
         
         stage('Startup') {
             steps {
-                sh 'chmod 777 $MONOLITH_DIR -R && cd $MONOLITH_DIR && sudo ./build.sh'
+                sh '''
+                    chmod 777 $MONOLITH_DIR -R
+                    cd $MONOLITH_DIR
+                    sudo ./build.sh
+                '''
             }
         }
     }

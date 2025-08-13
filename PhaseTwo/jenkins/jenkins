@@ -64,45 +64,12 @@ pipeline {
         stage('Kepler Setup') {
             steps {
                 sh '''
-                    cd $KEPLER_PROJ_PATH && sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true && sudo make deploy VERSION=latest GRAFANA_ENABLE=true
+                    sudo chmod 777 $KEPLER_PROJ_PATH -R
+                    cd $KEPLER_PROJ_PATH
+                    sudo make cluster-up VERSION=latest GRAFANA_ENABLE=true
+                    sudo make deploy VERSION=latest GRAFANA_ENABLE=true
                 '''
             }
-        }
-        
-        stage('Cleanup') {
-            parallel {
-                stage('Cleanup RabbitMQ') {
-                    steps {
-                        sh 'cd $RABBITMQ_DIR && sudo kubectl delete -f ./RabbitMQ.yaml --ignore-not-found'
-                    }
-                }
-                stage('Cleanup Monolith') {
-                    steps {
-                        sh 'cd $MONOLITH_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
-                    }
-                }
-                stage('Cleanup API Gateway') {
-                    steps {
-                        sh 'cd $API_GATEWAY_DIR && sudo kubectl delete -f ./retailproject_apigateway_kubernetes.yaml --ignore-not-found'
-                    }
-                }
-                stage('Cleanup Load Balancer') {
-                    steps {
-                        sh 'cd $LOAD_BALANCER_DIR && sudo kubectl delete -f ./retailproject_loadbalancer_kubernetes.yaml --ignore-not-found'
-                    }
-                }
-                stage('Cleanup User Microservice') {
-                    steps {
-                        sh 'cd $USER_MICROSERVICE_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
-                    }
-                }
-                stage('Cleanup Items Microservice') {
-                    steps {
-                        sh 'cd $ITEMS_MICROSERVICE_DIR && sudo kubectl delete -f ./database_kubernetes.yaml --ignore-not-found && sudo kubectl delete -f ./retailproject_kubernetes.yaml --ignore-not-found'
-                    }
-                }
-            }
-            
         }
         
         stage('Build Monolith') {
