@@ -19,7 +19,7 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-order-read-container
+        - name: order-read-retailproject-container
           image: order-read-retailproject_service
           imagePullPolicy: Never
           ports:

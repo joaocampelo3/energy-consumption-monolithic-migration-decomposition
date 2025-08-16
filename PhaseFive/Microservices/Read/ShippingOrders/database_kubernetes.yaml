@@ -46,7 +46,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - name: mysql
+        - name: shippingorder-read-db-retaildatabase-container
           image: mysql:latest
           ports:
             - containerPort: 3306

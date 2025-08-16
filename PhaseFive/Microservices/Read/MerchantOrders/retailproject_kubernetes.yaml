@@ -19,7 +19,7 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-merchantorder-read-container
+        - name: merchantorder-read-retailproject-container
           image: merchantorder-read-retailproject_service
           imagePullPolicy: Never
           ports:

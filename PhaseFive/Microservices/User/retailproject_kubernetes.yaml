@@ -19,7 +19,7 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-user-container
+        - name: user-retailproject-container
           image: user-retailproject_service
           imagePullPolicy: Never
           ports:
