@@ -19,7 +19,7 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-monolith-container
+        - name: monolithic-retailproject-container
           image: monolithic-retailproject_service
           imagePullPolicy: Never
           ports:
