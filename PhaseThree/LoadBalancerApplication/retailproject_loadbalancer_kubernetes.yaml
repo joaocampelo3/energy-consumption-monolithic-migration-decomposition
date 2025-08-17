@@ -19,7 +19,7 @@ spec:
         app: retailproject
     spec:
       containers:
-        - name: retailproject-loadbalancer-container
+        - name: loadbalancer-retailproject-container
           image: loadbalancerapplication-retailproject_service
           imagePullPolicy: Never
           ports:

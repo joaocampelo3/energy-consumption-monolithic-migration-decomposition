@@ -19,7 +19,7 @@ spec:
         app: serviceregistry
     spec:
       containers:
-        - name: apigatewayapplication-retailproject-container
+        - name: apigateway-retailproject-container
           image: apigatewayapplication-retailproject_service
           imagePullPolicy: Never
           ports:
