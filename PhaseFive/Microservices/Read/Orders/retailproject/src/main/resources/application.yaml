@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: OrderMicroserviceApp
+    name: OrderReadMicroserviceApp
   datasource:
     url: jdbc:mysql://retaildatabase-order-read-service/dummy?useUnicode=true&characterEncoding=UTF-8
     username: root
