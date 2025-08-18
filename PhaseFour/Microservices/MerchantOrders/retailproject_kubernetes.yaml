@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: merchantorder-retailproject-container
-          image: merchantorder-retailproject_service
+          image: merchantorders-retailproject_service
           imagePullPolicy: Never
           ports:
             - containerPort: 8080

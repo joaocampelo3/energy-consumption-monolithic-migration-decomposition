@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: shippingorder-retailproject-container
-          image: shippingorder-retailproject_service
+          image: shippingorders-retailproject_service
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
