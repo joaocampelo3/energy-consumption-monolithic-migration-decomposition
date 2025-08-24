@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.security;
 
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
 import jakarta.servlet.FilterChain;
@@ -29,7 +28,6 @@ class JwtAuthenticationFilterTest {
     final String JwtTokenDummy = BEARER_PREFIX + TokenDummy;
     final String email = "johndoe1234@gmail.com";
     final String password = "johndoe_password";
-    final RoleEnum role = RoleEnum.USER;
     @Mock
     HttpServletRequest request;
     @Mock
@@ -59,7 +57,6 @@ class JwtAuthenticationFilterTest {
         when(request.getServletPath()).thenReturn("/api/test");
         when(jwtService.extractUsername(TokenDummy)).thenReturn(email);
         when(request.getReader()).thenReturn(reader);
-        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
         when(request.getReader()).thenReturn(reader);
 
         // Call the method under test
@@ -69,7 +66,6 @@ class JwtAuthenticationFilterTest {
         verify(request, atLeastOnce()).getHeader("Authorization");
         verify(request, atLeastOnce()).getServletPath();
         verify(jwtService, atLeastOnce()).extractUsername(TokenDummy);
-        verify(userDetailsService, atLeastOnce()).loadUserByUsername(email);
     }
 
 

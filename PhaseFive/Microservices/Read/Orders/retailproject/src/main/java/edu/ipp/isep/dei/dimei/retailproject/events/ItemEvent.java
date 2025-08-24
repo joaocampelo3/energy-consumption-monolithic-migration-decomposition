@@ -37,6 +37,7 @@ public class ItemEvent {
         this.categoryId = itemDTO.getCategory().getId();
         this.merchantId = itemDTO.getMerchant().getId();
     }
+
     public ItemEvent(ItemUpdateDTO itemDTO, EventTypeEnum eventTypeEnum) {
         this.id = itemDTO.getId();
         this.sku = itemDTO.getSku();

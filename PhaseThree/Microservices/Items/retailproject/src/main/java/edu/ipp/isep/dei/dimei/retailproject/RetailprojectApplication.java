@@ -17,7 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableCaching
 @EnableJpaRepositories(basePackages = "edu.ipp.isep.dei.dimei.retailproject.repositories")
 public class RetailprojectApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(RetailprojectApplication.class, args);
     }
@@ -66,5 +65,4 @@ public class RetailprojectApplication {
             }
         };
     }
-
 }

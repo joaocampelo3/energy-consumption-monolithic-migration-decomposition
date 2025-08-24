@@ -2,7 +2,6 @@ package edu.ipp.isep.dei.dimei.retailproject.services;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Account;
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,10 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static edu.ipp.isep.dei.dimei.retailproject.security.common.SecurityGlobalVariables.BEARER_PREFIX;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,21 +78,6 @@ class UserServiceTests {
         verify(jwtService, atLeastOnce()).extractRole(jwtTokenDummy.substring(7));
         assertNotNull(result);
         assertEquals(role.name(), result);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void test_GetIdFromAuthorizationString() {
-        // Define the behavior of the mock
-        when(jwtService.extractUserId(jwtTokenDummy.substring(7))).thenReturn(userId);
-
-        // Call the service method that uses the Repository
-        int result = userService.getIdFromAuthorizationString(jwtTokenDummy);
-        int expected = userId;
-
-        // Perform assertions
-        verify(jwtService, atLeastOnce()).extractUserId(jwtTokenDummy.substring(7));
-        assertEquals(userId, result);
         assertEquals(expected, result);
     }
 }

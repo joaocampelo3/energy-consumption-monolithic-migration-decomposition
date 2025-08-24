@@ -1,11 +1,9 @@
 package edu.ipp.isep.dei.dimei.retailproject.events;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ShippingOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ShippingOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.ShippingOrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.ShippingOrder;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

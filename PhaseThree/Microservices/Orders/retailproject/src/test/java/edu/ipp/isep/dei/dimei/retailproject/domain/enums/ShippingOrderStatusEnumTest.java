@@ -1,8 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.enums;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ShippingOrderStatusEnumTest {
 
     @Test
-    void test_ShippingOrderStatusEnum_Success(){
+    void test_ShippingOrderStatusEnum_Success() {
         assertAll(
                 () -> assertEquals("PENDING", ShippingOrderStatusEnum.PENDING.name()),
                 () -> assertEquals("APPROVED", ShippingOrderStatusEnum.APPROVED.name()),

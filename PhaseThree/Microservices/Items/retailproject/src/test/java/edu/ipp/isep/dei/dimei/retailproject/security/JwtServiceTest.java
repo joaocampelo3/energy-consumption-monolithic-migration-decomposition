@@ -17,7 +17,6 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -54,15 +53,6 @@ class JwtServiceTest {
 
         // Perform assertions
         assertEquals(account.getUsername(), username);
-    }
-
-    @Test
-    void test_isTokenValid() {
-        // Call the service method
-        boolean isValid = jwtService.isTokenValid(token, account);
-
-        // Perform assertions
-        assertTrue(isValid);
     }
 
     @Test

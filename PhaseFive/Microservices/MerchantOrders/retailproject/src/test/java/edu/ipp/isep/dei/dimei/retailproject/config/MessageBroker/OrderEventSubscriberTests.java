@@ -257,6 +257,32 @@ class OrderEventSubscriberTests {
     }
 
     @Test
+    void test_HandleDelivery_ShipOrder() throws WrongFlowException, NotFoundException {
+        // Arrange
+        routingKey = OrderRoutingKeyEnum.ORDER_SHIPPED.getOrderKey();
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.SHIPPED);
+        doNothing().when(orderService).shipOrder(null, orderUpdateDTO.getId());
+
+        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
+
+        // Cleanup
+        subscriptionThread.interrupt();
+    }
+
+    @Test
+    void test_HandleDelivery_DeliveredOrder() throws WrongFlowException, NotFoundException {
+        // Arrange
+        routingKey = OrderRoutingKeyEnum.ORDER_DELIVERED.getOrderKey();
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.DELIVERED);
+        doNothing().when(orderService).deliverOrder(null, orderUpdateDTO.getId());
+
+        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
+
+        // Cleanup
+        subscriptionThread.interrupt();
+    }
+
+    @Test
     void test_HandleDelivery_DeleteOrder() throws IOException, InterruptedException, NotFoundException {
         // Arrange
         routingKey = OrderRoutingKeyEnum.ORDER_DELETED.getOrderKey();

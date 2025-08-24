@@ -1,13 +1,13 @@
 package edu.ipp.isep.dei.dimei.retailproject;
 
-import edu.ipp.isep.dei.dimei.retailproject.controllers.*;
+import edu.ipp.isep.dei.dimei.retailproject.controllers.MerchantController;
+import edu.ipp.isep.dei.dimei.retailproject.controllers.MerchantOrderController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 

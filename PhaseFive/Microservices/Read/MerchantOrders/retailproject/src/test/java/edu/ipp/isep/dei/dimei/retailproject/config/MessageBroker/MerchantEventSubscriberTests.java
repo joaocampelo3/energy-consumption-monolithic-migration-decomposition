@@ -8,7 +8,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.events.MerchantEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.MerchantRoutingKeyEnum;
-import edu.ipp.isep.dei.dimei.retailproject.services.MerchantOrderService;
 import edu.ipp.isep.dei.dimei.retailproject.services.MerchantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,7 +100,7 @@ class MerchantEventSubscriberTests {
             subscriptionThread.start();
 
             // Give it a small amount of time to start
-            Thread.sleep(300);
+            Thread.sleep(100);
 
             // Interrupt the thread to stop the infinite loop
             subscriptionThread.interrupt();
@@ -163,7 +162,7 @@ class MerchantEventSubscriberTests {
         subscriptionThread.start();
 
         // Give it time to initialize
-        Thread.sleep(300);
+        Thread.sleep(100);
 
         // Get the Consumer instance
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);

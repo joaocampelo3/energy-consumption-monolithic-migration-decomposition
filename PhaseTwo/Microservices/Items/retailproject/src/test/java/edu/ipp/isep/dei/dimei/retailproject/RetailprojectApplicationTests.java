@@ -1,6 +1,7 @@
 package edu.ipp.isep.dei.dimei.retailproject;
 
-import edu.ipp.isep.dei.dimei.retailproject.controllers.*;
+import edu.ipp.isep.dei.dimei.retailproject.controllers.CategoryController;
+import edu.ipp.isep.dei.dimei.retailproject.controllers.ItemController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

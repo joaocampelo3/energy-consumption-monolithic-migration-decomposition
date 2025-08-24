@@ -3,7 +3,6 @@ package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 import com.rabbitmq.client.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.ItemDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.ItemUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.events.ItemEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.ItemRoutingKeyEnum;
 import edu.ipp.isep.dei.dimei.retailproject.services.ItemService;

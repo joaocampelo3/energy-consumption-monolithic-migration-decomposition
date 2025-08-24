@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 
 import com.rabbitmq.client.*;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.AddressDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
@@ -105,7 +104,7 @@ class MerchantOrderEventSubscriberTests {
             subscriptionThread.start();
 
             // Give it a small amount of time to start
-            Thread.sleep(300);
+            Thread.sleep(100);
 
             // Interrupt the thread to stop the infinite loop
             subscriptionThread.interrupt();
@@ -167,7 +166,7 @@ class MerchantOrderEventSubscriberTests {
         subscriptionThread.start();
 
         // Give it time to initialize
-        Thread.sleep(300);
+        Thread.sleep(100);
 
         // Get the Consumer instance
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);

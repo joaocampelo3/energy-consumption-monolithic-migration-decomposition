@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -50,9 +49,9 @@ public class JwtService {
         return extractClaims(jwtToken, Claims::getExpiration);
     }
 
-    public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
+    public boolean isTokenValid(String jwtToken, UserDTO userDTO) {
         final String username = extractUsername(jwtToken);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(jwtToken);
+        return (username.equals(userDTO.getEmail())) && !isTokenExpired(jwtToken);
     }
 
     public String extractRole(String token) {
@@ -64,16 +63,5 @@ public class JwtService {
                 .getBody();
 
         return claims.get("role", String.class); // Extract the role claim
-    }
-
-    public int extractUserId(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get("userId", Integer.class); // Extract the userId claim
     }
 }

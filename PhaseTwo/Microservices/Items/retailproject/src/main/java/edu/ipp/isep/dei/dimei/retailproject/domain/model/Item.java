@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.domain.model;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.StockQuantity;
-import edu.ipp.isep.dei.dimei.retailproject.events.ItemEvent;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;

@@ -1,11 +1,9 @@
 package edu.ipp.isep.dei.dimei.retailproject.events;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantOrderDTO;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.MerchantOrderUpdateDTO;
 import edu.ipp.isep.dei.dimei.retailproject.domain.enums.MerchantOrderStatusEnum;
-import edu.ipp.isep.dei.dimei.retailproject.domain.model.MerchantOrder;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

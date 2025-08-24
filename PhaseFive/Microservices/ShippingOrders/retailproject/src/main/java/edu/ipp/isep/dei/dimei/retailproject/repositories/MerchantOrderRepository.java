@@ -20,5 +20,6 @@ public interface MerchantOrderRepository extends CrudRepository<MerchantOrder, I
     List<MerchantOrder> findAll();
 
     void deleteByOrderId(int orderId);
+
     void deleteByMerchantId(int merchantId);
 }

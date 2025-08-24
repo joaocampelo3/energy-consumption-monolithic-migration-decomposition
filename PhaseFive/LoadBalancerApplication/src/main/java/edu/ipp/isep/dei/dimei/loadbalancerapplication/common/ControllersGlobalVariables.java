@@ -1,7 +1,9 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.common;
 
 public class ControllersGlobalVariables {
-    /**WRITE*/
+    /**
+     * WRITE
+     */
     public static final String USERS_URL = "http://USERMICROSERVICEAPP";
     public static final String ITEMS_URL = "http://ITEMMICROSERVICEAPP";
     public static final String ORDERS_URL = "http://ORDERMICROSERVICEAPP";
@@ -14,7 +16,9 @@ public class ControllersGlobalVariables {
     public static final String ORDER_URL = ORDERS_URL + "/orders";
     public static final String SHIPPING_ORDER_URL = SHIPPING_ORDERS_URL + "/shippingorders";
 
-    /**READ*/
+    /**
+     * READ
+     */
     public static final String ITEMS_READ_URL = "http://ITEMREADMICROSERVICEAPP";
     public static final String ORDERS_READ_URL = "http://ORDERREADMICROSERVICEAPP";
     public static final String MERCHANT_ORDERS_READ_URL = "http://MERCHANTORDERREADMICROSERVICEAPP";

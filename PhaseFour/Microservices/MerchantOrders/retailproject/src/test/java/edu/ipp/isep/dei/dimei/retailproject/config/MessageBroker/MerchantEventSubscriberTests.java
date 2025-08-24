@@ -8,7 +8,6 @@ import edu.ipp.isep.dei.dimei.retailproject.domain.enums.RoleEnum;
 import edu.ipp.isep.dei.dimei.retailproject.events.MerchantEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.MerchantRoutingKeyEnum;
-import edu.ipp.isep.dei.dimei.retailproject.services.MerchantOrderService;
 import edu.ipp.isep.dei.dimei.retailproject.services.MerchantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Item;
-import edu.ipp.isep.dei.dimei.retailproject.domain.valueobjects.OrderQuantity;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -33,7 +33,7 @@ public class ShippingOrderPublisher {
         return switch (shippingOrderEvent.getEventTypeEnum()) {
             case CREATE -> ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_CREATED.getShippingOrderKey();
             case DELETE -> ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_DELETED.getShippingOrderKey();
-            default ->  switch (shippingOrderEvent.getStatus()) {
+            default -> switch (shippingOrderEvent.getStatus()) {
                 case CANCELLED -> ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_FULL_CANCEL.getShippingOrderKey();
                 case REJECTED -> ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_REJECTED.getShippingOrderKey();
                 case APPROVED -> ShippingOrderRoutingKeyEnum.SHIPPING_ORDER_APPROVED.getShippingOrderKey();

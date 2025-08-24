@@ -1,7 +1,6 @@
 package edu.ipp.isep.dei.dimei.loadbalancerapplication.controllers;
 
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.CategoryDTO;
-import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.OrderDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.common.dto.gets.UserDTO;
 import edu.ipp.isep.dei.dimei.loadbalancerapplication.domain.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +18,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.*;
-import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.ORDER_URL;
+import static edu.ipp.isep.dei.dimei.loadbalancerapplication.common.ControllersGlobalVariables.CATEGORY_URL;
 import static edu.ipp.isep.dei.dimei.loadbalancerapplication.security.common.SecurityGlobalVariables.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpMethod.POST;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {

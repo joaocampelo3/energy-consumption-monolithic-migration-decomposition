@@ -68,9 +68,9 @@ public class RetailprojectApplication {
 
                                     Merchant merchant = new Merchant("Merchant Dummy", "merchant@gmail.com", merchantAddress);
                                     merchantRepository.save(merchant);
-                                    
+
                                     Category category1 = new Category("Category 1 description", "Category 1");
-            						Category category2 = new Category("Category 2 description", "Category 2");
+                                    Category category2 = new Category("Category 2 description", "Category 2");
                                     categoryRepository.save(category1);
                                     categoryRepository.save(category2);
 

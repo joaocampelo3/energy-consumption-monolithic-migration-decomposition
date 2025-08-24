@@ -91,9 +91,7 @@ public class ItemService {
         Merchant userMerchant;
         if (isEvent) {
             userMerchant = itemDTO.getMerchant().dtoToEntity();
-        }
-        else
-        {
+        } else {
             userMerchant = getItemMerchantByUser(authorizationToken);
         }
 
@@ -135,8 +133,7 @@ public class ItemService {
 
         if (!isEvent) {
             item = getUserItemById(authorizationToken, id);
-        } else
-        {
+        } else {
             item = getItemById(id);
         }
 

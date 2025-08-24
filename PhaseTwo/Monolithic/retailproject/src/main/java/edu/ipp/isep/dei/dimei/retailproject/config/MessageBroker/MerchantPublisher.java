@@ -3,7 +3,6 @@ package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import edu.ipp.isep.dei.dimei.retailproject.events.ItemEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.MerchantEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -2,9 +2,7 @@ package edu.ipp.isep.dei.dimei.retailproject.config.MessageBroker;
 
 import com.rabbitmq.client.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.creates.OrderCreateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.*;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.updates.OrderUpdateDTO;
-import edu.ipp.isep.dei.dimei.retailproject.domain.enums.OrderStatusEnum;
 import edu.ipp.isep.dei.dimei.retailproject.events.OrderEvent;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.OrderRoutingKeyEnum;
 import edu.ipp.isep.dei.dimei.retailproject.services.OrderService;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 @Component

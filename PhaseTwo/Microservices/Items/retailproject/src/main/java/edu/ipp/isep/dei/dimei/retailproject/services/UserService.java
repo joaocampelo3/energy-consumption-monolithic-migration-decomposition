@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.services;
 
-import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
@@ -20,10 +19,6 @@ public class UserService {
 
     public String getRoleFromAuthorizationString(String authorizationToken) {
         return jwtService.extractRole(authorizationToken.substring(7));
-    }
-
-    public int getIdFromAuthorizationString(String authorizationToken) {
-        return jwtService.extractUserId(authorizationToken.substring(7));
     }
 
 }

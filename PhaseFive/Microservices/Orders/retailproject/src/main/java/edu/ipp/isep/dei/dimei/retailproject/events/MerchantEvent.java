@@ -1,6 +1,5 @@
 package edu.ipp.isep.dei.dimei.retailproject.events;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.ipp.isep.dei.dimei.retailproject.common.dto.gets.MerchantDTO;
 import edu.ipp.isep.dei.dimei.retailproject.events.enums.EventTypeEnum;

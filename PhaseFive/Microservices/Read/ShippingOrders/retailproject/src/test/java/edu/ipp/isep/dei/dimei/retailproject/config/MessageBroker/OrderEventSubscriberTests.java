@@ -97,7 +97,7 @@ class OrderEventSubscriberTests {
             subscriptionThread.start();
 
             // Give it a small amount of time to start
-            Thread.sleep(300);
+            Thread.sleep(100);
 
             // Interrupt the thread to stop the infinite loop
             subscriptionThread.interrupt();
@@ -159,7 +159,7 @@ class OrderEventSubscriberTests {
         subscriptionThread.start();
 
         // Give it time to initialize
-        Thread.sleep(300);
+        Thread.sleep(100);
 
         // Get the Consumer instance
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
@@ -252,6 +252,32 @@ class OrderEventSubscriberTests {
 
         // Assert
         verify(orderService).approveOrder(anyInt(), any(OrderUpdateDTO.class), eq(isEvent));
+
+        // Cleanup
+        subscriptionThread.interrupt();
+    }
+
+    @Test
+    void test_HandleDelivery_ShipOrder() throws IOException, InterruptedException, WrongFlowException, NotFoundException {
+        // Arrange
+        routingKey = OrderRoutingKeyEnum.ORDER_SHIPPED.getOrderKey();
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.SHIPPED);
+        doNothing().when(orderService).shipOrder(null, orderUpdateDTO.getId(), isEvent);
+
+        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
+
+        // Cleanup
+        subscriptionThread.interrupt();
+    }
+
+    @Test
+    void test_HandleDelivery_DeliveredOrder() throws IOException, InterruptedException, WrongFlowException, NotFoundException {
+        // Arrange
+        routingKey = OrderRoutingKeyEnum.ORDER_DELIVERED.getOrderKey();
+        orderUpdateDTO.setOrderStatus(OrderStatusEnum.DELIVERED);
+        doNothing().when(orderService).deliverOrder(null, orderUpdateDTO.getId(), isEvent);
+
+        assertDoesNotThrow(() -> handleDelivery_UpdateOrder(routingKey, orderUpdateDTO));
 
         // Cleanup
         subscriptionThread.interrupt();

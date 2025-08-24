@@ -387,7 +387,7 @@ class ItemControllerTest {
 
         ResponseEntity<Object> mockUserResponseEntity = new ResponseEntity<>(mockUserControllerResponse, HttpStatus.OK);
         when(userController.getUserId(jwtTokenDummy)).thenReturn(mockUserResponseEntity);
-        
+
         itemUpdateDTO.setQuantityInStock(itemDTO.getQuantityInStock() + 1);
         HttpEntity<ItemUpdateDTO> request = new HttpEntity<>(itemUpdateDTO, headers);
 
