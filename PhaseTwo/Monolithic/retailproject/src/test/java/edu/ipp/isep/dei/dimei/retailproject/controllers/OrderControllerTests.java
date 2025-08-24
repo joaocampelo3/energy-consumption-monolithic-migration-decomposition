@@ -38,6 +38,7 @@ class OrderControllerTests {
     final String exceptionOrderBadRequest = "Wrong order payload.";
     final String exceptionOrderInvalidQuantity = "The number of quantity inserted is not valid";
     final String exceptionOrderWrongFlow = "It is not possible to change Order status";
+    private final String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbl9lbWFpbEBnbWFpbC5jb20iLCJpYXQiOjE3MzY2MTA2NzEsImV4cCI6NTcxMTgxNzU5OX0.kaxgtSl8izrNwi9kxN4qtQLNANbOrHVNDjEjk-uSdfM\";";
     @InjectMocks
     OrderController orderController;
     @Mock
@@ -220,14 +221,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrder() throws NotFoundException, InvalidQuantityException, BadPayloadException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenReturn(orderDTO);
+        when(orderService.createOrder(token, orderCreateDTO)).thenReturn(orderDTO);
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> orderResponseEntity = orderController.createOrder(orderCreateDTO);
+        ResponseEntity<Object> orderResponseEntity = orderController.createOrder(token, orderCreateDTO);
         ResponseEntity<OrderDTO> orderResponseEntityExpected = new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
 
         // Perform assertions
-        verify(orderService, atMostOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atMostOnce()).createOrder(token, orderCreateDTO);
         assertNotNull(orderResponseEntity);
         assertEquals(orderResponseEntityExpected, orderResponseEntity);
     }
@@ -235,14 +236,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail1() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
+        when(orderService.createOrder(token, orderCreateDTO)).thenThrow(new NotFoundException(exceptionOrderNotFound));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
+        ResponseEntity<Object> result = orderController.createOrder(token, orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderNotFound, HttpStatus.NOT_FOUND);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(token, orderCreateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -252,14 +253,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail2() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
+        when(orderService.createOrder(token, orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderBadRequest));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
+        ResponseEntity<Object> result = orderController.createOrder(token, orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderBadRequest, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(token, orderCreateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());
@@ -269,14 +270,14 @@ class OrderControllerTests {
     @Test
     void test_CreateOrderFail3() throws InvalidQuantityException, BadPayloadException, NotFoundException {
         // Define the behavior of the mock
-        when(orderService.createOrder(orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderInvalidQuantity));
+        when(orderService.createOrder(token, orderCreateDTO)).thenThrow(new BadPayloadException(exceptionOrderInvalidQuantity));
 
         // Call the service method that uses the Repository
-        ResponseEntity<Object> result = orderController.createOrder(orderCreateDTO);
+        ResponseEntity<Object> result = orderController.createOrder(token, orderCreateDTO);
         ResponseEntity<Object> expected = new ResponseEntity<>(exceptionOrderInvalidQuantity, HttpStatus.BAD_REQUEST);
 
         // Perform assertions
-        verify(orderService, atLeastOnce()).createOrder(orderCreateDTO);
+        verify(orderService, atLeastOnce()).createOrder(token, orderCreateDTO);
         assertNotNull(result);
         assertEquals(expected, result);
         assertEquals(expected.getStatusCode(), result.getStatusCode());

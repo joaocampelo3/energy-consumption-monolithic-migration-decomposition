@@ -64,4 +64,15 @@ public class JwtService {
 
         return claims.get("role", String.class); // Extract the role claim
     }
+
+    public Integer extractUserId(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("userId", Integer.class); // Extract the userId claim
+    }
 }

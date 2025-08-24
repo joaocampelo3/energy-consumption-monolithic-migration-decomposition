@@ -15,6 +15,7 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.OrderRepository;
+import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class OrderService {
     private final ItemService itemService;
     private final PaymentService paymentService;
     private final ItemQuantityService itemQuantityService;
+    private final JwtService jwtService;
 
     public List<OrderDTO> getAllOrders() {
         List<OrderDTO> orders = new ArrayList<>();
@@ -52,8 +54,10 @@ public class OrderService {
         return orders;
     }
 
-    public OrderDTO createOrder(OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
+    public OrderDTO createOrder(String authorizationToken, OrderCreateDTO orderDTO) throws NotFoundException, InvalidQuantityException, BadPayloadException {
         isSameMerchantForAllItems(orderDTO.getOrderItems(), orderDTO.getMerchantId());
+
+        orderDTO.setUserDTO(getUserDTOFromToken(authorizationToken));
 
         Payment payment = this.paymentService.createPayment(orderDTO.getPayment());
 
@@ -246,5 +250,13 @@ public class OrderService {
 
     private boolean merchantOrderDTOIsShippedOrDelivered(MerchantOrderDTO merchantOrderDTO) {
         return merchantOrderDTO.isShipped() || merchantOrderDTO.isDelivered();
+    }
+
+    private UserDTO getUserDTOFromToken(String token) {
+        String jwtToken = token.substring(7);
+        String email = jwtService.extractUsername(jwtToken);
+        String role = jwtService.extractRole(jwtToken);
+        int userId = jwtService.extractUserId(jwtToken);
+        return UserDTO.builder().userId(userId).email(email).role(RoleEnum.valueOf(role)).build();
     }
 }

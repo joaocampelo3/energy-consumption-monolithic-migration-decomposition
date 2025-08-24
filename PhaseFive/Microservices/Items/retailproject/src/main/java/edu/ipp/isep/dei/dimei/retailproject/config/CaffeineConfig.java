@@ -22,6 +22,7 @@ public class CaffeineConfig {
     private int maximumSize;
 
     private static final String CATEGORIES_CACHE = "categories";
+    private static final String ITEMS_CACHE = "items";
 
     @Bean
     public CacheManager cacheManager() {
@@ -30,7 +31,8 @@ public class CaffeineConfig {
 
         // Add multiple caches
         String[] cacheNames = {
-                CATEGORIES_CACHE
+                CATEGORIES_CACHE,
+                ITEMS_CACHE
         };
         cacheManager.setCacheNames(Arrays.asList(cacheNames));
 

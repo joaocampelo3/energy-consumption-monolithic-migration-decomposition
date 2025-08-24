@@ -61,9 +61,9 @@ public class OrderController {
     )
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Order was created", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> createOrder(@RequestBody OrderCreateDTO orderDTO) {
+    public ResponseEntity<Object> createOrder(@RequestHeader("Authorization") String authorizationToken, @RequestBody OrderCreateDTO orderDTO) {
         try {
-            return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
+            return new ResponseEntity<>(orderService.createOrder(authorizationToken, orderDTO), HttpStatus.CREATED);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (InvalidQuantityException | BadPayloadException e) {

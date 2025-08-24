@@ -5,14 +5,14 @@ spring:
   application:
     name: RetailProjectMonolith
   datasource:
-    url: jdbc:mysql://retaildatabase-monolith-service/dummy?useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
-    database: MYSQL
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database: H2
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
   cache:

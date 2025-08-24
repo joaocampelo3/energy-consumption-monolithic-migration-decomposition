@@ -1,13 +1,17 @@
 package edu.ipp.isep.dei.dimei.retailproject.common.dto.gets;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.ipp.isep.dei.dimei.retailproject.domain.model.Merchant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class MerchantDTO {
     private int id;

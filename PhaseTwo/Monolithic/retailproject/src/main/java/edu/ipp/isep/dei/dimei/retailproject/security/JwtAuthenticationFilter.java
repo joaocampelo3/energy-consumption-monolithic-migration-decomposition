@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String userEmail;
         final String userRole;
+        final int userId;
 
         if ((request.getServletPath().contains("/auth") && !request.getServletPath().contains("/auth/register/admin") && !request.getServletPath().contains("/auth/register/merchant"))
                 || (Arrays.stream(SWAGGER_WHITELIST_URL).anyMatch(string -> request.getServletPath().contains(string)))) {
@@ -50,9 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwtToken);
         userRole = jwtService.extractRole(jwtToken);
+        userId = jwtService.extractUserId(jwtToken);
 
         if (userEmail != null && userRole != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDTO userDTO = UserDTO.builder().email(userEmail).role(RoleEnum.valueOf(userRole)).build();
+            UserDTO userDTO = UserDTO.builder().userId(userId).email(userEmail).role(RoleEnum.valueOf(userRole)).build();
 
             if (jwtService.isTokenValid(jwtToken, userDTO)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO, null, List.of(new SimpleGrantedAuthority(userDTO.getRole().toString())));

@@ -15,6 +15,7 @@ import edu.ipp.isep.dei.dimei.retailproject.exceptions.InvalidQuantityException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.NotFoundException;
 import edu.ipp.isep.dei.dimei.retailproject.exceptions.WrongFlowException;
 import edu.ipp.isep.dei.dimei.retailproject.repositories.OrderRepository;
+import edu.ipp.isep.dei.dimei.retailproject.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTests {
+    private final String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbl9lbWFpbEBnbWFpbC5jb20iLCJpYXQiOjE3MzY2MTA2NzEsImV4cCI6NTcxMTgxNzU5OX0.kaxgtSl8izrNwi9kxN4qtQLNANbOrHVNDjEjk-uSdfM\";";
     @InjectMocks
     OrderService orderService;
     @Mock
@@ -47,6 +49,8 @@ class OrderServiceTests {
     PaymentService paymentService;
     @Mock
     ItemQuantityService itemQuantityService;
+    @Mock
+    JwtService jwtService;
     double price;
     OrderDTO orderDTO1;
     OrderDTO orderDTO2;
@@ -339,6 +343,9 @@ class OrderServiceTests {
         itemUpdateDTO1.setQuantityInStock(itemUpdateDTO1.getQuantityInStock() - 1);
         itemUpdated.getQuantityInStock().setQuantity((itemUpdated.getQuantityInStock().getQuantity() - 1));
         when(itemService.getItemDTO(itemQuantityDTO1.getId())).thenReturn(itemDTO1);
+        when(jwtService.extractUsername(token.substring(7))).thenReturn(userDTO.getEmail());
+        when(jwtService.extractRole(token.substring(7))).thenReturn(userDTO.getRole().toString());
+        when(jwtService.extractUserId(token.substring(7))).thenReturn(userDTO.getUserId());
         when(paymentService.createPayment(orderCreateDTO.getPayment())).thenReturn(payment);
         when(itemQuantityService.createItemQuantity(itemQuantityDTO1)).thenReturn(itemQuantity1);
         when(itemService.removeItemStock(itemQuantityDTO1.getItemId(), new ItemUpdateDTO(itemQuantityDTO1.getItemId(), itemQuantityDTO1.getItemSku(), itemQuantityDTO1.getPrice(), item.getQuantityInStock().getQuantity() - itemQuantityDTO1.getQty(), userDTO))).thenReturn(itemDTO1Updated);
@@ -346,7 +353,7 @@ class OrderServiceTests {
         when(merchantOrderService.createMerchantOrder(userDTO, order1, orderCreateDTO.getMerchantId())).thenReturn(merchantOrder1);
 
         // Call the service method that uses the Repository
-        OrderDTO result = orderService.createOrder(orderCreateDTO);
+        OrderDTO result = orderService.createOrder(token, orderCreateDTO);
         OrderDTO expected = orderDTO1;
 
         // Perform assertions

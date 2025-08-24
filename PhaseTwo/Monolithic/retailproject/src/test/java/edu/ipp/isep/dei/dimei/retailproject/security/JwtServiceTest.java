@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -28,7 +29,7 @@ class JwtServiceTest {
     private String secretKey;
     @Value("${jwt.token.expirationTimeSecs}")
     private long tokenExpirationTime;
-    private final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbl9lbWFpbEBnbWFpbC5jb20iLCJpYXQiOjE3MzY2MTA2NzEsImV4cCI6NTcxMTgxNzU5OX0.kaxgtSl8izrNwi9kxN4qtQLNANbOrHVNDjEjk-uSdfM";
+    private final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImFkbWluX2VtYWlsQGdtYWlsLmNvbSIsImlhdCI6MTc1NjAyMzMxNiwiZXhwIjo5OTk5OTk5OTk5fQ.32RDPrLKxzoLyDkYId3e5BRQdPI7c71hix1UYaIWt4Q";
     private Instant expirationDateExpected;
 
     @BeforeEach
@@ -38,7 +39,7 @@ class JwtServiceTest {
         ReflectionTestUtils.setField(jwtService, "secretKey", secretKey);
         ReflectionTestUtils.setField(jwtService, "tokenExpirationTime", tokenExpirationTime);
 
-        expirationDateExpected = LocalDateTime.of(2150, 12, 31, 23, 59, 59).toInstant(ZoneOffset.UTC);
+        expirationDateExpected = LocalDateTime.of(2286, 11, 20, 17, 46, 39).toInstant(ZoneOffset.UTC);
     }
 
     @Test
@@ -73,6 +74,14 @@ class JwtServiceTest {
         String role = jwtService.extractRole(token);
         // Perform assertions
         assertEquals(userDTO.getRole().name(), role);
+    }
+
+    @Test
+    void test_extractUserId() {
+        // Call the service method
+        int id = jwtService.extractUserId(token);
+        // Perform assertions
+        assertEquals(userDTO.getUserId(), id);
     }
 
 }
