@@ -11,12 +11,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: retailproject
+      app: retailproject-orders-read
   replicas: 1
   template:
     metadata:
       labels:
-        app: retailproject
+        app: retailproject-orders-read
     spec:
       containers:
         - name: order-read-retailproject-container
@@ -27,10 +27,10 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 200m
               memory: 512Mi
+            limits:
+              cpu: 250m
+              memory: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -39,7 +39,7 @@ metadata:
   namespace: retailproject-namespace
 spec:
   selector:
-    app: retailproject
+    app: retailproject-orders-read
   ports:
     - name: http
       port: 8080
@@ -65,4 +65,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50 # When the CPU utilization is greater than or equal 50% of 100m cpu requested, the HPA will replicated the service
+          averageUtilization: 70

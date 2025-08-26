@@ -22,7 +22,7 @@ metadata:
   namespace: retailproject-namespace
 spec:
   selector:
-    app: mysql
+    app: retaildatabase-shippingorders-read
   ports:
     - protocol: TCP
       port: 3306
@@ -39,11 +39,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: retaildatabase-shippingorders-read
   template:
     metadata:
       labels:
-        app: mysql
+        app: retaildatabase-shippingorders-read
     spec:
       containers:
         - name: shippingorder-read-db-retaildatabase-container

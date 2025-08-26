@@ -22,7 +22,7 @@ metadata:
   namespace: retailproject-namespace
 spec:
   selector:
-    app: mysql
+    app: retaildatabase-user
   ports:
     - protocol: TCP
       port: 3306
@@ -39,11 +39,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: retaildatabase-user
   template:
     metadata:
       labels:
-        app: mysql
+        app: retaildatabase-user
     spec:
       containers:
         - name: user-db-retaildatabase-container

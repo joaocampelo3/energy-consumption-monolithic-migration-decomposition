@@ -22,7 +22,7 @@ metadata:
   namespace: retailproject-namespace
 spec:
   selector:
-    app: mysql
+    app: retaildatabase-orders-read
   ports:
     - protocol: TCP
       port: 3306
@@ -39,11 +39,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: retaildatabase-orders-read
   template:
     metadata:
       labels:
-        app: mysql
+        app: retaildatabase-orders-read
     spec:
       containers:
         - name: order-read-db-retaildatabase-container
@@ -91,4 +91,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 70
