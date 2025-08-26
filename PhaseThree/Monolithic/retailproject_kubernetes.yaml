@@ -6,7 +6,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retailproject-monolith-deployment
+  name: retailproject-deployment
   namespace: retailproject-namespace
 spec:
   selector:
@@ -27,15 +27,15 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 200m
               memory: 512Mi
+            limits:
+              cpu: 250m
+              memory: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: retailproject-monolith-service
+  name: retailproject-service
   namespace: retailproject-namespace
 spec:
   selector:
@@ -44,19 +44,19 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 30003
+      nodePort: 30002
   type: NodePort
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-monolith-service-hpa
+  name: retailproject-service-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retailproject-monolith-deployment
+    name: retailproject
   minReplicas: 1
   maxReplicas: 1
   metrics:
@@ -65,4 +65,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50 # When the CPU utilization is greater than or equal 50% of 100m cpu requested, the HPA will replicated the service
+          averageUtilization: 70

@@ -22,7 +22,7 @@ metadata:
   namespace: retailproject-namespace
 spec:
   selector:
-    app: mysql
+    app: retaildatabase
   ports:
     - protocol: TCP
       port: 3306
@@ -37,11 +37,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: retaildatabase
   template:
     metadata:
       labels:
-        app: mysql
+        app: retaildatabase
     spec:
       containers:
         - name: monolithic-db-retaildatabase-container
