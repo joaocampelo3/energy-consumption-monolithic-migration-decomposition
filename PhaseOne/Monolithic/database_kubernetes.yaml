@@ -6,7 +6,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
+  name: mysql-pv-claim-monolith
   namespace: retailproject-namespace
 spec:
   accessModes:
@@ -18,30 +18,32 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: retaildatabase-service
+  name: retaildatabase-monolith-service
   namespace: retailproject-namespace
 spec:
   selector:
-    app: retaildatabase
+    app: mysql
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
+      nodePort: 30002
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retaildatabase-deployment
+  name: retaildatabase-monolith-deployment
   namespace: retailproject-namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: retaildatabase
+      app: mysql
   template:
     metadata:
       labels:
-        app: retaildatabase
+        app: mysql
     spec:
       containers:
         - name: monolithic-db-retaildatabase-container
@@ -57,7 +59,7 @@ spec:
             - --character-set-server=utf8mb3
             - --collation-server=utf8mb3_general_ci
           volumeMounts:
-            - name: mysql-persistent-storage
+            - name: mysql-persistent-storage-monolith
               mountPath: /var/lib/mysql
           resources:
             requests:
@@ -67,20 +69,20 @@ spec:
               cpu: 1000m
               memory: 752Mi
       volumes:
-        - name: mysql-persistent-storage
+        - name: mysql-persistent-storage-monolith
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: mysql-pv-claim-monolith
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-db-hpa
+  name: retailproject-monolith-db-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retaildatabase-deployment
+    name: retaildatabase-monolith-deployment
   minReplicas: 1
   maxReplicas: 1
   metrics:

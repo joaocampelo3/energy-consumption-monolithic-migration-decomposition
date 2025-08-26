@@ -6,7 +6,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: retailproject-deployment
+  name: retailproject-monolith-deployment
   namespace: retailproject-namespace
 spec:
   selector:
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: retailproject-service
+  name: retailproject-monolith-service
   namespace: retailproject-namespace
 spec:
   selector:
@@ -44,19 +44,19 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 30002
+      nodePort: 30003
   type: NodePort
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: retailproject-service-hpa
+  name: retailproject-monolith-service-hpa
   namespace: retailproject-namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: retailproject
+    name: retailproject-monolith-deployment
   minReplicas: 1
   maxReplicas: 1
   metrics:
