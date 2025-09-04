@@ -1,0 +1,1046 @@
+<?xml version="1.0" ?>
+<ns3:report xmlns:ns3="http://www.hello2morrow.com/sonargraph/core/report" xmlns:ns2="http://www.hello2morrow.com/sonargraph/core/export" id="_0" systemId="fda227a4447d85253f422fae52c63b41" name="Monolithic" version="15.4.0.148" systemPath="C:\Users\joaoc\Documents\ISEP\DIMEI\projeto\energy-consumption-monolithic-migration-decomposition\Monolithic\Monolithic.sonargraph" timestamp="2025-09-02T09:34:17.484+01:00" currentVirtualModel="Modifiable.vm" systemDescription="" analyzerExecutionLevel="full">
+	<reportContextInfo></reportContextInfo>
+	<description></description>
+	<metaData>
+		<issueProviders>
+			<issueProvider id="_58" name="Core" presentationName="Core"></issueProvider>
+		</issueProviders>
+		<issueCategories>
+			<category id="_47" name="ArchitecturalView" presentationName="Architectural View"></category>
+			<category id="_48" name="ArchitectureConsistency" presentationName="Architecture Consistency"></category>
+			<category id="_49" name="ArchitectureDefinition" presentationName="Architecture Definition"></category>
+			<category id="_4a" name="ArchitectureDeprecation" presentationName="Architecture Deprecation"></category>
+			<category id="_4b" name="ArchitectureViolation" presentationName="Architecture Violation"></category>
+			<category id="_4c" name="CycleGroup" presentationName="Cycle Group"></category>
+			<category id="_4d" name="DuplicateCode" presentationName="Duplicate Code"></category>
+			<category id="_4e" name="InstallationConfiguration" presentationName="Installation Configuration"></category>
+			<category id="_4f" name="PluginBased" presentationName="Plugin Based"></category>
+			<category id="_50" name="QualityGate" presentationName="Quality Gate"></category>
+			<category id="_51" name="Refactoring" presentationName="Refactoring"></category>
+			<category id="_52" name="ScriptBased" presentationName="Script Based"></category>
+			<category id="_53" name="ScriptDefinition" presentationName="Script Definition"></category>
+			<category id="_54" name="SystemConfiguration" presentationName="System Configuration"></category>
+			<category id="_55" name="ThresholdViolation" presentationName="Threshold Violation"></category>
+			<category id="_56" name="Todo" presentationName="Todo"></category>
+			<category id="_57" name="Workspace" presentationName="Workspace"></category>
+		</issueCategories>
+		<issueTypes>
+			<issueType severity="Error, Warning" category="_4c" id="_59" name="ComponentCycleGroup" presentationName="Component Cycle Group"></issueType>
+			<issueType severity="Warning" category="_4d" id="_5a" name="DuplicateCodeBlock" presentationName="Duplicate Code Block"></issueType>
+		</issueTypes>
+		<metricProviders>
+			<provider id="_60" name="Core" presentationName="Core"></provider>
+			<provider id="_66" name="JavaLanguageProvider" presentationName="Java"></provider>
+			<provider id="_d9" name="./Core/SuperTypeUsesSubType.xml" presentationName="./Core/SuperTypeUsesSubType.xml"></provider>
+		</metricProviders>
+		<metricCategories>
+			<category id="_62" name="CodeAnalysis" presentationName="Code Analysis" orderNumber="1"></category>
+			<category id="_68" name="Cycle" presentationName="Cycle" orderNumber="2"></category>
+			<category id="_5c" name="CohesionAndCoupling" presentationName="Cohesion/Coupling" orderNumber="3"></category>
+			<category id="_7d" name="Dependency" presentationName="Dependency" orderNumber="4"></category>
+			<category id="_6c" name="Size" presentationName="Size" orderNumber="5"></category>
+			<category id="_5d" name="JohnLakos" presentationName="John Lakos" orderNumber="7"></category>
+			<category id="_64" name="ThomasMccabe" presentationName="Thomas J. McCabe" orderNumber="10"></category>
+			<category id="_cd" name="MacCormack" presentationName="MacCormack, Rusnak, Baldwin" orderNumber="11"></category>
+			<category id="_6f" name="ChangeHistory" presentationName="Change History" orderNumber="12"></category>
+			<category id="_bd" name="Complexity" presentationName="Complexity" orderNumber="13"></category>
+			<category id="_d8" name="Script" presentationName="Script" orderNumber="2147483646"></category>
+		</metricCategories>
+		<metricLevels>
+			<level id="_5e" name="System" presentationName="System" orderNumber="0"></level>
+			<level id="_5f" name="Module" presentationName="Module" orderNumber="10"></level>
+			<level id="_94" name="SourceFile" presentationName="Source File" orderNumber="60"></level>
+			<level id="_a0" name="Routine" presentationName="Routine" orderNumber="80"></level>
+		</metricLevels>
+		<metricIds>
+			<metricId id="_5b" name="CoreAcd" presentationName="ACD" description="Average component dependency according to John Lakos. Average number of components a component depends on directly and indirectly. This metric can be used to characterize the overall average coupling of internal components." categories="_5c _5d" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_61" name="CoreAverageNesting" presentationName="Average Block Nesting Depth" description="Weighted average of nesting depth." categories="_62" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_63" name="CoreAverageComplexity" presentationName="Average Complexity" description="Weighted average modified extended cyclomatic complexity for fully analyzed code" categories="_64" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_65" name="JavaAveragePackagePublicVisibility" presentationName="Average Java Public Visibility (%)" description="Average of Java public visibility for all Java packages in a Java module" categories="_62" provider="_66" isFloat="true" levels="_5f" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_67" name="JavaAverageRelativeCyclicityPackages" presentationName="Average Relative Cyclicity (Java Packages)" description="Weighted average of relative Java package cyclicity of modules in percent." categories="_68" provider="_66" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_69" name="CoreBiggestComponentCycleGroup" presentationName="Biggest Component Cycle Group" description="Number of components in biggest cycle." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_6a" name="JavaBiggestPackageCycleGroup" presentationName="Biggest Java Package Cycle Group" description="Biggest Java package cycle group." categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_6b" name="JavaByteCodeInstructions" presentationName="Byte Code Instructions" description="Number of Java byte code instructions." categories="_6c" provider="_66" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_6d" name="CoreCcd" presentationName="CCD" description="Cumulative component dependency according to John Lakos. Cumulated depends upon values." categories="_5c _5d" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_6e" name="CoreCodeChurn2y" presentationName="Code Churn (2y)" description="Number of lines added or removed in the last 2 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_70" name="CoreCodeChurn30" presentationName="Code Churn (30d)" description="Number of lines added or removed in the last 30 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_71" name="CoreCodeChurn365" presentationName="Code Churn (365d)" description="Number of lines added or removed in the last 365 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_72" name="CoreCodeChurn5y" presentationName="Code Churn (5y)" description="Number of lines added or removed in the last 5 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_73" name="CoreCodeChurn90" presentationName="Code Churn (90d)" description="Number of lines added or removed in the last 90 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_74" name="CoreCodeChurnRate2y" presentationName="Code Churn Rate (2y)" description="Percentage of lines added or removed in the last 2 years based on total lines" categories="_6f" provider="_60" isFloat="true" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_75" name="CoreCodeChurnRate30" presentationName="Code Churn Rate (30d)" description="Percentage of lines added or removed in the last 30 days based on total lines" categories="_6f" provider="_60" isFloat="true" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_76" name="CoreCodeChurnRate365" presentationName="Code Churn Rate (365d)" description="Percentage of lines added or removed in the last 365 days based on total lines" categories="_6f" provider="_60" isFloat="true" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_77" name="CoreCodeChurnRate5y" presentationName="Code Churn Rate (5y)" description="Percentage of lines added or removed in the last 5 years based on total lines" categories="_6f" provider="_60" isFloat="true" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_78" name="CoreCodeChurnRate90" presentationName="Code Churn Rate (90d)" description="Percentage of lines added or removed in the last 90 days based on total lines" categories="_6f" provider="_60" isFloat="true" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_79" name="CoreCodeCommentLines" presentationName="Code Comment Lines" description="Counts all comment lines excluding header comments and blank comment lines. This includes code of fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_7a" name="CoreCommentLines" presentationName="Comment Lines" description="Counts all comment lines excluding blank comment lines. This includes fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_7b" name="CoreComponentDependenciesToRemoveComponents" presentationName="Component Dependencies to Remove (Components)" description="Number of component dependencies to remove to break up all component cycles." categories="_62 _68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_7c" name="JavaComponentDependenciesToRemovePackages" presentationName="Component Dependencies to Remove (Java Packages)" description="Number of component dependencies to remove to break up all Java package cycle groups." categories="_62 _7d" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_7e" name="CoreCriticalEntangledLinesOfCode" presentationName="Critically Entangled Lines of Code" description="Lines of code of source files involved in critical (marked as error) component or logical toplevel element (if the analyzer is activated) cycles." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_7f" name="CoreCriticalEntangledLinesOfCodePercent" presentationName="Critically Entangled Lines of Code (%)" description="Percentage of fully analyzed code contained in source files involved in critical (marked as error) component or logical toplevel element (if the analyzer is activated) cycles." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_80" name="CoreCriticalEntangledLinesOfCodeIgnored" presentationName="Critically Entangled Lines of Code [Ignored]" description="Lines of code of source files involved in any type of ignored critical cycle (marked as error)." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_81" name="CoreCriticalEntangledLinesOfCodePercentIgnored" presentationName="Critically Entangled Lines of Code [Ignored] (%)" description="Percentage of fully analyzed code contained in source files involved in any type of ignored critical cycle (marked as error). This also represents the probability that any line is involved in ignored critically entangled code." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_82" name="CoreCriticalEntangledLinesOfCodeToFix" presentationName="Critically Entangled Lines of Code [To Be Fixed]" description="Lines of code of source files involved any type of to be fixed critical cycle (marked as error)." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_83" name="CoreCriticalEntangledLinesOfCodePercentToFix" presentationName="Critically Entangled Lines of Code [To Be Fixed] (%)" description="Percentage of fully analyzed code contained in source files involved any type of to be fixed critical cycle (marked as error). This also represents the probability that any line is involved in to be fixed critically entangled code." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_84" name="CoreCyclicityComponents" presentationName="Cyclicity (Components)" description="Cumulated cyclicity of component cycles." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_85" name="JavaCyclicityPackages" presentationName="Cyclicity (Java Packages)" description="Cumulated cyclicity of Java package cycle groups." categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_86" name="CoreEntangledLinesOfCode" presentationName="Entangled Lines of Code" description="Lines of code of source files involved in component or logical toplevel element (if the analyzer is activated) cycles." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_87" name="CoreEntangledLinesOfCodePercent" presentationName="Entangled Lines of Code (%)" description="Percentage of fully analyzed code contained in source files involved in component or logical toplevel element (if the analyzer is activated) cycles." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_88" name="CoreEntangledLinesOfCodeIgnored" presentationName="Entangled Lines of Code [Ignored]" description="Lines of code of source files involved in any type of ignored cycle." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_89" name="CoreEntangledLinesOfCodePercentIgnored" presentationName="Entangled Lines of Code [Ignored] (%)" description="Percentage of fully analyzed code contained in source files involved in any type of ignored cycle. This also represents the probability that any line is involved in ignored entangled code." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_8a" name="CoreEntangledLinesOfCodeToFix" presentationName="Entangled Lines of Code [To Be Fixed]" description="Lines of code of source files involved any type of to be fixed cycle." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_8b" name="CoreEntangledLinesOfCodePercentToFix" presentationName="Entangled Lines of Code [To Be Fixed] (%)" description="Percentage of fully analyzed code contained in source files involved any type of to be fixed cycle. This also represents the probability that any line is involved in to be fixed entangled code." categories="_68" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_8c" name="CoreChanges2y" presentationName="File Changes (2y)" description="Number of committed file changes in the last 2 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_8d" name="CoreChanges30" presentationName="File Changes (30d)" description="Number of committed file changes in the last 30 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_8e" name="CoreChanges365" presentationName="File Changes (365d)" description="Number of committed file changes in the last 365 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_8f" name="CoreChanges5y" presentationName="File Changes (5y)" description="Number of committed file changes in the last 5 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_90" name="CoreChanges90" presentationName="File Changes (90d)" description="Number of committed file changes in the last 90 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_91" name="CoreMaxAcd" presentationName="Highest ACD" description="Highest module ACD." categories="_5c _5d" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_92" name="CoreIssueDensity" presentationName="Issue Density" description="Calculated as the number of unresolved issues (errors, warnings) * 1000, divided by source element count" categories="_62" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_93" name="CoreLinesOfCode" presentationName="Lines of Code" description="Lines of code excluding blank and comment lines. This includes fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f _94" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_95" name="CoreLinesOfCodeFullyAnalyzed" presentationName="Lines of Fully Analyzed Code" description="Lines of fully analyzed code excluding blank and comment lines." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_96" name="CoreLinesOfCodeInLargeFiles" presentationName="Lines of Fully Analyzed Code in Large Files" description="Lines of fully analyzed code excluding blank and comment lines in files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_97" name="CoreLinesOfCodeInLargeFilesPercent" presentationName="Lines of Fully Analyzed Code in Large Files (%)" description="Percent of lines of fully analyzed code excluding blank and comment lines in files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_98" name="CoreLinesOfCodeInLargeFilesIgnored" presentationName="Lines of Fully Analyzed Code in Large Files [Ignored]" description="Lines of fully analyzed code excluding blank and comment lines in ignored files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_99" name="CoreLinesOfCodeInLargeFilesIgnoredPercent" presentationName="Lines of Fully Analyzed Code in Large Files [Ignored] (%)" description="Percent of lines of fully analyzed code excluding blank and comment lines in ignored files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_9a" name="CoreLinesOfCodeInLargeFilesToFix" presentationName="Lines of Fully Analyzed Code in Large Files [To Be Fixed]" description="Lines of fully analyzed code excluding blank and comment lines in to be fixed files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_9b" name="CoreLinesOfCodeInLargeFilesToFixPercent" presentationName="Lines of Fully Analyzed Code in Large Files [To Be Fixed] (%)" description="Percent of lines of fully analyzed code excluding blank and comment lines in to be fixed files violating the threshold (default 1000)." categories="_6c" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_9c" name="CoreLinesOfCodeIssueIgnoring" presentationName="Lines of Issue-Ignoring Code" description="Lines of code excluding blank and comment lines for which only architecture violations and parsing problems are reported." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_9d" name="CoreMaintainabilityLevel" presentationName="Maintainability Level" description="This metric estimates maintainability as a percentage. 100% is the best possible value. To do that it looks at the dependency structure between components (source files in most languages). Cyclic dependencies and low level classes with a lot of incoming dependencies have a negative influence on the metric. Keeping good vertical boundaries and not having too many layers will have a positive influence. It is also recommended to have as many components as possible that are independent, i.e. have no incoming dependencies and therefore can be changed without influencing the rest of the system. In Java and C# the metric also considers the value of the relative cyclicity metric for packages/namespaces. If you have large cycle groups they will have a negative influence on the metric value." categories="_5c" provider="_60" isFloat="true" levels="_5e _5f" bestValue="100.0" worstValue="0.0" minValue="0.0" maxValue="100.0" direction="LowerWorse"></metricId>
+			<metricId id="_9e" name="CoreBiggestCycleLoc" presentationName="Maximum Lines of Code Involved in a Cycle" description="Biggest cycle group with respect to the lines of code of involved source files." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_9f" name="CoreModifiedCcn" presentationName="Modified Cyclomatic Complexity" description="As cyclomatic complexity but switch statements only add 1 independent from the number of cases." categories="_64" provider="_60" isFloat="false" levels="_a0" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_a1" name="CoreNccd" presentationName="NCCD" description="Normalized cumulative component dependency  according to John Lakos. The ratio between the cumulative component dependency and the cumulative component dependency of a balanced binary tree of the same size. A value greater than 1 indicates a more vertical design. A value less than 1 indicates a more horizontal design." categories="_5c _5d" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_a2" name="CoreNumberOfAuthors30" presentationName="Number of Authors (30d)" description="Number of developers who have worked on this item in the last 30 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_a3" name="CoreDuplicates" presentationName="Number of Code Duplicates" description="Number of duplicated code blocks." categories="_62" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_a4" name="CoreDuplicatesFixed" presentationName="Number of Code Duplicates to be Fixed" description="Number of duplicated code blocks with applied Fix task." categories="_62" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_a5" name="CoreComponentCycleGroups" presentationName="Number of Component Cycle Groups" description="Number of all component cycle groups, warnings and errors." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_a6" name="CoreComponents" presentationName="Number of Components" description="Number of components" categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_a7" name="CoreComponentsFullyAnalyzed" presentationName="Number of Components (Full Analysis)" description="Number of fully analyzed components." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_a8" name="CoreComponentsIgnoringIssues" presentationName="Number of Components (Ignoring Issues)" description="Number of components ignoring issues." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_a9" name="CoreCriticalComponentCycleGroups" presentationName="Number of Critical Component Cycle Groups" description="Number of component cycle groups marked as errors." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_aa" name="JavaCriticalPackageCycleGroups" presentationName="Number of Critical Java Package Cycle Groups" description="Number of Java package cycle groups marked as errors." categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_ab" name="CoreCyclicComponents" presentationName="Number of Cyclic Components" description="Number of cyclic components." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_ac" name="JavaCyclicPackages" presentationName="Number of Cyclic Java Packages" description="Number of cyclic Java packages." categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_ad" name="CoreCyclicModules" presentationName="Number of Cyclic Modules" description="Number of cyclic modules." categories="_68" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_ae" name="CoreDuplicatedLines" presentationName="Number of Duplicated Code Lines" description="Number of duplicated lines in duplicated code blocks. The duplicated lines of each code block are calculated as the sum of involved occurrences excluding the largest, which is treated as the reference." categories="_62" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_af" name="CoreSourcefilesExcluded" presentationName="Number of Excluded Source Files" description="Number of source files excluded via 'File Filter'. These files are completely excluded from the analysis and do not contribute to any metric." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b0" name="CoreIgnoredDuplicates" presentationName="Number of Ignored Code Duplicates" description="Number of ignored duplicated code blocks." categories="_62" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_b1" name="CoreIgnoredCyclicComponents" presentationName="Number of Ignored Cyclic Components" description="Number of ignored cyclic components." categories="_68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_b2" name="JavaIgnoredCyclicPackages" presentationName="Number of Ignored Cyclic Java Packages" description="Number of ignored cyclic Java packages." categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_b3" name="JavaPackages" presentationName="Number of Java Packages" description="Number of Java packages containing types in fully analyzed and issue ignoring code." categories="_6c" provider="_66" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b4" name="JavaPackagesFullyAnalyzed" presentationName="Number of Java Packages (Full Analysis)" description="Number of Java packages containing fully analyzed types." categories="_6c" provider="_66" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b5" name="CoreLogicalToplevelElements" presentationName="Number of Logical Toplevel Elements" description="Number of logical toplevel elements in container." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b6" name="CoreModules" presentationName="Number of Modules" description="Number of modules." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b7" name="CoreSourcefiles" presentationName="Number of Source Files" description="Number of source files in fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b8" name="CoreSourcefilesTest" presentationName="Number of Source Files (Excluded)" description="Number of source files in test code (excluded via 'Production Code Filter')." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_b9" name="CoreSourcefilesFullyAnalyzed" presentationName="Number of Source Files (Full Analysis)" description="Number of source files that are fully analyzed, i.e. not excluded by any workspace filter." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_ba" name="CoreSourcefilesIssueIgnore" presentationName="Number of Source Files (Ignoring Issue)" description="Number of source files excluded via 'Issue Filter' that no issues (except parser issues and architecture violations) are generated for." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_bb" name="CoreStatements" presentationName="Number of Statements" description="Counts all statements. This includes statements of fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f _a0" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_bc" name="CoreStatementsComplexMethods" presentationName="Number of Statements in Complex Methods" description="Counts all statements in fully analyzed code of too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_be" name="CoreStatementsComplexMethodsPercent" presentationName="Number of Statements in Complex Methods (%)" description="Percentage of statements in fully analyzed code in too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_bf" name="CoreStatementsComplexMethodsIgnored" presentationName="Number of Statements in Complex Methods [Ignored]" description="Counts all statements in fully analyzed code of ignored too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_c0" name="CoreStatementsComplexMethodsIgnoredPercent" presentationName="Number of Statements in Complex Methods [Ignored] (%)" description="Percentage of statements in fully analyzed code in ignored too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_c1" name="CoreStatementsComplexMethodsToFix" presentationName="Number of Statements in Complex Methods [To Be Fixed]" description="Counts all statements in fully analyzed code of to be fixed too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="false" levels="_5e" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_c2" name="CoreStatementsComplexMethodsToFixPercent" presentationName="Number of Statements in Complex Methods [To Be Fixed] (%)" description="Percentage of statements in fully analyzed code in to be fixed too complex methods, i.e. that violate the thresholds for max nesting depth (default 4) or for extended modified cyclomatic complexity (default 15)." categories="_bd" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_c3" name="CoreStatementsFullyAnalyzed" presentationName="Number of Statements in Fully Analyzed Code" description="Counts all statements in fully analyzed code." categories="_6c" provider="_60" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_c4" name="CoreTypes" presentationName="Number of Types" description="Number of types (classes, enums or similar) in container." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_c5" name="JavaPackageCycleGroups" presentationName="Number of all Java Package Cycle Groups" description="Number of all Java package cycle groups, errors and warnings" categories="_68" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_c6" name="CoreNumberOfAuthors2y" presentationName="Number of authors (2y)" description="Number of developers who have worked on this item in the last 2 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_c7" name="CoreNumberOfAuthors" presentationName="Number of authors (365d)" description="Number of developers who have worked on this item in the last year" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_c8" name="CoreNumberOfAuthors5y" presentationName="Number of authors (5y)" description="Number of developers who have worked on this item in the last 5 years" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_c9" name="CoreNumberOfAuthors90" presentationName="Number of authors (90d)" description="Number of developers who have worked on this item in the last 90 days" categories="_6f" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_ca" name="CoreParserDependenciesToRemoveComponents" presentationName="Parser Dependencies to Remove (Components)" description="Number of code lines to change to break up all component cycles." categories="_62 _68" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_cb" name="JavaParserDependenciesToRemovePackages" presentationName="Parser Dependencies to Remove (Java Packages)" description="Number of code lines to change to break up all Java package cycle groups)." categories="_62 _7d" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_cc" name="CorePropagationCost" presentationName="Propagation Cost" description="Propagation cost metric according to MacCormack, Rusnak and Baldwin. It describes the proportion of software files that are directly or indirectly linked to each other." categories="_5c _cd" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_ce" name="CoreRedundancy" presentationName="Redundant Code (%)" description="Percentage of redundant code. This also represents the probability that any line is contained in a duplicate. This metric is calculated for fully analyzed code." categories="_62" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_cf" name="CoreRedundancyIgnored" presentationName="Redundant Code [Ignored] (%)" description="Percentage of ignored redundant code. This also represents the probability that any line is contained in an ignored duplicate. This metric is calculated for fully analyzed code." categories="_62" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_d0" name="CoreRedundancyFixed" presentationName="Redundant Code [To Be Fixed] (%)" description="Percentage of redundant code with an assigned &quot;Fix&quot; task. This also represents the probability that any line is contained in a to-be-fixed duplicate. This metric is calculated for fully analyzed code." categories="_62" provider="_60" isFloat="true" levels="_5e" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_d1" name="CoreRelativeCyclicityComponents" presentationName="Relative Cyclicity (Components)" description="Relative component cyclicity in percent." categories="_68" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_d2" name="JavaRelativeCyclicityPackages" presentationName="Relative Cyclicity (Java Packages)" description="Relative Java package cyclicity in percent." categories="_68" provider="_66" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_d3" name="CoreRelativeEntanglement" presentationName="Relative Entanglement (%)" description="We calculate the relative cyclicity for components and top level elements (if the analyzer is activated) and calculate the average value of the two values.
+Then we calculate the relative cyclicity for packages/namespaces (if available in the language and there is more than one element) and the relative cyclicity for directories (if available in the language and there is more than one element) and then take the average of those two values.
+The first average is considering primary cycles, while the second one can also be based on cycles, that can be solved by just re-arranging code.
+Relative entanglement is calculated as the weighted average of those two values with a 60% weight for the primary cycles and a 40% weight for the secondary cycles. Lower value are obviously better. The worst value is 100%." categories="_68" provider="_60" isFloat="true" levels="_5e _5f" bestValue="0.0" worstValue="100.0" minValue="0.0" maxValue="100.0" direction="HigherWorse"></metricId>
+			<metricId id="_d4" name="CoreSourceElementCount" presentationName="Source Element Count" description="Number of programming elements (i.e. types, fields, methods, functions, ...) plus number of statements. This includes elements of fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_d5" name="CoreStructuralDebtIndexComponents" presentationName="Structural Debt Index (Components)" description="Cumulative structural debt index of component cycles." categories="_62" provider="_60" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_d6" name="JavaStructuralDebtIndexPackages" presentationName="Structural Debt Index (Java Packages)" description="Cumulative structural debt index of all Java package cycle groups." categories="_62" provider="_66" isFloat="false" levels="_5e _5f" bestValue="0.0" worstValue="INF" minValue="0.0" maxValue="INF" direction="HigherWorse"></metricId>
+			<metricId id="_d7" name="SupertypeUsesSubtype" presentationName="Supertype uses subtype" description="A super type must not know its subtypes" categories="_d8" provider="_d9" isFloat="false" levels="_5e" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+			<metricId id="_da" name="CoreTotalLines" presentationName="Total Lines" description="Counts all lines including empty and comment lines of source files. This includes files of fully analyzed and issue ignoring code." categories="_6c" provider="_60" isFloat="false" levels="_5e _5f" bestValue="NaN" worstValue="NaN" minValue="0.0" maxValue="INF" direction="Indifferent"></metricId>
+		</metricIds>
+	</metaData>
+	<features>
+		<feature name="Architecture" presentationName="Architecture" licensed="true"></feature>
+		<feature name="CohesionAndCouplingMetrics" presentationName="Cohesion And Coupling Metrics" licensed="true"></feature>
+		<feature name="CycleBreakUp" presentationName="Cycle Break Up" licensed="true"></feature>
+		<feature name="DuplicateCode" presentationName="Duplicate Code" licensed="true"></feature>
+		<feature name="Platform" presentationName="Platform" licensed="true"></feature>
+		<feature name="Plugins" presentationName="Plugins" licensed="true"></feature>
+		<feature name="Reporting" presentationName="Reporting" licensed="true"></feature>
+		<feature name="Scripts" presentationName="Scripts" licensed="true"></feature>
+		<feature name="ScriptsAutomated" presentationName="Scripts Automated" licensed="true"></feature>
+		<feature name="Snapshots" presentationName="Snapshots" licensed="true"></feature>
+		<feature name="Systems" presentationName="Systems" licensed="true"></feature>
+		<feature name="VirtualModels" presentationName="Virtual Models" licensed="true"></feature>
+	</features>
+	<analyzers>
+		<analyzer description="Checks for architecture violations" licensed="true" executionLevel="minimal" executed="true" id="_7" name="ArchitectureCheck" presentationName="Architecture Check"></analyzer>
+		<analyzer description="Computes metrics related to source code and architecture violations" licensed="true" executionLevel="basic" executed="true" id="_b" name="ArchitectureSourcecodeMetrics" presentationName="Architecture Metrics"></analyzer>
+		<analyzer description="Calculates average complexity metrics" licensed="true" executionLevel="basic" executed="true" id="_c" name="AverageComplexityMetrics" presentationName="Average Complexity Metrics"></analyzer>
+		<analyzer description="Checks for code in large files" licensed="true" executionLevel="minimal" executed="true" id="_8" name="CodeOrganization" presentationName="Code Organization"></analyzer>
+		<analyzer description="Calculates cohesion and coupling metrics on module level" licensed="true" executionLevel="basic" executed="true" id="_d" name="CohesionAndCouplingMetricsModule" presentationName="Cohesion and Coupling Metrics (Module)"></analyzer>
+		<analyzer description="Calculates cohesion and coupling metrics on system level" licensed="true" executionLevel="basic" executed="true" id="_e" name="CohesionAndCouplingMetricsSystem" presentationName="Cohesion and Coupling Metrics (System)"></analyzer>
+		<analyzer description="Calculates system complexity metrics" licensed="true" executionLevel="basic" executed="true" id="_f" name="ComplexitySystemMetrics" presentationName="System Complexity Metrics"></analyzer>
+		<analyzer description="Analyzes component / compilation unit cycles on module level" licensed="true" executionLevel="advanced" executed="true" id="_2e" name="ComponentCyclesModule" presentationName="Component Cycles (Module)"></analyzer>
+		<analyzer description="Computes component cycle metrics on module level" licensed="true" executionLevel="advanced" executed="true" id="_2f" name="ComponentCyclesModuleMetrics" presentationName="Component Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes component / compilation unit cycles on system level" licensed="true" executionLevel="advanced" executed="true" id="_30" name="ComponentCyclesSystem" presentationName="Component Cycles (System)"></analyzer>
+		<analyzer description="Computes component cycle metrics on system level" licensed="true" executionLevel="advanced" executed="true" id="_31" name="ComponentCyclesSystemMetrics" presentationName="Component Cycle Metrics (System)"></analyzer>
+		<analyzer description="Analyzes directory cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_10" name="CppDirectoryCyclesModule" presentationName="C,C++ Directory Cycles (Module)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on module level" licensed="true" executionLevel="basic" executed="false" id="_11" name="CppDirectoryCyclesModuleMetrics" presentationName="C,C++ Directory Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes directory cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_12" name="CppDirectoryCyclesSystem" presentationName="C,C++ Directory Cycles (System)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on system level" licensed="true" executionLevel="basic" executed="false" id="_13" name="CppDirectoryCyclesSystemMetrics" presentationName="C,C++ Directory Cycle Metrics (System)"></analyzer>
+		<analyzer description="Analyzes namespace cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_14" name="CppNamespaceCyclesModule" presentationName="C,C++ Namespace Cycles (Module)"></analyzer>
+		<analyzer description="Computes namespace cycle metrics on module level" licensed="true" executionLevel="basic" executed="false" id="_15" name="CppNamespaceCyclesModuleMetrics" presentationName="C,C++ Namespace Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes namespace cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_16" name="CppNamespaceCyclesSystem" presentationName="C,C++ Namespace Cycles (System)"></analyzer>
+		<analyzer description="Computes namespace cycle metrics on system level" licensed="true" executionLevel="basic" executed="false" id="_17" name="CppNamespaceCyclesSystemMetrics" presentationName="C,C++ Namespace Cycle Metrics (System)"></analyzer>
+		<analyzer description="Analyzes directory cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_18" name="CsDirectoryCyclesModule" presentationName="C# Directory Cycles (Module)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on module level" licensed="true" executionLevel="basic" executed="false" id="_19" name="CsDirectoryCyclesModuleMetrics" presentationName="C# Directory Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes directory cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_1a" name="CsDirectoryCyclesSystem" presentationName="C# Directory Cycles (System)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on system level" licensed="true" executionLevel="basic" executed="false" id="_1b" name="CsDirectoryCyclesSystemMetrics" presentationName="C# Directory Cycle Metrics (System)"></analyzer>
+		<analyzer description="Search duplicate code on system level" licensed="true" executionLevel="full" executed="true" id="_39" name="DuplicateCode" presentationName="Duplicate Code"></analyzer>
+		<analyzer description="Calculates duplicate code metrics" licensed="true" executionLevel="full" executed="true" id="_3a" name="DuplicateCodeMetrics" presentationName="Duplicate Code Metrics"></analyzer>
+		<analyzer description="Calculates summary metrics about entangled code" licensed="true" executionLevel="advanced" executed="true" id="_32" name="Entanglement" presentationName="Entanglement"></analyzer>
+		<analyzer description="Calculates incoming dependency metrics on module level" licensed="true" executionLevel="advanced" executed="true" id="_33" name="IncomingDependencyMetricsModule" presentationName="Incoming Dependency Metrics (Module)"></analyzer>
+		<analyzer description="Calculates incoming dependency metrics on system level" licensed="true" executionLevel="advanced" executed="true" id="_34" name="IncomingDependencyMetricsSystem" presentationName="Incoming Dependency Metrics (System)"></analyzer>
+		<analyzer description="Calculates issue density per 1000 source elements" licensed="true" executionLevel="full" executed="true" id="_3b" name="IssueDensity" presentationName="Issue Density"></analyzer>
+		<analyzer description="Computes urgency and importance of issues and ranks them globally" licensed="true" executionLevel="full" executed="true" id="_3c" name="IssueRanking" presentationName="Issue Ranking"></analyzer>
+		<analyzer description="Computes Java visibility metrics" licensed="true" executionLevel="basic" executed="true" id="_1c" name="JavaVisibilityMetrics" presentationName="Java Visibility Metrics"></analyzer>
+		<analyzer description="Analyzes logical toplevel element cycles" licensed="true" executionLevel="advanced" executed="true" id="_35" name="LogicalToplevelElementCycles" presentationName="Logical Toplevel Element Cycles"></analyzer>
+		<analyzer description="Calculates maintainability level metrics" licensed="true" executionLevel="advanced" executed="true" id="_36" name="MaintainabilityLevel" presentationName="Maintainability Level"></analyzer>
+		<analyzer description="Checks for metric threshold violations" licensed="true" executionLevel="minimal" executed="true" id="_9" name="MetricThresholds" presentationName="Metric Thresholds"></analyzer>
+		<analyzer description="Analyzes module cycles on system level" licensed="true" executionLevel="basic" executed="true" id="_1d" name="ModuleCyclesSystem" presentationName="Module Cycles"></analyzer>
+		<analyzer description="Analyzes namespace cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_1e" name="NamespaceCyclesModule" presentationName="C# Namespace Cycles (Module)"></analyzer>
+		<analyzer description="Computes namespace cycle metrics on module level" licensed="true" executionLevel="basic" executed="false" id="_1f" name="NamespaceCyclesModuleMetrics" presentationName="C# Namespace Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes namespace cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_20" name="NamespaceCyclesSystem" presentationName="C# Namespace Cycles (System)"></analyzer>
+		<analyzer description="Computes namespace cycle metrics on system level" licensed="true" executionLevel="basic" executed="false" id="_21" name="NamespaceCyclesSystemMetrics" presentationName="C# Namespace Cycle Metrics (System)"></analyzer>
+		<analyzer description="Calculates outgoing dependency metrics on module level" licensed="true" executionLevel="advanced" executed="true" id="_37" name="OutgoingDependencyMetricsModule" presentationName="Ougoing Dependency Metrics (Module)"></analyzer>
+		<analyzer description="Calculates outgoing dependency metrics on system level" licensed="true" executionLevel="advanced" executed="true" id="_38" name="OutgoingDependencyMetricsSystem" presentationName="Ougoing Dependency Metrics (System)"></analyzer>
+		<analyzer description="Analyzes package cycles on module level" licensed="true" executionLevel="basic" executed="true" id="_22" name="PackageCyclesModule" presentationName="Package Cycles (Module)"></analyzer>
+		<analyzer description="Computes package cycle metrcis on module level" licensed="true" executionLevel="basic" executed="true" id="_23" name="PackageCyclesModuleMetrics" presentationName="Package Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes package cycles on system level" licensed="true" executionLevel="basic" executed="true" id="_24" name="PackageCyclesSystem" presentationName="Package Cycles (System)"></analyzer>
+		<analyzer description="Computes package cycle metrcis on system level" licensed="true" executionLevel="basic" executed="true" id="_25" name="PackageCyclesSystemMetrics" presentationName="Package Cycle Metrics (System)"></analyzer>
+		<analyzer description="Analyzes package cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_26" name="PythonPackageCyclesModule" presentationName="Python Package Cycles (Module)"></analyzer>
+		<analyzer description="Computes package cycle metrcis on module level" licensed="true" executionLevel="basic" executed="false" id="_27" name="PythonPackageCyclesModuleMetrics" presentationName="Python Package Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes package cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_28" name="PythonPackageCyclesSystem" presentationName="Python Package Cycles (System)"></analyzer>
+		<analyzer description="Computes package cycle metrcis on system level" licensed="true" executionLevel="basic" executed="false" id="_29" name="PythonPackageCyclesSystemMetrics" presentationName="Python Package Cycle Metrics (System)"></analyzer>
+		<analyzer description="Checks compliance against defined quality gates" licensed="true" executionLevel="full" executed="true" id="_3d" name="QualityGates" presentationName="Quality Gate"></analyzer>
+		<analyzer description="Calculates source code management based metrics" licensed="true" executionLevel="full" executed="true" id="_3e" name="ScmMetrics" presentationName="SCM Metrics"></analyzer>
+		<analyzer description="Runs scripts configured for automated execution" licensed="true" executionLevel="full" executed="true" id="_3f" name="ScriptRunner" presentationName="Script Runner"></analyzer>
+		<analyzer description="Calculates size metrics" licensed="true" executionLevel="minimal" executed="true" id="_a" name="SizeMetrics" presentationName="Size Metrics"></analyzer>
+		<analyzer description="Computes the system diff against a baseline" licensed="true" executionLevel="full" executed="true" id="_40" name="SystemDiff" presentationName="System Diff"></analyzer>
+		<analyzer description="Analyzes directory cycles on module level" licensed="true" executionLevel="basic" executed="false" id="_2a" name="TypescriptDirectoryCyclesModule" presentationName="TypeScript Directory Cycles (Module)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on module level" licensed="true" executionLevel="basic" executed="false" id="_2b" name="TypescriptDirectoryCyclesModuleMetrics" presentationName="TypeScript Directory Cycle Metrics (Module)"></analyzer>
+		<analyzer description="Analyzes directory cycles on system level" licensed="true" executionLevel="basic" executed="false" id="_2c" name="TypescriptDirectoryCyclesSystem" presentationName="TypeScript Directory Cycles (System)"></analyzer>
+		<analyzer description="Computes directory cycle metrics on system level" licensed="true" executionLevel="basic" executed="false" id="_2d" name="TypescriptDirectoryCyclesSystemMetrics" presentationName="TypeScript Directory Cycle Metrics (System)"></analyzer>
+	</analyzers>
+	<plugins>
+		<plugin description="Creates issues read from a file with csv content." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_1" name="com.hello2morrow.sonargraph.plugin.issues.csv" presentationName="Sonargraph Issue Importer Plugin">
+			<supportedExecutionPhase>analyzer</supportedExecutionPhase>
+		</plugin>
+		<plugin description="Uses PMD to detect issues." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_2" name="com.hello2morrow.sonargraph.plugin.pmd" presentationName="Sonargraph PMD Plugin">
+			<supportedExecutionPhase>analyzer</supportedExecutionPhase>
+		</plugin>
+		<plugin description="Uses Spotbugs to detect issues." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_3" name="com.hello2morrow.sonargraph.plugin.spotbugs" presentationName="Sonargraph Spotbugs Plugin">
+			<supportedExecutionPhase>analyzer</supportedExecutionPhase>
+		</plugin>
+		<plugin description="Detects and adds Angular component dependencies." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_4" name="com.hello2morrow.sonargraph.plugin.angular" presentationName="Sonargraph Angular Plugin">
+			<supportedExecutionPhase>model</supportedExecutionPhase>
+		</plugin>
+		<plugin description="Detects and adds web resources of SpringBoot applications and their dependencies." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_5" name="com.hello2morrow.sonargraph.plugin.spring.microservices" presentationName="Sonargraph Spring Microservices Plugin">
+			<supportedExecutionPhase>model</supportedExecutionPhase>
+		</plugin>
+		<plugin description="Detects and adds web resources and calls generated by Swagger for the OkHttpClient framework." version="n/a" vendor="hello2morrow GmbH" licensed="true" enabled="false" id="_6" name="com.hello2morrow.sonargraph.plugin.swagger" presentationName="Sonargraph Swagger Plugin">
+			<supportedExecutionPhase>model</supportedExecutionPhase>
+		</plugin>
+	</plugins>
+	<duplicateCodeConfiguration>
+		<entry>MinimalLineLength:3</entry>
+		<entry>MinimalBlockLength:25</entry>
+		<entry>MaximalNumberOfCopies:100</entry>
+		<entry>MaximalTolerancePerEdit:3</entry>
+		<entry>MaximalRelativeTolerancePercentage:30</entry>
+	</duplicateCodeConfiguration>
+	<scriptRunnerConfiguration>
+		<entry>./Core/SuperTypeUsesSubType.xml:[Default]</entry>
+	</scriptRunnerConfiguration>
+	<metricThresholds>
+		<threshold id="_db" metricId="_a1" metricLevel="_5f" lowerThreshold="0" upperThreshold="10" severity="Warning"></threshold>
+		<threshold id="_dc" metricId="_93" metricLevel="_94" lowerThreshold="0" upperThreshold="900" severity="Warning"></threshold>
+		<threshold id="_dd" metricId="_9f" metricLevel="_a0" lowerThreshold="0" upperThreshold="15" severity="Warning"></threshold>
+		<threshold id="_de" metricId="_bb" metricLevel="_a0" lowerThreshold="0" upperThreshold="100" severity="Warning"></threshold>
+		<threshold id="_df" metricId="_d7" metricLevel="_5e" lowerThreshold="0" upperThreshold="0" severity="Warning"></threshold>
+	</metricThresholds>
+	<cycleGroupAnalyzerConfiguration analyzer="_2e" name="ComponentCyclesModule">
+		<intEntry name="CriticalComponentCycleSize" value="6"></intEntry>
+	</cycleGroupAnalyzerConfiguration>
+	<cycleGroupAnalyzerConfiguration analyzer="_1d" name="ModuleCyclesSystem">
+		<intEntry name="CriticalModuleCycleSize" value="2"></intEntry>
+	</cycleGroupAnalyzerConfiguration>
+	<cycleGroupAnalyzerConfiguration analyzer="_30" name="ComponentCyclesSystem">
+		<intEntry name="CriticalComponentCycleSize" value="6"></intEntry>
+	</cycleGroupAnalyzerConfiguration>
+	<cycleGroupAnalyzerConfiguration analyzer="_24" name="PackageCyclesSystem">
+		<intEntry name="CriticalNamespaceCycleSize" value="6"></intEntry>
+	</cycleGroupAnalyzerConfiguration>
+	<cycleGroupAnalyzerConfiguration analyzer="_22" name="PackageCyclesModule">
+		<intEntry name="CriticalNamespaceCycleSize" value="6"></intEntry>
+	</cycleGroupAnalyzerConfiguration>
+	<systemDiffConfiguration>
+		<path></path>
+	</systemDiffConfiguration>
+	<qualityGateConfiguration></qualityGateConfiguration>
+	<pluginConfiguration plugin="_4" id="_41" name="./com.hello2morrow.sonargraph.plugin.angular.xml" presentationName="./com.hello2morrow.sonargraph.plugin.angular.xml">
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+	</pluginConfiguration>
+	<pluginConfiguration plugin="_1" id="_42" name="./com.hello2morrow.sonargraph.plugin.issues.csv.xml" presentationName="./com.hello2morrow.sonargraph.plugin.issues.csv.xml">
+		<stringEntry name="files" value=""></stringEntry>
+		<stringEntry name="errorRanges" value=""></stringEntry>
+		<stringEntry name="warningRanges" value=""></stringEntry>
+		<stringEntry name="infoRanges" value=""></stringEntry>
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+	</pluginConfiguration>
+	<pluginConfiguration plugin="_2" id="_43" name="./com.hello2morrow.sonargraph.plugin.pmd.xml" presentationName="./com.hello2morrow.sonargraph.plugin.pmd.xml">
+		<stringEntry name="ruleSets" value=""></stringEntry>
+		<stringEntry name="high" value="error"></stringEntry>
+		<stringEntry name="mediumHigh" value="error"></stringEntry>
+		<stringEntry name="medium" value="error"></stringEntry>
+		<stringEntry name="mediumLow" value="error"></stringEntry>
+		<stringEntry name="low" value="error"></stringEntry>
+		<intEntry name="minimumPriority" value="5"></intEntry>
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+		<booleanEntry name="cache" value="true"></booleanEntry>
+	</pluginConfiguration>
+	<pluginConfiguration plugin="_3" id="_44" name="./com.hello2morrow.sonargraph.plugin.spotbugs.xml" presentationName="./com.hello2morrow.sonargraph.plugin.spotbugs.xml">
+		<stringEntry name="analysisEffort" value="default"></stringEntry>
+		<stringEntry name="scariest" value="warning"></stringEntry>
+		<stringEntry name="scary" value="warning"></stringEntry>
+		<stringEntry name="troubling" value="warning"></stringEntry>
+		<stringEntry name="ofConcern" value="warning"></stringEntry>
+		<intEntry name="minimumRank" value="14"></intEntry>
+		<intEntry name="minimumConfidence" value="2"></intEntry>
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+		<booleanEntry name="badPractice" value="true"></booleanEntry>
+		<booleanEntry name="maliciousCodeVulnerability" value="true"></booleanEntry>
+		<booleanEntry name="correctness" value="true"></booleanEntry>
+		<booleanEntry name="performance" value="true"></booleanEntry>
+		<booleanEntry name="security" value="true"></booleanEntry>
+		<booleanEntry name="dodgyCode" value="true"></booleanEntry>
+		<booleanEntry name="multithreadedCorrectness" value="true"></booleanEntry>
+		<booleanEntry name="internationalization" value="true"></booleanEntry>
+		<booleanEntry name="experimental" value="false"></booleanEntry>
+	</pluginConfiguration>
+	<pluginConfiguration plugin="_5" id="_45" name="./com.hello2morrow.sonargraph.plugin.spring.microservices.xml" presentationName="./com.hello2morrow.sonargraph.plugin.spring.microservices.xml">
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+	</pluginConfiguration>
+	<pluginConfiguration plugin="_6" id="_46" name="./com.hello2morrow.sonargraph.plugin.swagger.xml" presentationName="./com.hello2morrow.sonargraph.plugin.swagger.xml">
+		<booleanEntry name="enabled" value="false"></booleanEntry>
+	</pluginConfiguration>
+	<elementKinds>
+		<elementKind id="_e9" standardKind="JavaExternal" presentationKind="Java External" imageResourceName="External"></elementKind>
+		<elementKind id="_e6" standardKind="JavaClassRootDirectoryPath" presentationKind="Java Class Root Directory/Archive" imageResourceName="RootDirectoryPath"></elementKind>
+		<elementKind id="_103" standardKind="SoftwareSystem" presentationKind="System"></elementKind>
+		<elementKind id="_eb" standardKind="JavaInternalCompilationUnit" presentationKind="Java Internal Component" imageResourceName="JavaCompilationUnit"></elementKind>
+		<elementKind id="_e3" standardKind="JavaSourceRootDirectoryPath" presentationKind="Java Source Root Directory/Archive"></elementKind>
+		<elementKind id="_e1" standardKind="JavaModule" presentationKind="Java Module" imageResourceName="Module"></elementKind>
+	</elementKinds>
+	<workspace>
+		<workspaceFilter description="Exclude files (matches against the 'Identifying Path' property)" information="" numberOfExcludedElements="0"></workspaceFilter>
+		<productionCodeFilter description="Exclude internal components containing test code (matches against the 'Workspace Filter Name' property)" information="Excluded 0 internal component(s) (processed 131)" numberOfExcludedElements="0" numberOfIncludedElements="131"></productionCodeFilter>
+		<issueFilter description="Ignore analysis issues of internal components containing legacy/generated code (matches against the 'Workspace Filter Name' property)" information="Ignoring analysis issues of 0 internal component(s) (processed 131)" numberOfExcludedElements="0" numberOfIncludedElements="131"></issueFilter>
+		<module moduleId="4df33895a7eab8e79244c52df96559cd" language="Java" description="Phase 0 - Monolithic" kind="_e1" fqName="Workspace:Monolithic" id="_e0" name="Monolithic" presentationName="Monolithic">
+			<rootDirectory kind="_e3" fqName="Workspace:Monolithic:./retailproject/src/main/java" id="_e2" name="./retailproject/src/main/java" presentationName="./retailproject/src/main/java">
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:controllers:ItemController.java" id="_ea" name="ItemController.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/controllers/ItemController.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:controllers:MerchantOrderController.java" id="_ec" name="MerchantOrderController.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/controllers/MerchantOrderController.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:controllers:OrderController.java" id="_ed" name="OrderController.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/controllers/OrderController.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:controllers:ShippingOrderController.java" id="_ee" name="ShippingOrderController.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/controllers/ShippingOrderController.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:services:MerchantOrderService.java" id="_ef" name="MerchantOrderService.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/MerchantOrderService.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:services:OrderService.java" id="_f0" name="OrderService.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/OrderService.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/main/java:edu:ipp:isep:dei:dimei:retailproject:services:ShippingOrderService.java" id="_f1" name="ShippingOrderService.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/ShippingOrderService.java"></sourceElement>
+			</rootDirectory>
+			<rootDirectory kind="_e3" fqName="Workspace:Monolithic:./retailproject/src/test/java" id="_e4" name="./retailproject/src/test/java" presentationName="./retailproject/src/test/java">
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:creates:OrderCreateDTOTest.java" id="_f2" name="OrderCreateDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/creates/OrderCreateDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:gets:ItemDTOTest.java" id="_f3" name="ItemDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/gets/ItemDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:gets:MerchantOrderDTOTest.java" id="_f4" name="MerchantOrderDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/gets/MerchantOrderDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:gets:OrderDTOTest.java" id="_f5" name="OrderDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/gets/OrderDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:gets:ShippingOrderDTOTest.java" id="_f6" name="ShippingOrderDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/gets/ShippingOrderDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:updates:ItemUpdateDTOTest.java" id="_f7" name="ItemUpdateDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/updates/ItemUpdateDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:updates:MerchantOrderUpdateDTOTest.java" id="_f8" name="MerchantOrderUpdateDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/updates/MerchantOrderUpdateDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:updates:OrderUpdateDTOTest.java" id="_f9" name="OrderUpdateDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/updates/OrderUpdateDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:common:dto:updates:ShippingOrderUpdateDTOTest.java" id="_fa" name="ShippingOrderUpdateDTOTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/common/dto/updates/ShippingOrderUpdateDTOTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:domain:model:MerchantOrderTest.java" id="_fb" name="MerchantOrderTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/domain/model/MerchantOrderTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:domain:model:OrderTest.java" id="_fc" name="OrderTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/domain/model/OrderTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:domain:model:ShippingOrderTest.java" id="_fd" name="ShippingOrderTest.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/domain/model/ShippingOrderTest.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:services:ItemQuantityServiceTests.java" id="_fe" name="ItemQuantityServiceTests.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/ItemQuantityServiceTests.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:services:MerchantOrderServiceTests.java" id="_ff" name="MerchantOrderServiceTests.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/MerchantOrderServiceTests.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:services:OrderServiceTests.java" id="_100" name="OrderServiceTests.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/OrderServiceTests.java"></sourceElement>
+				<sourceElement kind="_eb" fqName="Workspace:Monolithic:./retailproject/src/test/java:edu:ipp:isep:dei:dimei:retailproject:services:ShippingOrderServiceTests.java" id="_101" name="ShippingOrderServiceTests.java" presentationName="./edu/ipp/isep/dei/dimei/retailproject/services/ShippingOrderServiceTests.java"></sourceElement>
+			</rootDirectory>
+			<rootDirectory kind="_e6" fqName="Workspace:Monolithic:Class|./retailproject/target/classes" id="_e5" name="Class|./retailproject/target/classes" presentationName="./retailproject/target/classes"></rootDirectory>
+			<rootDirectory kind="_e6" fqName="Workspace:Monolithic:Class|./retailproject/target/test-classes" id="_e7" name="Class|./retailproject/target/test-classes" presentationName="./retailproject/target/test-classes"></rootDirectory>
+		</module>
+		<external language="Java" description="Contains external Java elements" kind="_e9" fqName="Workspace:External [Java]" id="_e8" name="External [Java]" presentationName="External [Java]"></external>
+	</workspace>
+	<systemElements ref="_0">
+		<element kind="_103" fqName="Monolithic" id="_102" name="Monolithic" presentationName="Monolithic"></element>
+	</systemElements>
+	<moduleElements ref="_e0"></moduleElements>
+	<systemMetricValues elementRef="_0">
+		<levelValues levelRef="_5e">
+			<metric ref="_a1">
+				<float ref="_102">2.44</float>
+			</metric>
+			<metric ref="_a7">
+				<int ref="_102">131</int>
+			</metric>
+			<metric ref="_a8">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_d6">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_c0">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_8e">
+				<int ref="_102">50</int>
+			</metric>
+			<metric ref="_ae">
+				<int ref="_102">2196</int>
+			</metric>
+			<metric ref="_cb">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_ad">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_6e">
+				<int ref="_102">21566</int>
+			</metric>
+			<metric ref="_92">
+				<float ref="_102">5.86</float>
+			</metric>
+			<metric ref="_85">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_c4">
+				<int ref="_102">136</int>
+			</metric>
+			<metric ref="_6a">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_71">
+				<int ref="_102">1971</int>
+			</metric>
+			<metric ref="_b4">
+				<int ref="_102">16</int>
+			</metric>
+			<metric ref="_cc">
+				<float ref="_102">11.38</float>
+			</metric>
+			<metric ref="_9a">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_80">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_be">
+				<float ref="_102">0.97</float>
+			</metric>
+			<metric ref="_84">
+				<int ref="_102">9</int>
+			</metric>
+			<metric ref="_aa">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_b3">
+				<int ref="_102">16</int>
+			</metric>
+			<metric ref="_bb">
+				<int ref="_102">5163</int>
+			</metric>
+			<metric ref="_75">
+				<float ref="_102">0.02</float>
+			</metric>
+			<metric ref="_a6">
+				<int ref="_102">131</int>
+			</metric>
+			<metric ref="_d4">
+				<int ref="_102">7337</int>
+			</metric>
+			<metric ref="_81">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_ce">
+				<float ref="_102">13.61</float>
+			</metric>
+			<metric ref="_a4">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_7a">
+				<int ref="_102">681</int>
+			</metric>
+			<metric ref="_ba">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_97">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_90">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_d0">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_c3">
+				<int ref="_102">5143</int>
+			</metric>
+			<metric ref="_6d">
+				<int ref="_102">1953</int>
+			</metric>
+			<metric ref="_d1">
+				<float ref="_102">2.29</float>
+			</metric>
+			<metric ref="_87">
+				<float ref="_102">4.68</float>
+			</metric>
+			<metric ref="_b9">
+				<int ref="_102">131</int>
+			</metric>
+			<metric ref="_c7">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_69">
+				<int ref="_102">3</int>
+			</metric>
+			<metric ref="_9b">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_67">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_a5">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_a2">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_b6">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_bf">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_d3">
+				<float ref="_102">1.37</float>
+			</metric>
+			<metric ref="_cf">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_8c">
+				<int ref="_102">697</int>
+			</metric>
+			<metric ref="_93">
+				<int ref="_102">13395</int>
+			</metric>
+			<metric ref="_d5">
+				<int ref="_102">47</int>
+			</metric>
+			<metric ref="_b8">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_8b">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_da">
+				<int ref="_102">16506</int>
+			</metric>
+			<metric ref="_72">
+				<int ref="_102">21566</int>
+			</metric>
+			<metric ref="_b5">
+				<int ref="_102">131</int>
+			</metric>
+			<metric ref="_c5">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_76">
+				<float ref="_102">11.94</float>
+			</metric>
+			<metric ref="_77">
+				<float ref="_102">130.66</float>
+			</metric>
+			<metric ref="_9c">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_7c">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_91">
+				<float ref="_102">14.91</float>
+			</metric>
+			<metric ref="_83">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_5b">
+				<float ref="_102">14.91</float>
+			</metric>
+			<metric ref="_6b">
+				<int ref="_102">57207</int>
+			</metric>
+			<metric ref="_b1">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_96">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_b2">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_7f">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_c8">
+				<int ref="_102">2</int>
+			</metric>
+			<metric ref="_8a">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_c2">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_b7">
+				<int ref="_102">131</int>
+			</metric>
+			<metric ref="_95">
+				<int ref="_102">13395</int>
+			</metric>
+			<metric ref="_88">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_d2">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_ab">
+				<int ref="_102">3</int>
+			</metric>
+			<metric ref="_b0">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_ca">
+				<int ref="_102">17</int>
+			</metric>
+			<metric ref="_9e">
+				<int ref="_102">627</int>
+			</metric>
+			<metric ref="_78">
+				<float ref="_102">0.02</float>
+			</metric>
+			<metric ref="_ac">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_c9">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_8f">
+				<int ref="_102">697</int>
+			</metric>
+			<metric ref="_70">
+				<int ref="_102">4</int>
+			</metric>
+			<metric ref="_c6">
+				<int ref="_102">2</int>
+			</metric>
+			<metric ref="_89">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_74">
+				<float ref="_102">130.66</float>
+			</metric>
+			<metric ref="_a9">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_7e">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_7b">
+				<int ref="_102">3</int>
+			</metric>
+			<metric ref="_98">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_86">
+				<int ref="_102">627</int>
+			</metric>
+			<metric ref="_8d">
+				<int ref="_102">1</int>
+			</metric>
+			<metric ref="_73">
+				<int ref="_102">4</int>
+			</metric>
+			<metric ref="_82">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_bc">
+				<int ref="_102">50</int>
+			</metric>
+			<metric ref="_d7">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_79">
+				<int ref="_102">681</int>
+			</metric>
+			<metric ref="_a3">
+				<int ref="_102">22</int>
+			</metric>
+			<metric ref="_9d">
+				<float ref="_102">81.12</float>
+			</metric>
+			<metric ref="_63">
+				<float ref="_102">1.27</float>
+			</metric>
+			<metric ref="_61">
+				<float ref="_102">0.16</float>
+			</metric>
+			<metric ref="_99">
+				<float ref="_102">0.0</float>
+			</metric>
+			<metric ref="_c1">
+				<int ref="_102">0</int>
+			</metric>
+			<metric ref="_af">
+				<int ref="_102">0</int>
+			</metric>
+		</levelValues>
+	</systemMetricValues>
+	<moduleMetricValues elementRef="_e0">
+		<levelValues levelRef="_5f">
+			<metric ref="_6e">
+				<int ref="_e0">21566</int>
+			</metric>
+			<metric ref="_70">
+				<int ref="_e0">4</int>
+			</metric>
+			<metric ref="_71">
+				<int ref="_e0">1971</int>
+			</metric>
+			<metric ref="_72">
+				<int ref="_e0">21566</int>
+			</metric>
+			<metric ref="_73">
+				<int ref="_e0">4</int>
+			</metric>
+			<metric ref="_74">
+				<float ref="_e0">130.66</float>
+			</metric>
+			<metric ref="_75">
+				<float ref="_e0">0.02</float>
+			</metric>
+			<metric ref="_76">
+				<float ref="_e0">11.94</float>
+			</metric>
+			<metric ref="_77">
+				<float ref="_e0">130.66</float>
+			</metric>
+			<metric ref="_78">
+				<float ref="_e0">0.02</float>
+			</metric>
+			<metric ref="_8c">
+				<int ref="_e0">697</int>
+			</metric>
+			<metric ref="_8d">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_8e">
+				<int ref="_e0">50</int>
+			</metric>
+			<metric ref="_8f">
+				<int ref="_e0">697</int>
+			</metric>
+			<metric ref="_90">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_c6">
+				<int ref="_e0">2</int>
+			</metric>
+			<metric ref="_a2">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_c7">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_c8">
+				<int ref="_e0">2</int>
+			</metric>
+			<metric ref="_c9">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_61">
+				<float ref="_e0">0.16</float>
+			</metric>
+			<metric ref="_65">
+				<float ref="_e0">66.25</float>
+			</metric>
+			<metric ref="_7b">
+				<int ref="_e0">3</int>
+			</metric>
+			<metric ref="_7c">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_92">
+				<float ref="_e0">5.86</float>
+			</metric>
+			<metric ref="_ca">
+				<int ref="_e0">17</int>
+			</metric>
+			<metric ref="_cb">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_d5">
+				<int ref="_e0">47</int>
+			</metric>
+			<metric ref="_d6">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_5b">
+				<float ref="_e0">14.91</float>
+			</metric>
+			<metric ref="_6d">
+				<int ref="_e0">1953</int>
+			</metric>
+			<metric ref="_9d">
+				<float ref="_e0">81.12</float>
+			</metric>
+			<metric ref="_a1">
+				<float ref="_e0">2.44</float>
+			</metric>
+			<metric ref="_cc">
+				<float ref="_e0">11.38</float>
+			</metric>
+			<metric ref="_69">
+				<int ref="_e0">3</int>
+			</metric>
+			<metric ref="_6a">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_84">
+				<int ref="_e0">9</int>
+			</metric>
+			<metric ref="_85">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_c5">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_a5">
+				<int ref="_e0">1</int>
+			</metric>
+			<metric ref="_a9">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_aa">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_ab">
+				<int ref="_e0">3</int>
+			</metric>
+			<metric ref="_ac">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_b1">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_b2">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_d1">
+				<float ref="_e0">2.29</float>
+			</metric>
+			<metric ref="_d2">
+				<float ref="_e0">0.0</float>
+			</metric>
+			<metric ref="_d3">
+				<float ref="_e0">1.37</float>
+			</metric>
+			<metric ref="_79">
+				<int ref="_e0">681</int>
+			</metric>
+			<metric ref="_7a">
+				<int ref="_e0">681</int>
+			</metric>
+			<metric ref="_93">
+				<int ref="_e0">13395</int>
+			</metric>
+			<metric ref="_95">
+				<int ref="_e0">13395</int>
+			</metric>
+			<metric ref="_a6">
+				<int ref="_e0">131</int>
+			</metric>
+			<metric ref="_a7">
+				<int ref="_e0">131</int>
+			</metric>
+			<metric ref="_a8">
+				<int ref="_e0">0</int>
+			</metric>
+			<metric ref="_b3">
+				<int ref="_e0">16</int>
+			</metric>
+			<metric ref="_b4">
+				<int ref="_e0">16</int>
+			</metric>
+			<metric ref="_b5">
+				<int ref="_e0">131</int>
+			</metric>
+			<metric ref="_bb">
+				<int ref="_e0">5163</int>
+			</metric>
+			<metric ref="_c4">
+				<int ref="_e0">136</int>
+			</metric>
+			<metric ref="_d4">
+				<int ref="_e0">7337</int>
+			</metric>
+			<metric ref="_da">
+				<int ref="_e0">16506</int>
+			</metric>
+			<metric ref="_63">
+				<float ref="_e0">1.27</float>
+			</metric>
+		</levelValues>
+	</moduleMetricValues>
+	<issues modelName="./Modifiable.vm" numberOfIssues="23" numberOfUnresolvedIssues="23">
+		<elementIssues>
+			<duplicate name="Duplicate code block 12" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:2a36deb45f275e1e932783e7fffecfa7|fec9813fe9b8650682a1ab87aae279fc" blockSize="131" numberOfOccurrences="2" id="_104" type="_5a" provider="_58" description="2 occurrences with 131 line(s) found in 2 file(s)">
+				<occurrence source="_f6" startLine="21" endLine="151" blockSize="131" tolerance="3" hash="Hi8sB4CwMcolrefgG3s3OwuFt/MEPhALBsr/yAzgTFse/U7THrLKIA/PMph/UIJkMQi9VjxSam33hgZiWsZMBHSed3e4AW+96+jIb1n9CscQpwm5tfHutdJFupb8unzo698/0qfQyupiJAg2R9I25OvoyG9Z/QrHEKcJubXx7rXSRbqW/Lp86MwCg+Xr6MwwnDyjThCnCbm18e610kW6lvy6fOgyIFO+6+jIb81ooN2PPawJV9djn/y6fOgHGdXI6+jIb1J7ue2A+TjuscwMmfy6fOj+gDbKHooyn+voyG8NvmvA2hLBLbt6U7fV5sri/Lp86KUP7T7r6MwwDb7gHyWIfomdDDGW1ebOo/y6fOj67itQET/gcBKTQEoSoVfL5fW8ievoyG/4+5ebJqi2x7HF2Ya0SWlT/Lp86C0h9CHr6Mhv+Jl3oo47o5uNc+hP8ZRT5SsgzIv8unzogkTlZevoyG+pROGrzWig3e+lL/n8unzoGt0+aevoyG/4mXeiNJo4s41z6E8l1uWbQ0Kzr/y6fOhOyGH36+jIb/w9q5RE+eUN9lUpKiXW5Zvc8T3LjXPoT/y6fOgmDHxNbyDQkg=="></occurrence>
+				<occurrence source="_fa" startLine="23" endLine="152" blockSize="130" tolerance="3" hash="Hi8sB4CwMcolrefgG3s3OwuFt/MEPhALBsr/yAzgTFt2eu0wHrLKIA/PMph/UIJkMQi9VjxSam33hgZiuAFvvevoyG9Z/QrHEKcJubXx7rXSRbqW/Lp86OvfP9Kn0MrqYiQINlrGTAR0nnd3R9I25OvoyG9Z/QrHEKcJubXx7rXSRbqW/Lp86MwCg+Xr6MwwnDyjThCnCbm18e610kW6lvy6fOgyIFO+6+jIb81ooN2PPawJV9djn/y6fOgHGdXI6+jIb1J7ue2A+TjuscwMmfy6fOj+gDbKHooyn+voyG8NvmvA2hLBLbt6U7fV5sri/Lp86KUP7T7r6MwwDb7gHyWIfomdDDGW1ebOo/y6fOj67itQET/gcBKTQEoSoVfL5fW8ievoyG/4+5ebJqi2x7HF2Ya0SWlT/Lp86C0h9CHr6Mhv+Jl3oo47o5uNc+hP8ZRT5SsgzIv8unzogkTlZevoyG+pROGrzWig3e+lL/n8unzoGt0+aevoyG/4mXeiNJo4s41z6E8l1uWbQ0Kzr/y6fOhOyGH36+jIb/w9q5RE+eUN9lUpKiXW5Zvc8T3LjXPoT/y6fOiZVdg8byDQkg=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 5" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cbc2bbe19d94a048b4c3812aa4dbf45b|a84646f94931ad425cc48e09ab4dca34" blockSize="114" numberOfOccurrences="4" id="_105" type="_5a" provider="_58" description="4 occurrences with 114 line(s) found in 1 file(s)">
+				<occurrence source="_f4" startLine="153" endLine="199" blockSize="47" tolerance="17" hash="KifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdVMNcGsbyDQkqJWKbEqJ9xmkUq4j8UaEGdMGf4PiO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+EcaK+B/Z6Ugalb4WE/yyiBD82Z1ZGTHj1vINCSi/BD7yon3GY="></occurrence>
+				<occurrence source="_f4" startLine="199" endLine="245" blockSize="47" tolerance="17" hash="KifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdXYhVVGbyDQkmE4YrYqJ9xmkUq4j8UaEGcIBqFSiO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+Hmb418/Z6Ugalb4WE/yyiBD82Z1UiqdJxvINCSLVRydCon3GY="></occurrence>
+				<occurrence source="_f4" startLine="245" endLine="358" blockSize="114" tolerance="17" hash="KifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdV8gLhzbyDQksQFgTMqJ9xmkUq4j8UaEGeR83bRiO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+F+SQY//Z6Ugalb4WE/yyiBD82Z1YjJ4f9vINCSD0QKcSon3GaRSriPxRoQZ5EpIhWI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4VCO2Xv9npSBqVvhYT/LKIEPzZnVs8BHSG8g0JKDlO6kKifcZpFKuI/FGhBncI80gojvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhuqfX7v2elIGpW+FhP8sogQ/NmdUeNHJwbyDQknWNV2IqJ9xmkUq4j8UaEGeRKSIViO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+FQjtl7/Z6Ugalb4WE/yyiBD82Z1WUmqXlvINCS"></occurrence>
+				<occurrence source="_f4" startLine="84" endLine="153" blockSize="70" tolerance="17" hash="KifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdVi+wpDbyDQkiHMMbUqJ9xmkUq4j8UaEGdhpUlLiO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+H4PQYj/Z6Ugalb4WE/yyiBD82Z1Y3xb4xvINCS+uBmLyon3GaRSriPxRoQZ2GlSUuI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4fg9BiP9npSBqVvhYT/LKIEPzZnVGF991W8g0JLj7BFtKifcZg=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 13" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:324499b4af7497238960eb5b4881e2b3|da486cef68891eae6a3285b73d0680aa" blockSize="114" numberOfOccurrences="2" id="_106" type="_5a" provider="_58" description="2 occurrences with 114 line(s) found in 2 file(s)">
+				<occurrence source="_ff" startLine="84" endLine="197" blockSize="114" tolerance="2" hash="HrLKIA/PMpjwBXKCNB+p0evoyG/NaKDdjz2sCVfXY5/8unzoAN2e6evozDD5DUchZ9GPkMTPcNz8unzoeyVxvevoyG9Se7ntgPk47rHMDJn8unzoVmcY1evozDBSe7ntgPk47qYckLH8unzoJu6AH+voyG9Z/QrHEKcJubXx7rXSRbqW/Lp86POsdTfr6MwwnbfMtxCnCbm18e610kW6lvy6fOgZba2d6+jIb6lE4av5DUchshu0//y6fOj80PC96+jIbw2+a8DaEsEt78dK0r5sqRHyfan4+t4VgkNCs6/8unzoYoYGbOvoyG/TAxkcjSXnT75sqRH8unzoYzKyC+vozDDTAxkcjSXnT75sqRH8unzoxOXooNMlF+Tr6Mhv9mXCz447o5uNc+hPs7THTxXkQHzr6MhvOPvA7P7G53SxxdmGJoymvfy6fNb8unzoQuHlMcT0ACEdVrEl6+jMMPZlws+OO6ObjXPoT7O0x08V5EB86+jIbzj7wOz+xud0scXZhiaMpr38unzW/Lp86A=="></occurrence>
+				<occurrence source="_101" startLine="78" endLine="189" blockSize="112" tolerance="2" hash="HrLKIA/PMpjwBXKCNB+p0evoyG/NaKDdjz2sCVfXY5/8unzoAN2e6evozDD5DUchZ9GPkMTPcNz8unzoeyVxvevoyG9Se7ntgPk47rHMDJn8unzoVmcY1evozDBSe7ntgPk47qYckLH8unzoJu6AH+voyG9Z/QrHEKcJubXx7rXSRbqW/Lp86POsdTfr6MwwnbfMtxCnCbm18e610kW6lvy6fOgZba2d6+jIb6lE4av5DUchshu0//y6fOj80PC96+jIbw2+a8DaEsEt78dK0r5sqRHyfan4+t4VgkNCs6/8unzoYoYGbOvoyG/TAxkcjSXnT75sqRH8unzoYzKyC+vozDDTAxkcjSXnT75sqRH8unzoxOXooNMlF+Tr6Mhvjjujm41z6E+ztMdPFeRAfOvoyG84+8Ds/sbndLHF2YYmjKa9/Lp81vy6fOhC4eUxxPQAIR1WsSXr6Mwwjjujm41z6E+ztMdPFeRAfOvoyG84+8Ds/sbndLHF2YYmjKa9/Lp81vy6fOg="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 7" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:5eece9335b161630d0dc1b3ef4de0191|874dbac09ae0375eafddf388e64c308b" blockSize="77" numberOfOccurrences="3" id="_107" type="_5a" provider="_58" description="3 occurrences with 77 line(s) found in 3 file(s)">
+				<occurrence source="_f6" startLine="60" endLine="136" blockSize="77" tolerance="3" hash="6+jMMJw8o04Qpwm5tfHutdJFupb8unzoMiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86IJE5WXr6MhvqUThq81ooN3vpS/5/Lp86BrdPmnr6Mhv+Jl3ojSaOLONc+hPJdblm0NCs6/8unzo"></occurrence>
+				<occurrence source="_f8" startLine="46" endLine="122" blockSize="77" tolerance="3" hash="6+jMMJw8o04Qpwm5tfHutdJFupb8unzoMiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86IJE5WXr6MhvqUThq/YiCTfp32fn/Lp86KxvCUPr6Mhv+Jl3ojSaOLONc+hPJdblm0NCs6/8unzo"></occurrence>
+				<occurrence source="_fa" startLine="61" endLine="137" blockSize="77" tolerance="3" hash="6+jMMJw8o04Qpwm5tfHutdJFupb8unzoMiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86IJE5WXr6MhvqUThq81ooN3vpS/5/Lp86BrdPmnr6Mhv+Jl3ojSaOLONc+hPJdblm0NCs6/8unzo"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 8" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:b8270d3f4818cb21d8f858f8a6a4131a|224fe02eb3822115f90549e5b9c65867" blockSize="76" numberOfOccurrences="3" id="_108" type="_5a" provider="_58" description="3 occurrences with 76 line(s) found in 3 file(s)">
+				<occurrence source="_fb" startLine="30" endLine="105" blockSize="76" tolerance="2" hash="HrLKIA/PMph/UIJkMQi9Vs/dyHvwBXKCsYTn8+voyG/NaKDdjz2sCVfXY5/8unzoeyVxvevoyG9Se7ntgPk47jSiy478unzoPOJf0+voyG9Z/QrHEKcJubXx7rXSRbqW/Lp86BltrZ3r6Mhvns9ue/kNRyHp32fn/Lp86L8DnVvr6MhvQemANdMXi0z8unzoi2faEOvoyG8NvmvA2hLBLX/BH9e+bKkR8n2p+H3+Je9DQrOv/Lp86MRb7TR/NrIq6+jIb9MDGRyNJedPvmypEfy6fOjE5eigWoG9d+X1vInr6Mhv0uQ6fCaotsexxdmGtElpU/y6fOjDT+IT6+jIb/iZd6KOO6ObjXPoT7O0x08rIMyL/Lp86A=="></occurrence>
+				<occurrence source="_fc" startLine="34" endLine="100" blockSize="67" tolerance="5" hash="HrLKIA/PMph/UIJkMQi9Vs/dyHvwBXKCsYTn8+voyG/NaKDdjz2sCVfXY5/8unzoeyVxvevoyG9Se7ntgPk47jSiy478unzoPOJf0+voyG9Z/QrHEKcJubXx7rXSRbqW/Lp86BltrZ3r6MhvtzB5k/kNRyHp32fn/Lp86L8DnVvr6MhvQemANdMXi0z8unzoi2faEOvoyG8NvmvA2hLBLX/BH9e+bKkR8n2p+H3+Je9DQrOv/Lp86JvtvrZ/NrIq6+jIb9MDGRyNJedPvmypEfy6fOix9clAU3eOV4kqDsPr6Mhv0uQ6fCaotsexxdmGtElpU/y6fOg="></occurrence>
+				<occurrence source="_fd" startLine="31" endLine="106" blockSize="76" tolerance="2" hash="HrLKIA/PMph/UIJkMQi9VjxSam3wBXKCsYTn8+voyG/NaKDdjz2sCVfXY5/8unzoeyVxvevoyG9Se7ntgPk47jSiy478unzoPOJf0+voyG9Z/QrHEKcJubXx7rXSRbqW/Lp86IJE5WXr6Mhvns9ue/kNRyHp32fn/Lp86L8DnVvr6MhvQemANdMXi0z8unzoi2faEOvoyG8NvmvA2hLBLX/BH9e+bKkR8n2p+H3+Je9DQrOv/Lp86MRb7TR/NrIq6+jIb9MDGRyNJedPvmypEfy6fOjE5eigWoG9d+X1vInr6Mhv0uQ6fCaotsexxdmGtElpU/y6fOjDT+IT6+jIb/iZd6KOO6ObjXPoT7O0x08rIMyL/Lp86A=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 14" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:b9b7d6057447693336a31e099992ec9f|9a25913d4d0e6b2a67fbf392786edfd2" blockSize="66" numberOfOccurrences="2" id="_109" type="_5a" provider="_58" description="2 occurrences with 66 line(s) found in 1 file(s)">
+				<occurrence source="_ea" startLine="249" endLine="314" blockSize="66" tolerance="6" hash="GRH4B2GINIUnqQpBZkJpegIbD69ozuKpZORwigJy/cMUN+KpqvnGIl9wy3dnS9KO+6NFAdZfMxHpLnkoAnL9wxejZWOyAazbX3DLd2dL0o77o0UB1l8zESTRscECcv3DF6GT51jEsnlfcMt3Z0vSjvujRQHWXzMRiIhY+AJy/cMXoZPnEgba+19wy3dnS9KO+6NFAdZfMxGIiFj4M1HGCQaYQ1ZzwHYPHetTqQ3Lz52FoXJ01bd8nA=="></occurrence>
+				<occurrence source="_ea" startLine="319" endLine="384" blockSize="66" tolerance="6" hash="GRH4B2GINIUnqQpBZkJpegIbD68GR2eiZORwigJy/cMUN+Kp3ZMCwl9wy3dnS9KO+6NFAdZfMxHpLnkoAnL9wxejZWOyAazbX3DLd2dL0o77o0UB1l8zESTRscECcv3DF6GT5+zkZfJfcMt3Z0vSjvujRQHWXzMRiIhY+AJy/cMXoZPnwPgvn19wy3dnS9KO+6NFAdZfMxGIiFj4Qtu60gaYQ1ZXM3bYHetTqQ3Lz52FoXJ01bd8nA=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 2" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cbc2bbe19d94a048b4c3812aa4dbf45b|c5dc44d390cdfc485e4d5929e8c85ed6" blockSize="64" numberOfOccurrences="7" id="_10a" type="_5a" provider="_58" description="7 occurrences with 64 line(s) found in 1 file(s)">
+				<occurrence source="_f4" startLine="134" endLine="157" blockSize="24" tolerance="18" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+H4PQYj/Z6Ugalb4WE/yyiBD82Z1RhffdVvINCS4+wRbSon3GaRSriPxRoQZ5EpIhWI73xP"></occurrence>
+				<occurrence source="_f4" startLine="157" endLine="180" blockSize="24" tolerance="18" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+FQjtl7/Z6Ugalb4WE/yyiBD82Z1Uw1waxvINCSolYpsSon3GaRSriPxRoQZ0wZ/g+I73xP"></occurrence>
+				<occurrence source="_f4" startLine="180" endLine="226" blockSize="47" tolerance="18" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+EcaK+B/Z6Ugalb4WE/yyiBD82Z1ZGTHj1vINCSi/BD7yon3GaRSriPxRoQZ5EpIhWI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4VCO2Xv9npSBqVvhYT/LKIEPzZnV2IVVRm8g0JJhOGK2KifcZpFKuI/FGhBnCAahUojvfE8="></occurrence>
+				<occurrence source="_f4" startLine="226" endLine="272" blockSize="47" tolerance="18" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+Hmb418/Z6Ugalb4WE/yyiBD82Z1UiqdJxvINCSLVRydCon3GaRSriPxRoQZ5EpIhWI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4VCO2Xv9npSBqVvhYT/LKIEPzZnVfIC4c28g0JLEBYEzKifcZpFKuI/FGhBnkfN20YjvfE8="></occurrence>
+				<occurrence source="_f4" startLine="272" endLine="295" blockSize="24" tolerance="10" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+F+SQY//Z6Ugalb4WE/yyiBD82Z1YjJ4f9vINCSD0QKcSon3GaRSriPxRoQZ5EpIhWI73xP"></occurrence>
+				<occurrence source="_f4" startLine="295" endLine="358" blockSize="64" tolerance="10" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+FQjtl7/Z6Ugalb4WE/yyiBD82Z1bPAR0hvINCSg5TupCon3GaRSriPxRoQZ3CPNIKI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4bqn1+79npSBqVvhYT/LKIEPzZnVHjRycG8g0JJ1jVdiKifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdVlJql5byDQkg=="></occurrence>
+				<occurrence source="_f4" startLine="88" endLine="134" blockSize="47" tolerance="18" hash="iO98T/YiCTexWjFROVhIj/y6fOjvb1EXv1GQBdXjg+FQjtl7/Z6Ugalb4WE/yyiBD82Z1WL7CkNvINCSIcwxtSon3GaRSriPxRoQZ2GlSUuI73xP9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4fg9BiP9npSBqVvhYT/LKIEPzZnVjfFvjG8g0JL64GYvKifcZpFKuI/FGhBnYaVJS4jvfE8="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 3" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:31e74cee09d7e48c9c5d9ee24447da3e|36a9eb6d15e71800527dcbdda04877c0" blockSize="59" numberOfOccurrences="5" id="_10b" type="_5a" provider="_58" description="5 occurrences with 59 line(s) found in 5 file(s)">
+				<occurrence source="_f5" startLine="80" endLine="138" blockSize="59" tolerance="2" hash="MiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOjDT+IT6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86L3//gpvINCS"></occurrence>
+				<occurrence source="_f6" startLine="67" endLine="120" blockSize="54" tolerance="1" hash="MiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86A=="></occurrence>
+				<occurrence source="_f8" startLine="53" endLine="106" blockSize="54" tolerance="1" hash="MiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86A=="></occurrence>
+				<occurrence source="_f9" startLine="42" endLine="100" blockSize="59" tolerance="2" hash="MiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOjDT+ITkUq4j/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86NNQGKhvINCS"></occurrence>
+				<occurrence source="_fa" startLine="68" endLine="121" blockSize="54" tolerance="1" hash="MiBTvuvoyG/NaKDdjz2sCVfXY5/8unzoBxnVyOvoyG9Se7ntgPk47rHMDJn8unzo/oA2yh6KMp/r6MhvDb5rwNoSwS27elO31ebK4vy6fOilD+0+6+jMMA2+4B8liH6JnQwxltXmzqP8unzo+u4rUBE/4HASk0BKEqFXy+X1vInr6Mhv+PuXmyaotsexxdmGtElpU/y6fOgtIfQh6+jIb/iZd6KOO6ObjXPoT/GUU+UrIMyL/Lp86A=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 15" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:ae9f9e1b9c0bb94cc40237de2de06f65|8609dbb32bfc84c122156899b354cfff" blockSize="53" numberOfOccurrences="2" id="_10c" type="_5a" provider="_58" description="2 occurrences with 53 line(s) found in 2 file(s)">
+				<occurrence source="_f3" startLine="17" endLine="68" blockSize="52" tolerance="4" hash="Hi8sB6PYyCi3hKVJeuBKlaCJPdVIhvqQnB1fOFwoRMzpsnZLT8UE0x6yyiAPzzKYf1CCZAmjFTz/QsdYgaYZFfAFcoLS18X/lqmq9uvoyG9B6YA1DtC/LPy6fOjulPDI6+jIb1n9CscQpwm5tfHutdJFupb8unzopX/lNuvoyG+pROGrd2fJDgcMQWr8unzoZRsaH9hp3+WRSriPFWWnwg+2BvkhEcykvmypEfXJHd2DpA4rF4ir6/y6fOhvINCS"></occurrence>
+				<occurrence source="_f7" startLine="20" endLine="72" blockSize="53" tolerance="4" hash="Hi8sB6PYyCi3hKVJeuBKlaCJPdVIhvqQnB1fOFwoRMzFyVj5NuSP+x6yyiAPzzKYf1CCZAmjFTz/QsdYgaYZFfAFcoLS18X/lqmq9uvoyG9B6YA1DtC/LPy6fOjulPDI6+jIb1n9CscQpwm5tfHutdJFupb8unzopX/lNuvoyG+pROGrd2fJDgcMQWr8unzoXPt6DPzQ8L2RSriPFWWnwg+2BvkhEcykvmypEfXJHd2DpA4rF4ir6/y6fOhvINCS"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 4" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cbc2bbe19d94a048b4c3812aa4dbf45b|5cb1de510d03f2936484c1e448d1fdd5" blockSize="46" numberOfOccurrences="5" id="_10d" type="_5a" provider="_58" description="5 occurrences with 46 line(s) found in 1 file(s)">
+				<occurrence source="_f4" startLine="135" endLine="180" blockSize="46" tolerance="6" hash="9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4fg9BiP9npSBqVvhYT/LKIEPzZnVGF991W8g0JLj7BFtKifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdVMNcGsbyDQkqJWKbEqJ9xmkUq4j8UaEGdMGf4PiO98Tw=="></occurrence>
+				<occurrence source="_f4" startLine="181" endLine="226" blockSize="46" tolerance="6" hash="9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4Rxor4H9npSBqVvhYT/LKIEPzZnVkZMePW8g0JKL8EPvKifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdXYhVVGbyDQkmE4YrYqJ9xmkUq4j8UaEGcIBqFSiO98Tw=="></occurrence>
+				<occurrence source="_f4" startLine="227" endLine="272" blockSize="46" tolerance="6" hash="9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4eZvjXz9npSBqVvhYT/LKIEPzZnVSKp0nG8g0JItVHJ0KifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdV8gLhzbyDQksQFgTMqJ9xmkUq4j8UaEGeR83bRiO98Tw=="></occurrence>
+				<occurrence source="_f4" startLine="273" endLine="318" blockSize="46" tolerance="6" hash="9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4X5JBj/9npSBqVvhYT/LKIEPzZnViMnh/28g0JIPRApxKifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdWzwEdIbyDQkoOU7qQqJ9xmkUq4j8UaEGdwjzSCiO98Tw=="></occurrence>
+				<occurrence source="_f4" startLine="319" endLine="358" blockSize="40" tolerance="4" hash="9iIJN7FaMVE5WEiP/Lp86O9vURe/UZAF1eOD4bqn1+79npSBqVvhYT/LKIEPzZnVHjRycG8g0JJ1jVdiKifcZpFKuI/FGhBnkSkiFYjvfE/2Igk3sVoxUTlYSI/8unzo729RF79RkAXV44PhUI7Ze/2elIGpW+FhP8sogQ/NmdVlJql5byDQkg=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 1" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cff2ee01f0b1d80ec39141bc9c749309|904b25fb425a6fd824a4dfe397a311a8" blockSize="43" numberOfOccurrences="8" id="_10e" type="_5a" provider="_58" description="8 occurrences with 43 line(s) found in 1 file(s)">
+				<occurrence source="_fb" startLine="220" endLine="262" blockSize="43" tolerance="19" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hPxsyC7dgKU6V7fklqrQE5pNIw7byDQkmW6R/Ya3T5pkUq4j2YhyjcsVwZtjXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hPxsyC7dgKU6V7fklqrQE5CAZDGbyDQkqfht7Qa3T5pkUq4j2Yhyjc0mjizjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="262" endLine="283" blockSize="22" tolerance="19" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hmChsi7dgKU6V7fklqrQE7ZVjrdbyDQkswSRH0a3T5pkUq4j2YhyjfSuF50jXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="283" endLine="304" blockSize="22" tolerance="19" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0jPqSWe7dgKU6V7fklqrQE5yTIeNbyDQkvFKGLsa3T5pkUq4j2Yhyjc0mjizjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="304" endLine="325" blockSize="22" tolerance="19" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hmChsi7dgKU6V7fklqrQE4JoTGkbyDQkpK4gMoa3T5pkUq4j2YhyjfXn+UtjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="325" endLine="346" blockSize="22" tolerance="19" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0jSyOIK7dgKU6V7fklqrQE6cM2lsbyDQkkavZoga3T5pkUq4j2Yhyjc0mjizjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="346" endLine="388" blockSize="43" tolerance="13" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hmChsi7dgKU6V7fklqrQE7vdAI1byDQkjsUyowa3T5pkUq4j2Yhyjc1ZI1vjXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0g3krIS7dgKU6V7fklqrQE5IESzubyDQknBs/0oa3T5pkUq4j2Yhyjc0mjizjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="388" endLine="409" blockSize="22" tolerance="6" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hmChsi7dgKU6V7fklqrQE6PA2P3byDQknP3Rb0a3T5pkUq4j2Yhyjf8FRugjXPoTw=="></occurrence>
+				<occurrence source="_fb" startLine="409" endLine="441" blockSize="33" tolerance="5" hash="jXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0ue4EjW7dgKU6V7fklqrQE4o1L2fbyDQkjBMefsa3T5pkUq4j2Yhyjc0mjizjXPoTyXW5ZtDQrOv/Lp86CzZIgb5eNL0RZBk0hmChsi7dgKU6V7fklqrQE4="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 6" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cff2ee01f0b1d80ec39141bc9c749309|5c955a46e5b0a3045a36bc2b8b25f02b" blockSize="42" numberOfOccurrences="4" id="_10f" type="_5a" provider="_58" description="4 occurrences with 42 line(s) found in 1 file(s)">
+				<occurrence source="_fb" startLine="264" endLine="305" blockSize="42" tolerance="6" hash="Q0Kzr/y6fOgs2SIG+XjS9EWQZNIZgobIu3YClOle35Jaq0BO2VY63W8g0JLMEkR9Gt0+aZFKuI9mIco30rhedI1z6E8l1uWbQ0Kzr/y6fOgs2SIG+XjS9EWQZNIz6klnu3YClOle35Jaq0BOckyHjW8g0JLxShi7Gt0+aZFKuI9mIco3NJo4s41z6E8l1uWb"></occurrence>
+				<occurrence source="_fb" startLine="306" endLine="347" blockSize="42" tolerance="6" hash="Q0Kzr/y6fOgs2SIG+XjS9EWQZNIZgobIu3YClOle35Jaq0BOCaExpG8g0JKSuIDKGt0+aZFKuI9mIco315/lLY1z6E8l1uWbQ0Kzr/y6fOgs2SIG+XjS9EWQZNI0sjiCu3YClOle35Jaq0BOnDNpbG8g0JJGr2aIGt0+aZFKuI9mIco3NJo4s41z6E8l1uWb"></occurrence>
+				<occurrence source="_fb" startLine="348" endLine="389" blockSize="42" tolerance="6" hash="Q0Kzr/y6fOgs2SIG+XjS9EWQZNIZgobIu3YClOle35Jaq0BO73QCNW8g0JI7FMqMGt0+aZFKuI9mIco3NWSNb41z6E8l1uWbQ0Kzr/y6fOgs2SIG+XjS9EWQZNIN5KyEu3YClOle35Jaq0BOSBEs7m8g0JJwbP9KGt0+aZFKuI9mIco3NJo4s41z6E8l1uWb"></occurrence>
+				<occurrence source="_fb" startLine="390" endLine="431" blockSize="42" tolerance="6" hash="Q0Kzr/y6fOgs2SIG+XjS9EWQZNIZgobIu3YClOle35Jaq0BOjwNj928g0JJz90W9Gt0+aZFKuI9mIco3/BUboI1z6E8l1uWbQ0Kzr/y6fOgs2SIG+XjS9EWQZNLnuBI1u3YClOle35Jaq0BOKNS9n28g0JIwTHn7Gt0+aZFKuI9mIco3NJo4s41z6E8l1uWb"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 17" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:029a49d8a3a8eae9cc896dc93840acad|812b8c1bf74395782150060bf57d480d" blockSize="41" numberOfOccurrences="2" id="_110" type="_5a" provider="_58" description="2 occurrences with 41 line(s) found in 1 file(s)">
+				<occurrence source="_ff" startLine="500" endLine="540" blockSize="41" tolerance="5" hash="uSjeqJQDSGFX+Wat6T0qZVqOxkWFYSnqbyDQkoXsxlIzkJADhZ2fff5cCE2EmeuH6i4zoIF4Ryo+BpGcBvCj4Vf5Zq3pPSplWo7GRYDKRdpvINCSLFiixG2Sl7+FnZ99/lwITYSZ64c="></occurrence>
+				<occurrence source="_ff" startLine="545" endLine="585" blockSize="41" tolerance="5" hash="uSjeqJQDSGFX+Wat6T0qZVqOxkWFYSnqbyDQkrBmQUZtkpe/hZ2fff5cCE2EmeuHHUNQi4F4Ryo+BpGcBvCj4Vf5Zq3pPSplWo7GRYDKRdpvINCS2n9+dzOQkAOFnZ99/lwITYSZ64c="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 16" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:029a49d8a3a8eae9cc896dc93840acad|3b5d6a50fb7b8142390945219df7c459" blockSize="41" numberOfOccurrences="2" id="_111" type="_5a" provider="_58" description="2 occurrences with 41 line(s) found in 1 file(s)">
+				<occurrence source="_ff" startLine="780" endLine="820" blockSize="41" tolerance="3" hash="gqYO386b7FSPx/i+EeU4DISZ64cDoqhGmFFawJZ8YJznjMDUaoBLaFwITEm+W6fMQm3dsxGkzD3KkE79T8qE+Abwo+HsYQFqVNbrN1f5Zq3pPSpl0bi3SEMQ6lIWKDhuTjPj/1qOxkWFYSnqbyDQkqwmGmJYm5oL"></occurrence>
+				<occurrence source="_ff" startLine="822" endLine="862" blockSize="41" tolerance="3" hash="gqYO386b7FSPx/i+EeU4DISZ64cDoqhGmFFawJZ8YJznjMDU4OMbtlwITEm+W6fMQm3dsxGkzD3KkE79T8qE+Abwo+FRj6ZOVNbrN1f5Zq3pPSpl0bi3SEMQ6lIWKDhuTjPj/1qOxkWFYSnqbyDQko0IKutYm5oL"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 18" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:085bbb9cf5e4f495b76f97b8c1f5c985|c6b959a59e1c48f079700dbcb2399393" blockSize="39" numberOfOccurrences="2" id="_112" type="_5a" provider="_58" description="2 occurrences with 39 line(s) found in 1 file(s)">
+				<occurrence source="_101" startLine="735" endLine="773" blockSize="39" tolerance="5" hash="Gdx1n8ITsAM12VEmKxLu9uqKvckqfYxRzxmUclf5Zq3hNLiioOHhuMeNVoiZuig/Wo7GRYVhKepvINCSm+Cr/ttHSzaC3ZAm/RKBeL3fg60G8KPhr9uoaW8g0JKoeoaT20dHdQ=="></occurrence>
+				<occurrence source="_101" startLine="846" endLine="884" blockSize="39" tolerance="5" hash="Gdx1n8ITsAM12VEmKxLu9uqKvcmd+Vf6zxmUclf5Zq3hNLiioOHhuMeNVoiZuig/Wo7GRYVhKepvINCSBOOsp9tHSzZA2+ad/RKBeOC66FYG8KPhr9uoaW8g0JKtsQt/20dHdQ=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 9" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:fa5cfa3c9ca49b9f634eac6e7e405b8b|c957760bf6e1d83cbc3e1eca91e939bf" blockSize="39" numberOfOccurrences="3" id="_113" type="_5a" provider="_58" description="3 occurrences with 39 line(s) found in 3 file(s)">
+				<occurrence source="_ec" startLine="76" endLine="114" blockSize="39" tolerance="4" hash="HetTqQ3Lz52R51GE1bd8nKXsgr0ZEfgHYYg0hSepCkFmQml6sXwxpgaYQ1bBuCr3HetTqQ3Lz52R51GE1bd8nHFg+E0ZEfgHYYg0hSepCkFmQml6nXM47AaYQ1bGBUMTHetTqQ3Lz51GoaH/1bd8nA=="></occurrence>
+				<occurrence source="_ed" startLine="116" endLine="153" blockSize="38" tolerance="4" hash="HetTqQ3Lz52R51GE1bd8nKXsgr0ZEfgHYYg0hSepCkFmQml6bAUQjgaYQ1bEdSUPHetTqQ3Lz52R51GE1bd8nHFg+E0ZEfgHYYg0hSepCkFmQml6C+IJ1AaYQ1YK63hbHetTqQ3Lz51GoaH/1bd8nA=="></occurrence>
+				<occurrence source="_ee" startLine="74" endLine="111" blockSize="38" tolerance="4" hash="HetTqQ3Lz52R51GE1bd8nKXsgr0ZEfgHYYg0hSepCkFmQml66ZNxQAaYQ1YdIL+dHetTqQ3Lz52R51GE1bd8nHFg+E0ZEfgHYYg0hSepCkFmQml61Yp4hgaYQ1aPXcZFHetTqQ3Lz51GoaH/1bd8nA=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 19" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:b9b7d6057447693336a31e099992ec9f|438453e6339cfd8b2af34143e1ce2837" blockSize="36" numberOfOccurrences="2" id="_114" type="_5a" provider="_58" description="2 occurrences with 36 line(s) found in 1 file(s)">
+				<occurrence source="_ea" startLine="197" endLine="232" blockSize="36" tolerance="4" hash="HetTqQ3Lz52FoXJ01bd8nEA04O4ZEfgHYYg0hSepCkFmQml6AhsPrwK0dsJk5HCKAnL9wxQ34qmVC84QX3DLd2dL0o77o0UB1l8zEekueSgCcv3DF6NlYwqL3iNfcMt3Z0vSjvujRQHWXzMR"></occurrence>
+				<occurrence source="_ea" startLine="311" endLine="346" blockSize="36" tolerance="4" hash="HetTqQ3Lz52FoXJ01bd8nFpJ/QgZEfgHYYg0hSepCkFmQml6AhsPrwZHZ6Jk5HCKAnL9wxQ34qndkwLCX3DLd2dL0o77o0UB1l8zEekueSgCcv3DF6NlY7IBrNtfcMt3Z0vSjvujRQHWXzMR"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 10" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:37c4dd2fc64e2c905804bebb8eb9e3f9|53915eb940830887f43d56c239bb0673" blockSize="34" numberOfOccurrences="3" id="_115" type="_5a" provider="_58" description="3 occurrences with 34 line(s) found in 3 file(s)">
+				<occurrence source="_ff" startLine="118" endLine="151" blockSize="34" tolerance="3" hash="Wf0KxxCnCbm18e610kW6lvy6fOjzrHU36+jMMJ23zLcQpwm5tfHutdJFupb8unzoGW2tnevoyG+pROGr+Q1HIbIbtP/8unzo/NDwvevoyG8NvmvA2hLBLe/HStK+bKkR8n2p+PreFYJDQrOv/Lp86GKGBmzr6Mhv"></occurrence>
+				<occurrence source="_100" startLine="146" endLine="179" blockSize="34" tolerance="3" hash="Wf0KxxCnCbm18e610kW6lvy6fOjzrHU36+jMMJ23zLcQpwm5tfHutdJFupb8unzoGW2tnevoyG+pROGrSxAKyLIbtP/8unzo/NDwvevoyG8NvmvA2hLBLe/HStLSW7V58n2p+PreFYJDQrOv/Lp86BLHKMjr6Mhv"></occurrence>
+				<occurrence source="_101" startLine="112" endLine="145" blockSize="34" tolerance="3" hash="Wf0KxxCnCbm18e610kW6lvy6fOjzrHU36+jMMJ23zLcQpwm5tfHutdJFupb8unzoGW2tnevoyG+pROGr+Q1HIbIbtP/8unzo/NDwvevoyG8NvmvA2hLBLe/HStK+bKkR8n2p+PreFYJDQrOv/Lp86GKGBmzr6Mhv"></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 20" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cff2ee01f0b1d80ec39141bc9c749309|bcb676ddf73d67829cf7cbe46840658c" blockSize="33" numberOfOccurrences="2" id="_116" type="_5a" provider="_58" description="2 occurrences with 33 line(s) found in 1 file(s)">
+				<occurrence source="_fb" startLine="137" endLine="169" blockSize="33" tolerance="1" hash="RZBk0po2nqK7dgKU6V7fklqrQE5JVKbF7I0DnQbn34FvINCSGlI/XhrdPmmRSriPZiHKN3PKfe+Nc+hPJdblm0NCs6/8unzoLNkiBvl40vRFkGTSmjaeort2ApTpXt+SWqtATuyNA50G59+BbyDQkg=="></occurrence>
+				<occurrence source="_fb" startLine="182" endLine="214" blockSize="33" tolerance="1" hash="RZBk0po2nqK7dgKU6V7fklqrQE7sjQOdBuffgW8g0JIFOzPQGt0+aZFKuI9mIco3NJo4s41z6E8l1uWbQ0Kzr/y6fOgs2SIG+XjS9EWQZNIZgobIu3YClOle35Jaq0BO7I0DnQbn34EiQlUybyDQkg=="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 21" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:f6ae3b3371f97eb953d1273b2c97b595|459b0dc2146583f153a39f8d7900fd1d" blockSize="31" numberOfOccurrences="2" id="_117" type="_5a" provider="_58" description="2 occurrences with 31 line(s) found in 2 file(s)">
+				<occurrence source="_100" startLine="249" endLine="279" blockSize="31" tolerance="1" hash="HVaxJevozDCOO6ObjXPoT5mgVWEV5EB86+jIbzj7wOz+xud0scXZhiaMpr38unzW/Lp86IFX+BTr6Mhv9mXCzzSaOLMW9L03C7QM7ENCs6/8unzolkDAVevozDD2ZcLPNJo4sxb0vTcLtBCtQ0Kzr/y6fOg="></occurrence>
+				<occurrence source="_101" startLine="177" endLine="207" blockSize="31" tolerance="1" hash="HVaxJevozDCOO6ObjXPoT7O0x08V5EB86+jIbzj7wOz+xud0scXZhiaMpr38unzW/Lp86IFX+BTr6Mhv9mXCzzSaOLMW9L03C7QM7ENCs6/8unzolkDAVevozDD2ZcLPNJo4sxb0vTcLtBCtQ0Kzr/y6fOg="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 11" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:cd5e5ec05e30042dac5ed0a2a1b8e3fa|97ac506b6a9911cc081a8cd16ed4a4f6" blockSize="31" numberOfOccurrences="3" id="_118" type="_5a" provider="_58" description="3 occurrences with 31 line(s) found in 3 file(s)">
+				<occurrence source="_fe" startLine="54" endLine="84" blockSize="31" tolerance="5" hash="EKcJubXx7rXSRbqW/Lp86BltrZ3r6MhvqUThq/kNRyGyG7T//Lp86NoIUgzr6MhvDb5rwNoSwS3vx0rSvmypEfJ9qfh9/iXvQ0Kzr/y6fOg/lDoMYoYGbOvoyG869Wka20lxoL5sqRH8unzo"></occurrence>
+				<occurrence source="_ff" startLine="127" endLine="155" blockSize="29" tolerance="5" hash="EKcJubXx7rXSRbqW/Lp86BltrZ3r6MhvqUThq/kNRyGyG7T//Lp86PzQ8L3r6MhvDb5rwNoSwS3vx0rSvmypEfJ9qfj63hWCQ0Kzr/y6fOhihgZs6+jIb9MDGRyNJedPvmypEfy6fOg="></occurrence>
+				<occurrence source="_101" startLine="121" endLine="149" blockSize="29" tolerance="5" hash="EKcJubXx7rXSRbqW/Lp86BltrZ3r6MhvqUThq/kNRyGyG7T//Lp86PzQ8L3r6MhvDb5rwNoSwS3vx0rSvmypEfJ9qfj63hWCQ0Kzr/y6fOhihgZs6+jIb9MDGRyNJedPvmypEfy6fOg="></occurrence>
+			</duplicate>
+			<duplicate name="Duplicate code block 22" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:DuplicateCode:Result:2df252a3ea88a69dcb8084e12792c9ba|782f8c0880b03c4d7da003ff8af6a867" blockSize="29" numberOfOccurrences="2" id="_119" type="_5a" provider="_58" description="2 occurrences with 29 line(s) found in 1 file(s)">
+				<occurrence source="_f2" startLine="123" endLine="150" blockSize="28" tolerance="2" hash="bcJlvc/Lni8lhkeNgqMLNqLeue8KmSMNqYRNSFjOQ29Y4mWaQQePL8BKG1prz1yXbyDQkixcJPXqcoPSkUq4j2YhyjdbTiygiO98T/YiCTfJ3lr0x0EHz9/q6kY5WEiPBwxBavy6fOg="></occurrence>
+				<occurrence source="_f2" startLine="152" endLine="180" blockSize="29" tolerance="2" hash="bcJlvc/Lni8lhkeNgqMLNqLeue8KmSMNqYRNSFjOQ29Y4mWaQQePL8BKG1prz1yXgYKmDW8g0JJTwX3q6nKD0pFKuI9mIco3W04soIjvfE/2Igk3yd5a9MdBB8/f6upGOVhIjwcMQWr8unzo"></occurrence>
+			</duplicate>
+			<cycleGroups analyzerRef="_2e">
+				<cycleGroup numberOfCyclicElements="3" name="Component cycle group 1.1" fqName="Files:BaseDirectory:SystemDirectory:Analyzers:ComponentCyclesModule:Result:ba431a3451911025783211b15a622232" structuralDebtIndex="47" componentDependenciesToRemove="3" parserDependenciesToRemove="17" scope="_e0" id="_11a" type="_59" provider="_58" description="3 cyclic components" severity="Warning">
+					<element ref="_ef"></element>
+					<element ref="_f0"></element>
+					<element ref="_f1"></element>
+				</cycleGroup>
+			</cycleGroups>
+		</elementIssues>
+	</issues>
+</ns3:report>
